@@ -6,6 +6,7 @@ import { formatRupiah, formatDateIndo } from '@/lib/formatters';
 import { Contract, ContractStatus } from '@/lib/types';
 import { KeyRound, ShieldAlert, CheckCircle2, AlertCircle, Plus, X, Search, FileCheck } from 'lucide-react';
 import { REFERENCE_DATE } from '@/lib/store';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function KontrakPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -25,6 +26,11 @@ export default function KontrakPage() {
 
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // PROTEKSI ROUTE: Belum login
+  if (!currentUser) {
+    return <AuthGuard moduleName="kontrak sewa" />;
+  }
 
   // BR-10: Penyewa ditolak
   if (currentUser.peran === 'penyewa') {

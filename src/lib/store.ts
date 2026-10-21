@@ -12,7 +12,7 @@ import {
 export const REFERENCE_DATE = '2026-10-15';
 
 interface StorageState {
-  currentUser: Profile;
+  currentUser: Profile | null;
   profiles: Profile[];
   identities: TenantIdentity[];
   units: PropertyUnit[];
@@ -32,7 +32,7 @@ const STORAGE_KEY = 'griya_kenanga_state_v1';
 
 function getDefaultState(): StorageState {
   return {
-    currentUser: INITIAL_PROFILES[1], // Default: Bayu Prasetyo (Pengelola)
+    currentUser: null, // Default: Belum login saat pertama buka link
     profiles: INITIAL_PROFILES,
     identities: INITIAL_IDENTITIES,
     units: INITIAL_UNITS,
@@ -101,13 +101,65 @@ export class GriyaStore {
     this.persistState();
   }
 
-  // --- GETTERS ---
+  // --- AUTHENTICATION & SESSION ---
   public getState(): StorageState {
     return this.state;
   }
 
-  public getCurrentUser(): Profile {
+  public getCurrentUser(): Profile | null {
     return this.state.currentUser;
+  }
+
+  public login(email: string, kataSandi?: string): Profile {
+    const trimmed = email.trim().toLowerCase();
+    const found = this.state.profiles.find(p => p.email.toLowerCase() === trimmed);
+    if (!found) {
+      throw new Error('Email tidak terdaftar dalam sistem');
+    }
+    if (!found.aktif) {
+      throw new Error('Akun ini telah dinonaktifkan oleh administrator');
+    }
+    // Sandi latihan default Latihan#2026 atau jika diisi sembarang untuk demo
+    if (kataSandi && kataSandi !== 'Latihan#2026' && kataSandi.length < 6) {
+      throw new Error('Kata sandi minimal 6 karakter');
+    }
+
+    this.state.currentUser = found;
+    this.persistState();
+    return found;
+  }
+
+  public register(data: { nama_lengkap: string; email: string; no_hp?: string; kata_sandi?: string }): Profile {
+    const trimmedEmail = data.email.trim().toLowerCase();
+    if (!trimmedEmail || !data.nama_lengkap) {
+      throw new Error('Nama lengkap dan email wajib diisi');
+    }
+
+    const exists = this.state.profiles.some(p => p.email.toLowerCase() === trimmedEmail);
+    if (exists) {
+      throw new Error('Email sudah terdaftar, silakan langsung masuk (login)');
+    }
+
+    // PRD: Akun baru yang mendaftar sendiri SELALU berperan Penyewa
+    const newProfile: Profile = {
+      id: `user-${Date.now()}`,
+      nama_lengkap: data.nama_lengkap.trim(),
+      email: trimmedEmail,
+      no_hp: data.no_hp?.trim() || undefined,
+      peran: 'penyewa',
+      aktif: true,
+      dibuat_pada: new Date().toISOString()
+    };
+
+    this.state.profiles.push(newProfile);
+    this.state.currentUser = newProfile;
+    this.persistState();
+    return newProfile;
+  }
+
+  public logout() {
+    this.state.currentUser = null;
+    this.persistState();
   }
 
   public setCurrentUserByEmail(email: string) {
@@ -128,11 +180,12 @@ export class GriyaStore {
 
   // --- AUDIT LOG HELPER ---
   private logAudit(aksi: string, tabel: string, dataId: string, sebelum?: Record<string, unknown>, sesudah?: Record<string, unknown>) {
+    const user = this.state.currentUser;
     const newLog: AuditLogItem = {
       id: Date.now(),
-      pelaku_id: this.state.currentUser.id,
-      pelaku_nama: this.state.currentUser.nama_lengkap,
-      peran: this.state.currentUser.peran,
+      pelaku_id: user ? user.id : undefined,
+      pelaku_nama: user ? user.nama_lengkap : 'Sistem / Anonim',
+      peran: user ? user.peran : undefined,
       aksi,
       tabel,
       data_id: dataId,
@@ -159,9 +212,17 @@ export class GriyaStore {
     return `${jenis}-${periode}-${seqStr}`;
   }
 
+  public requireUser(): Profile {
+    if (!this.state.currentUser) {
+      throw new Error('Silakan masuk (login) terlebih dahulu');
+    }
+    return this.state.currentUser;
+  }
+
   // --- UNIT ACTIONS ---
   public updateUnitStatus(unitId: string, newStatus: 'tersedia' | 'perbaikan' | 'nonaktif') {
-    if (this.state.currentUser.peran === 'penyewa') {
+    const user = this.requireUser();
+    if (user.peran === 'penyewa') {
       throw new Error('Penyewa tidak memiliki izin mengubah status unit');
     }
 
@@ -185,8 +246,9 @@ export class GriyaStore {
   }
 
   public updateUnitPrice(unitId: string, newPrice: number) {
+    const user = this.requireUser();
     // BR-04 & BR-10: Hanya Pemilik yang boleh ubah harga
-    if (this.state.currentUser.peran !== 'pemilik') {
+    if (user.peran !== 'pemilik') {
       throw new Error('Hanya Pemilik yang berhak mengubah harga sewa unit');
     }
     if (newPrice <= 0) {
@@ -204,7 +266,8 @@ export class GriyaStore {
 
   // --- IDENTITAS PENYEWA ACTIONS ---
   public submitIdentity(identity: Omit<TenantIdentity, 'penyewa_id' | 'status_verifikasi' | 'diperbarui_pada'>) {
-    const tenantId = this.state.currentUser.id;
+    const user = this.requireUser();
+    const tenantId = user.id;
     if (identity.nik.length !== 16 || !/^\d{16}$/.test(identity.nik)) {
       throw new Error('NIK harus tepat 16 angka');
     }
@@ -226,7 +289,8 @@ export class GriyaStore {
   }
 
   public verifyIdentity(tenantId: string, approved: boolean, alasanTolak?: string) {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat memverifikasi identitas penyewa');
     }
 
@@ -239,7 +303,7 @@ export class GriyaStore {
 
     ident.status_verifikasi = approved ? 'terverifikasi' : 'ditolak';
     ident.alasan_tolak = approved ? undefined : alasanTolak;
-    ident.diverifikasi_oleh = this.state.currentUser.id;
+    ident.diverifikasi_oleh = user.id;
     ident.diverifikasi_pada = new Date().toISOString();
     ident.diperbarui_pada = new Date().toISOString();
 
@@ -260,7 +324,8 @@ export class GriyaStore {
     tanggal_mulai: string;
     durasi_bulan: 1 | 3 | 6 | 12;
   }): Contract {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat membuat kontrak baru');
     }
 
@@ -310,7 +375,7 @@ export class GriyaStore {
       tanggal_selesai,
       harga_sewa_bulanan: unit.harga_sewa_bulanan, // Disalin dari unit, dikunci (BR-04)
       status: 'draf',
-      dibuat_oleh: this.state.currentUser.id,
+      dibuat_oleh: user.id,
       dibuat_pada: new Date().toISOString()
     };
 
@@ -321,7 +386,8 @@ export class GriyaStore {
   }
 
   public activateContract(contractId: string) {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat mengaktifkan kontrak');
     }
 
@@ -352,7 +418,8 @@ export class GriyaStore {
   }
 
   public cancelDraftContract(contractId: string) {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat membatalkan draf kontrak');
     }
     const contract = this.state.contracts.find(c => c.id === contractId);
@@ -365,7 +432,8 @@ export class GriyaStore {
   }
 
   public completeContract(contractId: string) {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat menyelesaikan kontrak');
     }
     const contract = this.state.contracts.find(c => c.id === contractId);
@@ -392,8 +460,9 @@ export class GriyaStore {
   }
 
   public terminateContractEarly(contractId: string, alasan: string) {
+    const user = this.requireUser();
     // BR-05: Pengakhiran lebih awal hanya oleh Pemilik, wajib dengan alasan
-    if (this.state.currentUser.peran !== 'pemilik') {
+    if (user.peran !== 'pemilik') {
       throw new Error('Pengakhiran kontrak lebih awal hanya dapat dilakukan oleh Pemilik');
     }
     if (!alasan || alasan.trim().length === 0) {
@@ -415,7 +484,8 @@ export class GriyaStore {
 
   // --- TAGIHAN ACTIONS ---
   public generateMonthlyInvoices(periodeStr: string = '2026-11-01'): { createdCount: number } {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat membuat tagihan bulanan');
     }
 
@@ -449,7 +519,7 @@ export class GriyaStore {
           denda: 0,
           terbayar: 0,
           status: 'belum_bayar',
-          dibuat_oleh: this.state.currentUser.id,
+          dibuat_oleh: user.id,
           dibuat_pada: new Date().toISOString()
         };
         this.state.invoices.push(newInvoice);
@@ -466,8 +536,9 @@ export class GriyaStore {
   }
 
   public cancelInvoice(invoiceId: string, alasan: string) {
+    const user = this.requireUser();
     // BR-09: Tagihan hanya bisa dibatalkan Pemilik bila belum ada pembayaran sama sekali
-    if (this.state.currentUser.peran !== 'pemilik') {
+    if (user.peran !== 'pemilik') {
       throw new Error('Hanya Pemilik yang dapat membatalkan tagihan');
     }
     if (!alasan) throw new Error('Alasan pembatalan tagihan wajib diisi');
@@ -494,11 +565,12 @@ export class GriyaStore {
     bukti_path?: string;
     referensi_mayar?: string;
   }): Payment {
-    const isTenant = this.state.currentUser.peran === 'penyewa';
+    const user = this.requireUser();
+    const isTenant = user.peran === 'penyewa';
     if (isTenant && data.metode !== 'mayar') {
       throw new Error('Penyewa hanya dapat melakukan pembayaran melalui bayar online (Mayar)');
     }
-    if (!isTenant && this.state.currentUser.peran !== 'pengelola') {
+    if (!isTenant && user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat mencatat pembayaran tunai atau transfer');
     }
 
@@ -547,7 +619,7 @@ export class GriyaStore {
       bukti_path: data.bukti_path,
       referensi_mayar: data.referensi_mayar,
       status: 'sah',
-      dicatat_oleh: isTenant ? undefined : this.state.currentUser.id,
+      dicatat_oleh: isTenant ? undefined : user.id,
       dibuat_pada: new Date().toISOString()
     };
 
@@ -573,8 +645,9 @@ export class GriyaStore {
   }
 
   public cancelPayment(paymentId: string, alasan: string) {
+    const user = this.requireUser();
     // BR-09: Pembayaran yang sudah dicatat tidak bisa diubah atau dihapus. Koreksi dilakukan Pemilik dengan membatalkan.
-    if (this.state.currentUser.peran !== 'pemilik') {
+    if (user.peran !== 'pemilik') {
       throw new Error('Hanya Pemilik yang berhak membatalkan pembayaran');
     }
     if (!alasan) throw new Error('Alasan pembatalan pembayaran wajib diisi');
@@ -589,7 +662,7 @@ export class GriyaStore {
 
     payment.status = 'dibatalkan';
     payment.alasan_batal = alasan;
-    payment.dibatalkan_oleh = this.state.currentUser.id;
+    payment.dibatalkan_oleh = user.id;
     payment.dibatalkan_pada = new Date().toISOString();
 
     // Hitung ulang saldo tagihan (BR-09)
@@ -614,13 +687,14 @@ export class GriyaStore {
     deskripsi: string;
     foto_paths: string[];
   }): DamageReport {
-    if (this.state.currentUser.peran !== 'penyewa') {
+    const user = this.requireUser();
+    if (user.peran !== 'penyewa') {
       throw new Error('Hanya Penyewa yang dapat membuat laporan kerusakan');
     }
 
     // BR-11: Hanya bisa dibuat oleh penyewa yang memiliki kontrak aktif
     const activeContract = this.state.contracts.find(
-      c => c.penyewa_id === this.state.currentUser.id && c.status === 'aktif'
+      c => c.penyewa_id === user.id && c.status === 'aktif'
     );
     if (!activeContract) {
       throw new Error('Anda tidak memiliki kontrak aktif untuk mengajukan laporan kerusakan');
@@ -638,7 +712,7 @@ export class GriyaStore {
 
     // BR-11: Satu penyewa paling banyak memiliki 3 laporan terbuka (dilaporkan, diproses, menunggu_persetujuan)
     const openReportsCount = this.state.damageReports.filter(
-      r => r.pelapor_id === this.state.currentUser.id &&
+      r => r.pelapor_id === user.id &&
       ['dilaporkan', 'diproses', 'menunggu_persetujuan'].includes(r.status)
     ).length;
 
@@ -652,7 +726,7 @@ export class GriyaStore {
       nomor,
       kontrak_id: activeContract.id,
       unit_id: activeContract.unit_id,
-      pelapor_id: this.state.currentUser.id,
+      pelapor_id: user.id,
       kategori: data.kategori,
       judul: data.judul,
       deskripsi: data.deskripsi,
@@ -671,7 +745,8 @@ export class GriyaStore {
   }
 
   public processDamageReport(reportId: string, estimasiBiaya: number, catatan?: string) {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat memproses laporan kerusakan');
     }
     const report = this.state.damageReports.find(r => r.id === reportId);
@@ -706,8 +781,9 @@ export class GriyaStore {
   }
 
   public approveDamageReport(reportId: string, approved: boolean, alasanTolak?: string) {
+    const user = this.requireUser();
     // BR-12: Estimasi atau biaya aktual di atas Rp1.000.000 disetujui/ditolak Pemilik
-    if (this.state.currentUser.peran !== 'pemilik') {
+    if (user.peran !== 'pemilik') {
       throw new Error('Hanya Pemilik yang dapat menyetujui biaya kerusakan di atas Rp1.000.000');
     }
     const report = this.state.damageReports.find(r => r.id === reportId);
@@ -720,7 +796,7 @@ export class GriyaStore {
     }
 
     report.status = approved ? 'diproses' : 'ditolak';
-    report.disetujui_oleh = approved ? this.state.currentUser.id : undefined;
+    report.disetujui_oleh = approved ? user.id : undefined;
     report.disetujui_pada = approved ? new Date().toISOString() : undefined;
     report.alasan_tolak = approved ? undefined : alasanTolak;
     report.diperbarui_pada = new Date().toISOString();
@@ -736,7 +812,8 @@ export class GriyaStore {
   }
 
   public markDamageRepaired(reportId: string, biayaAktual: number) {
-    if (this.state.currentUser.peran !== 'pengelola') {
+    const user = this.requireUser();
+    if (user.peran !== 'pengelola') {
       throw new Error('Hanya Pengelola yang dapat menandai laporan selesai diperbaiki');
     }
     const report = this.state.damageReports.find(r => r.id === reportId);
@@ -757,17 +834,18 @@ export class GriyaStore {
   }
 
   public closeDamageReport(reportId: string) {
+    const user = this.requireUser();
     const report = this.state.damageReports.find(r => r.id === reportId);
     if (!report || report.status !== 'selesai') {
       throw new Error('Laporan belum berstatus selesai');
     }
 
-    const currentUserId = this.state.currentUser.id;
+    const currentUserId = user.id;
     const isReporter = report.pelapor_id === currentUserId;
 
     // BR-12: Laporan selesai ditutup oleh penyewa pelapor; bila 3 hari setelah selesai belum ditutup, Pengelola boleh menutupnya
     if (!isReporter) {
-      if (this.state.currentUser.peran !== 'pengelola') {
+      if (user.peran !== 'pengelola') {
         throw new Error('Hanya penyewa pelapor atau Pengelola yang dapat menutup laporan');
       }
 
@@ -790,10 +868,11 @@ export class GriyaStore {
 
   // --- KELOLA PERAN AKUN (BR-10) ---
   public updateUserRole(targetUserId: string, newRole: UserRole) {
-    if (this.state.currentUser.peran !== 'pemilik') {
+    const user = this.requireUser();
+    if (user.peran !== 'pemilik') {
       throw new Error('Hanya Pemilik yang dapat mengubah peran akun');
     }
-    if (targetUserId === this.state.currentUser.id) {
+    if (targetUserId === user.id) {
       throw new Error('Pemilik tidak dapat mengubah peran akunnya sendiri');
     }
 

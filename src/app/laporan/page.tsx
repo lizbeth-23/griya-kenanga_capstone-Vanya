@@ -5,6 +5,7 @@ import { useGriyaStore } from '@/lib/use-store';
 import { formatRupiah, formatDateTimeIndo } from '@/lib/formatters';
 import { UserRole } from '@/lib/types';
 import { BarChart3, ShieldAlert, Download, FileSpreadsheet, History, UserCog, CheckCircle2, Search } from 'lucide-react';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function LaporanPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -17,6 +18,11 @@ export default function LaporanPage() {
   const [newRole, setNewRole] = useState<UserRole>('pengelola');
   const [roleError, setRoleError] = useState('');
   const [roleSuccess, setRoleSuccess] = useState('');
+
+  // PROTEKSI ROUTE: Belum login
+  if (!currentUser) {
+    return <AuthGuard moduleName="laporan finansial dan audit" />;
+  }
 
   // BR-10: Halaman Laporan HANYA dapat dibuka oleh Pemilik
   if (currentUser.peran !== 'pemilik') {

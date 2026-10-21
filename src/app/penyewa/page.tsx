@@ -5,6 +5,7 @@ import { useGriyaStore } from '@/lib/use-store';
 import { maskNIK, formatDateIndo } from '@/lib/formatters';
 import { TenantIdentity, Profile } from '@/lib/types';
 import { Users, ShieldAlert, CheckCircle2, XCircle, Search, UserCheck, Eye, EyeOff } from 'lucide-react';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function PenyewaPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -16,6 +17,11 @@ export default function PenyewaPage() {
   const [rejectReason, setRejectReason] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // PROTEKSI ROUTE: Belum login
+  if (!currentUser) {
+    return <AuthGuard moduleName="verifikasi data penyewa" />;
+  }
 
   // BR-10: Penyewa ditolak
   if (currentUser.peran === 'penyewa') {

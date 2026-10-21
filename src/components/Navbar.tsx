@@ -6,9 +6,10 @@ import { usePathname } from 'next/navigation';
 import { useGriyaStore } from '@/lib/use-store';
 import { 
   Building2, Home, KeyRound, Receipt, Wrench, BarChart3, 
-  Users, ShieldAlert, Menu, X, ChevronDown, RefreshCw, CheckCircle2, UserCheck
+  Users, ShieldAlert, Menu, X, ChevronDown, RefreshCw, CheckCircle2, UserCheck, LogIn, LogOut, UserPlus
 } from 'lucide-react';
 import { UserRole } from '@/lib/types';
+import AuthModal from './AuthModal';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -16,8 +17,11 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [roleSwitcherOpen, setRoleSwitcherOpen] = useState(false);
   const [resetConfirmOpen, setResetConfirmOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 
   const getNavLinks = () => {
+    if (!currentUser) return [];
     const role = currentUser.peran;
     const links = [
       { href: '/', label: 'Beranda', icon: Home, roles: ['penyewa', 'pengelola', 'pemilik'] },
@@ -37,6 +41,11 @@ export default function Navbar() {
   const handleSwitchUser = (email: string) => {
     store.setCurrentUserByEmail(email);
     setRoleSwitcherOpen(false);
+    setMobileMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    store.logout();
     setMobileMenuOpen(false);
   };
 
@@ -79,70 +88,112 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-1">
-            {navLinks.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
-                    isActive
-                      ? 'bg-stone-900 text-stone-50 shadow-sm dark:bg-stone-100 dark:text-stone-900'
-                      : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-stone-100'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          {/* Desktop Navigation Links (Hanya muncul jika sudah login) */}
+          {currentUser && (
+            <nav className="hidden lg:flex items-center gap-1">
+              {navLinks.map((item) => {
+                const isActive = pathname === item.href;
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+                      isActive
+                        ? 'bg-stone-900 text-stone-50 shadow-sm dark:bg-stone-100 dark:text-stone-900'
+                        : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900 dark:text-stone-400 dark:hover:bg-stone-900 dark:hover:text-stone-100'
+                    }`}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </nav>
+          )}
 
-          {/* Role Pill & Switcher + Reset Demo Button */}
+          {/* Right Section: Auth Buttons / User Pill */}
           <div className="flex items-center gap-2">
             
-            {/* Quick Switcher Button */}
-            <button
-              onClick={() => setRoleSwitcherOpen(true)}
-              className="flex items-center gap-2 rounded-xl border border-stone-200/90 bg-stone-50/80 px-2.5 py-1.5 text-left text-xs transition-all hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900/80 dark:hover:bg-stone-800"
-              title="Ganti Akun & Peran Uji"
-            >
-              <div className="flex flex-col">
-                <span className="font-semibold text-stone-900 line-clamp-1 dark:text-stone-100">
-                  {currentUser.nama_lengkap}
-                </span>
-                <span className={`inline-flex w-fit items-center rounded-md border px-1.5 py-0.2 text-[10px] font-medium uppercase tracking-wider ${getRoleBadgeColor(currentUser.peran)}`}>
-                  {currentUser.peran}
-                </span>
+            {currentUser ? (
+              <>
+                {/* Quick Switcher Button */}
+                <button
+                  onClick={() => setRoleSwitcherOpen(true)}
+                  className="flex items-center gap-2 rounded-xl border border-stone-200/90 bg-stone-50/80 px-2.5 py-1.5 text-left text-xs transition-all hover:bg-stone-100 dark:border-stone-800 dark:bg-stone-900/80 dark:hover:bg-stone-800"
+                  title="Ganti Akun & Peran Uji"
+                >
+                  <div className="flex flex-col">
+                    <span className="font-semibold text-stone-900 line-clamp-1 dark:text-stone-100">
+                      {currentUser.nama_lengkap}
+                    </span>
+                    <span className={`inline-flex w-fit items-center rounded-md border px-1.5 py-0.2 text-[10px] font-medium uppercase tracking-wider ${getRoleBadgeColor(currentUser.peran)}`}>
+                      {currentUser.peran}
+                    </span>
+                  </div>
+                  <ChevronDown className="h-3.5 w-3.5 text-stone-400" />
+                </button>
+
+                {/* Reset Demo Data Button */}
+                <button
+                  onClick={() => setResetConfirmOpen(true)}
+                  className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl border border-stone-200 text-stone-500 transition-colors hover:border-stone-300 hover:text-stone-900 dark:border-stone-800 dark:text-stone-400 dark:hover:border-stone-700"
+                  title="Reset ke Data Awal Contoh"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </button>
+
+                {/* Logout Button */}
+                <button
+                  onClick={handleLogout}
+                  className="flex h-9 items-center gap-1.5 rounded-xl border border-stone-200 px-3 text-xs font-semibold text-stone-600 transition-colors hover:border-red-200 hover:bg-red-50 hover:text-red-700 dark:border-stone-800 dark:text-stone-300 dark:hover:bg-red-950/30 dark:hover:text-red-400"
+                  title="Keluar dari akun"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Keluar</span>
+                </button>
+
+                {/* Mobile Menu Trigger */}
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="flex h-9 w-9 items-center justify-center rounded-xl border border-stone-200 text-stone-600 lg:hidden dark:border-stone-800 dark:text-stone-400"
+                  aria-label="Toggle navigation menu"
+                >
+                  {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </button>
+              </>
+            ) : (
+              /* KETIKA BELUM LOGIN: TAMPILKAN TOMBOL MASUK & DAFTAR */
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setAuthMode('login');
+                    setAuthModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3.5 py-2 text-xs font-semibold text-stone-800 shadow-xs hover:bg-stone-50 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-200 transition-all"
+                >
+                  <LogIn className="h-3.5 w-3.5 text-stone-500" />
+                  <span>Masuk</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setAuthMode('register');
+                    setAuthModalOpen(true);
+                  }}
+                  className="flex items-center gap-1.5 rounded-xl bg-stone-900 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-emerald-700 dark:bg-stone-100 dark:text-stone-900 transition-all"
+                >
+                  <UserPlus className="h-3.5 w-3.5" />
+                  <span>Daftar Akun</span>
+                </button>
               </div>
-              <ChevronDown className="h-3.5 w-3.5 text-stone-400" />
-            </button>
+            )}
 
-            {/* Reset Demo Data Button */}
-            <button
-              onClick={() => setResetConfirmOpen(true)}
-              className="hidden sm:flex h-9 w-9 items-center justify-center rounded-xl border border-stone-200 text-stone-500 transition-colors hover:border-stone-300 hover:text-stone-900 dark:border-stone-800 dark:text-stone-400 dark:hover:border-stone-700"
-              title="Reset ke Data Awal Contoh"
-            >
-              <RefreshCw className="h-4 w-4" />
-            </button>
-
-            {/* Mobile Menu Trigger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-stone-200 text-stone-600 lg:hidden dark:border-stone-800 dark:text-stone-400"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
+        {/* Mobile Navigation Drawer (Jika sudah login) */}
+        {mobileMenuOpen && currentUser && (
           <div className="border-b border-stone-200 bg-white/95 px-4 pt-2 pb-4 backdrop-blur-md lg:hidden dark:border-stone-800 dark:bg-stone-950/95">
             <div className="mb-3 flex items-center justify-between border-b border-stone-100 pb-2 dark:border-stone-900">
               <span className="text-xs font-semibold uppercase text-stone-400">Navigasi ({currentUser.peran})</span>
@@ -180,13 +231,10 @@ export default function Navbar() {
                 Ganti Akun Demo &rarr;
               </button>
               <button
-                onClick={() => {
-                  setResetConfirmOpen(true);
-                  setMobileMenuOpen(false);
-                }}
-                className="text-xs text-stone-500 hover:text-stone-700"
+                onClick={handleLogout}
+                className="text-xs font-semibold text-red-600 hover:underline"
               >
-                Reset Data
+                Keluar
               </button>
             </div>
           </div>
@@ -194,7 +242,7 @@ export default function Navbar() {
       </header>
 
       {/* Role Switcher Modal (Semua 25 Akun Uji) */}
-      {roleSwitcherOpen && (
+      {roleSwitcherOpen && currentUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="w-full max-w-xl rounded-2xl border border-stone-200 bg-white p-6 shadow-2xl dark:border-stone-800 dark:bg-stone-900 max-h-[85vh] flex flex-col">
             <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-stone-800">
@@ -229,7 +277,7 @@ export default function Navbar() {
                       key={p.id}
                       onClick={() => handleSwitchUser(p.email)}
                       className={`flex items-center justify-between rounded-xl border p-2.5 text-left transition-all ${
-                        currentUser.id === p.id 
+                        currentUser?.id === p.id 
                           ? 'border-amber-500/50 bg-amber-50/60 dark:bg-amber-950/20' 
                           : 'border-stone-200 hover:border-stone-300 dark:border-stone-800 dark:hover:border-stone-700'
                       }`}
@@ -238,7 +286,7 @@ export default function Navbar() {
                         <div className="font-semibold text-stone-900 dark:text-stone-100">{p.nama_lengkap}</div>
                         <div className="text-stone-500 dark:text-stone-400">{p.email}</div>
                       </div>
-                      {currentUser.id === p.id && <CheckCircle2 className="h-4 w-4 text-amber-600" />}
+                      {currentUser?.id === p.id && <CheckCircle2 className="h-4 w-4 text-amber-600" />}
                     </button>
                   ))}
                 </div>
@@ -255,7 +303,7 @@ export default function Navbar() {
                       key={p.id}
                       onClick={() => handleSwitchUser(p.email)}
                       className={`flex items-center justify-between rounded-xl border p-2.5 text-left transition-all ${
-                        currentUser.id === p.id 
+                        currentUser?.id === p.id 
                           ? 'border-emerald-500/50 bg-emerald-50/60 dark:bg-emerald-950/20' 
                           : 'border-stone-200 hover:border-stone-300 dark:border-stone-800 dark:hover:border-stone-700'
                       }`}
@@ -264,7 +312,7 @@ export default function Navbar() {
                         <div className="font-semibold text-stone-900 dark:text-stone-100">{p.nama_lengkap}</div>
                         <div className="text-stone-500 dark:text-stone-400">{p.email}</div>
                       </div>
-                      {currentUser.id === p.id && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
+                      {currentUser?.id === p.id && <CheckCircle2 className="h-4 w-4 text-emerald-600" />}
                     </button>
                   ))}
                 </div>
@@ -281,7 +329,7 @@ export default function Navbar() {
                       key={p.id}
                       onClick={() => handleSwitchUser(p.email)}
                       className={`flex items-center justify-between rounded-xl border p-2.5 text-left transition-all ${
-                        currentUser.id === p.id 
+                        currentUser?.id === p.id 
                           ? 'border-sky-500/50 bg-sky-50/60 dark:bg-sky-950/20' 
                           : 'border-stone-200 hover:border-stone-300 dark:border-stone-800 dark:hover:border-stone-700'
                       }`}
@@ -290,7 +338,7 @@ export default function Navbar() {
                         <div className="font-semibold text-stone-900 dark:text-stone-100">{p.nama_lengkap}</div>
                         <div className="text-stone-500 text-[11px]">{p.email}</div>
                       </div>
-                      {currentUser.id === p.id && <CheckCircle2 className="h-4 w-4 text-sky-600" />}
+                      {currentUser?.id === p.id && <CheckCircle2 className="h-4 w-4 text-sky-600" />}
                     </button>
                   ))}
                 </div>
@@ -307,7 +355,7 @@ export default function Navbar() {
                       key={p.id}
                       onClick={() => handleSwitchUser(p.email)}
                       className={`rounded-lg border p-2 text-left transition-all ${
-                        currentUser.id === p.id 
+                        currentUser?.id === p.id 
                           ? 'border-sky-500 bg-sky-50 dark:bg-sky-950' 
                           : 'border-stone-200 hover:bg-stone-50 dark:border-stone-800 dark:hover:bg-stone-800'
                       }`}
@@ -364,6 +412,13 @@ export default function Navbar() {
           </div>
         </div>
       )}
+
+      {/* Auth Modal (Login / Register) */}
+      <AuthModal
+        isOpen={authModalOpen}
+        initialMode={authMode}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </>
   );
 }

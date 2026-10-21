@@ -6,6 +6,7 @@ import { formatRupiah, formatDateIndo } from '@/lib/formatters';
 import { Invoice, InvoiceStatus, Payment } from '@/lib/types';
 import { Receipt, ShieldAlert, CheckCircle2, Plus, Calendar, AlertTriangle, X, FileText, Ban } from 'lucide-react';
 import { REFERENCE_DATE } from '@/lib/store';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function TagihanPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -29,6 +30,11 @@ export default function TagihanPage() {
 
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // PROTEKSI ROUTE: Belum login
+  if (!currentUser) {
+    return <AuthGuard moduleName="tagihan dan pembayaran" />;
+  }
 
   // BR-10: Penyewa ditolak
   if (currentUser.peran === 'penyewa') {

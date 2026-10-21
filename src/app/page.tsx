@@ -9,6 +9,7 @@ import {
   ArrowUpRight, Receipt, Wrench, ShieldAlert, KeyRound, AlertTriangle, FileText
 } from 'lucide-react';
 import { REFERENCE_DATE } from '@/lib/store';
+import LandingHero from '@/components/LandingHero';
 
 export default function HomePage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -18,6 +19,15 @@ export default function HomePage() {
   const [payProofPath, setPayProofPath] = useState<string>('/uploads/bukti/transfer_manual.jpg');
   const [payError, setPayError] = useState<string>('');
   const [paySuccess, setPaySuccess] = useState<string>('');
+
+  // JIKA BELUM LOGIN: TAMPILKAN HALAMAN AWAL (LANDING HERO DENGAN BUTTON MASUK/DAFTAR)
+  if (!currentUser) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <LandingHero />
+      </div>
+    );
+  }
 
   const isStaff = currentUser.peran === 'pengelola' || currentUser.peran === 'pemilik';
 

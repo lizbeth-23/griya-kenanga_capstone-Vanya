@@ -5,6 +5,7 @@ import { useGriyaStore } from '@/lib/use-store';
 import { formatRupiah, formatDateIndo } from '@/lib/formatters';
 import { PropertyUnit, UnitStatus } from '@/lib/types';
 import { Building2, Edit2, ShieldAlert, CheckCircle2, Lock, Sparkles, Filter } from 'lucide-react';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function UnitPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -21,6 +22,11 @@ export default function UnitPage() {
 
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [successMsg, setSuccessMsg] = useState<string>('');
+
+  // PROTEKSI ROUTE: Belum login
+  if (!currentUser) {
+    return <AuthGuard moduleName="unit hunian" />;
+  }
 
   // BR-10: Penyewa tidak boleh akses
   if (currentUser.peran === 'penyewa') {

@@ -6,6 +6,7 @@ import { formatRupiah, formatDateIndo, formatDateTimeIndo } from '@/lib/formatte
 import { DamageReport, DamageCategory } from '@/lib/types';
 import { Wrench, ShieldAlert, CheckCircle2, Plus, X, AlertTriangle, ArrowRight, Camera } from 'lucide-react';
 import { REFERENCE_DATE } from '@/lib/store';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function KerusakanPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -34,6 +35,11 @@ export default function KerusakanPage() {
 
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
+
+  // PROTEKSI ROUTE: Belum login
+  if (!currentUser) {
+    return <AuthGuard moduleName="laporan kerusakan unit" />;
+  }
 
   const isTenant = currentUser.peran === 'penyewa';
   const isManager = currentUser.peran === 'pengelola';
