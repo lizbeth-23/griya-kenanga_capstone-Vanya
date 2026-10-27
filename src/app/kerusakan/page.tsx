@@ -168,7 +168,7 @@ export default function KerusakanPage() {
   return (
     <div className="p-6 sm:p-8 max-w-[1400px] mx-auto space-y-6">
 
-      {/* Top Bar: Selector Laporan & Referensi Tampilan */}
+      {/* Top Bar: Selector Laporan */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
         <div className="flex items-center gap-2 text-xs">
           <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Pilih Laporan:</span>
