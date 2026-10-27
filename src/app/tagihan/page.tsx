@@ -13,9 +13,10 @@ export default function TagihanPage() {
   const [selectedPeriode, setSelectedPeriode] = useState<string>('2026-10-01');
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   
-  // Modal Catat Pembayaran
-  const [activePayInvoice, setActivePayInvoice] = useState<Invoice | null>(null);
-  const [payAmount, setPayAmount] = useState<number>(0);
+  // Side Panel Catat Pembayaran (Default INV-202610-0010 sesuai Wireframe Page 2)
+  const defaultInvoice = state.invoices.find(i => i.nomor === 'INV-202610-0010') || null;
+  const [activePayInvoice, setActivePayInvoice] = useState<Invoice | null>(defaultInvoice);
+  const [payAmount, setPayAmount] = useState<number>(defaultInvoice ? 950000 : 0);
   const [payMethod, setPayMethod] = useState<'tunai' | 'transfer'>('transfer');
   const [payProof, setPayProof] = useState<string>('/uploads/bukti/transfer_staf.jpg');
 
@@ -165,33 +166,30 @@ export default function TagihanPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+    <div className="p-6 sm:p-8 max-w-[1400px] mx-auto space-y-6">
       
-      {/* Header Halaman */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
+      {/* Header Halaman Sesuai Wireframe Page 2 */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#DCE5D8] dark:border-[#2C382A]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-[#E8EFE5] text-[#3B5336] flex items-center justify-center dark:bg-[#2C382A] dark:text-[#95B08A] shrink-0">
-              <Receipt className="h-5 w-5" />
-            </div>
-            Tagihan & Pembayaran Sewa
+          <h1 className="text-2xl font-bold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
+            Tagihan
           </h1>
-          <p className="mt-1 text-sm text-[#5D6B58] dark:text-stone-400">
-            Jatuh tempo setiap tanggal 10 · Denda keterlambatan Rp20.000/hari (maks Rp200.000) (BR-06, BR-07)
+          <p className="mt-0.5 text-xs text-[#5D6B58] dark:text-[#A7B8A3]">
+            Periode Oktober 2026 · jatuh tempo 10 Okt 2026
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2.5">
           {/* Pilihan Periode Bulan */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-[#5D6B58] dark:text-stone-400">Periode:</span>
+          <div className="flex items-center gap-1.5 rounded-lg border border-[#DCE5D8] bg-white px-3 py-1.5 text-xs text-[#222520] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]">
+            <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Periode:</span>
             <select
               value={selectedPeriode}
               onChange={(e) => setSelectedPeriode(e.target.value)}
-              className="rounded-full border border-[#DCE5D8] bg-[#F4F7F2] px-3.5 py-1.5 text-xs font-bold text-[#2D4129] focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#95B08A]"
+              className="bg-transparent font-medium focus:outline-none cursor-pointer"
             >
-              <option value="2026-11-01">Nov 2026</option>
               <option value="2026-10-01">Okt 2026</option>
+              <option value="2026-11-01">Nov 2026</option>
               <option value="2026-09-01">Sep 2026</option>
               <option value="2026-08-01">Agu 2026</option>
             </select>
@@ -201,10 +199,9 @@ export default function TagihanPage() {
           {isManager && (
             <button
               onClick={handleGenerateNextMonth}
-              className="flex items-center gap-1.5 rounded-full bg-[#3B5336] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] transition-all active:scale-95"
+              className="rounded-lg bg-[#2E6B47] px-4 py-1.5 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
             >
-              <Plus className="h-4 w-4" />
-              Buat Tagihan November
+              Buat tagihan November
             </button>
           )}
         </div>
@@ -212,190 +209,189 @@ export default function TagihanPage() {
 
       {/* Alert Messages */}
       {errorMsg && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="rounded-2xl border border-[#95B08A]/40 bg-[#E8EFE5] p-3.5 text-xs font-medium text-[#2D4129] dark:border-[#3B5336] dark:bg-[#1E261D] dark:text-[#95B08A] flex items-center gap-2">
+        <div className="rounded-lg border border-[#95B08A]/40 bg-[#E8EFE5] p-3 text-xs font-medium text-[#2D4129] dark:border-[#3B5336] dark:bg-[#1E261D] dark:text-[#95B08A] flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5336] dark:text-[#95B08A]" />
           <span>{successMsg}</span>
         </div>
       )}
 
       {/* Filter Tabs (Semua, Belum Bayar, Sebagian, Lunas) Sesuai Wireframe Page 2 */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 text-xs">
         <button
           onClick={() => setSelectedFilter('all')}
-          className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all active:scale-95 ${
+          className={`rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
             selectedFilter === 'all'
-              ? 'bg-[#3B5336] text-white shadow-sm'
-              : 'bg-white border border-[#DCE5D8] text-stone-600 hover:border-[#738F67] dark:bg-[#1E261D] dark:border-[#2C382A] dark:text-stone-300'
+              ? 'bg-[#1E251F] text-white'
+              : 'border border-[#DCE5D8] bg-white text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]'
           }`}
         >
           Semua ({countSemua})
         </button>
         <button
           onClick={() => setSelectedFilter('belum_bayar')}
-          className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all active:scale-95 ${
+          className={`rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
             selectedFilter === 'belum_bayar'
-              ? 'bg-[#C25E5E] text-white shadow-sm'
-              : 'bg-white border border-[#DCE5D8] text-stone-600 hover:border-[#738F67] dark:bg-[#1E261D] dark:border-[#2C382A] dark:text-stone-300'
+              ? 'bg-[#1E251F] text-white'
+              : 'border border-[#DCE5D8] bg-white text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]'
           }`}
         >
-          Belum Bayar ({countBelumBayar})
+          Belum bayar ({countBelumBayar})
         </button>
         <button
           onClick={() => setSelectedFilter('sebagian')}
-          className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all active:scale-95 ${
+          className={`rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
             selectedFilter === 'sebagian'
-              ? 'bg-[#B07B37] text-white shadow-sm'
-              : 'bg-white border border-[#DCE5D8] text-stone-600 hover:border-[#738F67] dark:bg-[#1E261D] dark:border-[#2C382A] dark:text-stone-300'
+              ? 'bg-[#1E251F] text-white'
+              : 'border border-[#DCE5D8] bg-white text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]'
           }`}
         >
           Sebagian ({countSebagian})
         </button>
         <button
           onClick={() => setSelectedFilter('lunas')}
-          className={`rounded-full px-4 py-1.5 text-xs font-bold transition-all active:scale-95 ${
+          className={`rounded-full px-3.5 py-1 text-xs font-medium transition-colors ${
             selectedFilter === 'lunas'
-              ? 'bg-[#3B5336] text-white shadow-sm'
-              : 'bg-white border border-[#DCE5D8] text-stone-600 hover:border-[#738F67] dark:bg-[#1E261D] dark:border-[#2C382A] dark:text-stone-300'
+              ? 'bg-[#1E251F] text-white'
+              : 'border border-[#DCE5D8] bg-white text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]'
           }`}
         >
           Lunas ({countLunas})
         </button>
       </div>
 
-      {/* Tabel Tagihan (Sesuai Wireframe Page 2) */}
-      <div className="overflow-hidden rounded-[24px] border border-[#DCE5D8] bg-white shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-[#DCE5D8] bg-[#E8EFE5]/60 font-bold text-[#4F604A] dark:border-[#2C382A] dark:bg-[#171D16]/70 dark:text-[#95B08A]">
-              <tr>
-                <th className="py-3.5 px-4">Nomor</th>
-                <th className="py-3.5 px-3">Unit</th>
-                <th className="py-3.5 px-3">Penyewa</th>
-                <th className="py-3.5 px-3">Sewa</th>
-                <th className="py-3.5 px-3">Denda</th>
-                <th className="py-3.5 px-3">Terbayar</th>
-                <th className="py-3.5 px-3">Status</th>
-                <th className="py-3.5 px-4 text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[#DCE5D8]/70 dark:divide-[#2C382A] text-stone-800 dark:text-stone-200">
-              {filteredInvoices.map((inv) => {
-                const contract = state.contracts.find(c => c.id === inv.kontrak_id);
-                const unit = contract ? state.units.find(u => u.id === contract.unit_id) : null;
-                const tenant = contract ? state.profiles.find(p => p.id === contract.penyewa_id) : null;
+      {/* Grid: Tabel di Kiri, Side Panel Catat Pembayaran di Kanan Sesuai Wireframe Page 2 */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* Tabel Tagihan */}
+        <div className={`${activePayInvoice ? 'lg:col-span-8' : 'lg:col-span-12'} rounded-lg border border-[#DCE5D8] bg-white shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] overflow-hidden transition-all`}>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-[#DCE5D8] bg-white text-[#5D6B58] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#A7B8A3]">
+                <tr>
+                  <th className="py-3 px-3 font-semibold">Nomor</th>
+                  <th className="py-3 px-2 font-semibold">Unit</th>
+                  <th className="py-3 px-3 font-semibold">Penyewa</th>
+                  <th className="py-3 px-3 font-semibold">Sewa</th>
+                  <th className="py-3 px-2 font-semibold">Denda</th>
+                  <th className="py-3 px-3 font-semibold">Terbayar</th>
+                  <th className="py-3 px-2 font-semibold">Status</th>
+                  <th className="py-3 px-3 font-semibold text-center"></th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#E8EFE5] dark:divide-[#2C382A]/70 text-[#222520] dark:text-[#ECEAE4]">
+                {filteredInvoices.map((inv) => {
+                  const contract = state.contracts.find(c => c.id === inv.kontrak_id);
+                  const unit = contract ? state.units.find(u => u.id === contract.unit_id) : null;
+                  const tenant = contract ? state.profiles.find(p => p.id === contract.penyewa_id) : null;
 
-                // Hitung denda dinamis jika belum lunas
-                let denda = inv.denda;
-                if (inv.status !== 'lunas' && REFERENCE_DATE > inv.jatuh_tempo) {
-                  const d1 = new Date(REFERENCE_DATE).getTime();
-                  const d2 = new Date(inv.jatuh_tempo).getTime();
-                  const diffDays = Math.max(0, Math.ceil((d1 - d2) / (1000 * 60 * 60 * 24)));
-                  denda = Math.min(200000, Math.max(inv.denda, diffDays * 20000));
-                }
+                  // Hitung denda dinamis jika lewat jatuh tempo
+                  let denda = inv.denda;
+                  if (inv.status !== 'lunas' && REFERENCE_DATE > inv.jatuh_tempo) {
+                    const d1 = new Date(REFERENCE_DATE).getTime();
+                    const d2 = new Date(inv.jatuh_tempo).getTime();
+                    const diffDays = Math.max(0, Math.ceil((d1 - d2) / (1000 * 60 * 60 * 24)));
+                    denda = Math.min(200000, Math.max(inv.denda, diffDays * 20000));
+                  }
 
-                return (
-                  <tr key={inv.id} className="hover:bg-[#F4F7F2]/60 dark:hover:bg-[#2C382A]/30 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-stone-900 dark:text-stone-100">
-                      {inv.nomor}
-                    </td>
-                    <td className="py-3 px-3 font-semibold text-stone-900 dark:text-stone-100">
-                      {unit?.kode || '-'}
-                    </td>
-                    <td className="py-3 px-3 font-medium">
-                      {tenant?.nama_lengkap || '-'}
-                    </td>
-                    <td className="py-3 px-3">
-                      {formatRupiah(inv.nominal_sewa)}
-                    </td>
-                    <td className="py-3 px-3">
-                      {denda > 0 ? (
-                        <span className="font-semibold text-red-600 dark:text-red-400">
-                          {formatRupiah(denda)}
+                  const isSelected = activePayInvoice?.id === inv.id;
+
+                  return (
+                    <tr 
+                      key={inv.id} 
+                      className={`hover:bg-stone-50 dark:hover:bg-[#253023]/40 transition-colors ${
+                        isSelected ? 'bg-emerald-50/50 dark:bg-[#253023]/60' : ''
+                      }`}
+                    >
+                      <td className="py-3 px-3 font-mono text-xs text-[#222520] dark:text-[#ECEAE4]">
+                        {inv.nomor}
+                      </td>
+                      <td className="py-3 px-2 font-medium text-xs text-[#222520] dark:text-[#ECEAE4]">
+                        {unit?.kode || '-'}
+                      </td>
+                      <td className="py-3 px-3 text-xs text-[#222520] dark:text-[#ECEAE4]">
+                        {tenant?.nama_lengkap || '-'}
+                      </td>
+                      <td className="py-3 px-3 text-xs">
+                        {formatRupiah(inv.nominal_sewa)}
+                      </td>
+                      <td className="py-3 px-2 text-xs">
+                        {denda > 0 ? (
+                          <span className="text-[#C62828] dark:text-red-400 font-medium">
+                            {formatRupiah(denda)}
+                          </span>
+                        ) : (
+                          <span className="text-stone-400">-</span>
+                        )}
+                      </td>
+                      <td className="py-3 px-3 text-xs">
+                        {formatRupiah(inv.terbayar)}
+                      </td>
+                      <td className="py-3 px-2 text-xs">
+                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium ${
+                          inv.status === 'lunas'
+                            ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]'
+                            : inv.status === 'sebagian'
+                            ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
+                            : inv.status === 'dibatalkan'
+                            ? 'bg-stone-100 text-stone-600 border border-stone-200'
+                            : 'bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA]'
+                        }`}>
+                          {inv.status === 'lunas' 
+                            ? 'lunas' 
+                            : inv.status === 'sebagian' 
+                            ? 'sebagian' 
+                            : inv.status === 'dibatalkan'
+                            ? 'dibatalkan'
+                            : 'belum bayar'}
                         </span>
-                      ) : (
-                        <span className="text-stone-400">-</span>
-                      )}
-                    </td>
-                    <td className="py-3 px-3 font-semibold text-stone-900 dark:text-stone-100">
-                      {formatRupiah(inv.terbayar)}
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold capitalize border ${
-                        inv.status === 'lunas'
-                          ? 'bg-[#E8EFE5] text-[#2D4129] border-[#95B08A]/30 dark:bg-[#2C382A] dark:text-[#95B08A]'
-                          : inv.status === 'sebagian'
-                          ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
-                          : inv.status === 'dibatalkan'
-                          ? 'bg-stone-100 text-stone-600 border-stone-200 dark:bg-stone-800 dark:text-stone-400'
-                          : 'bg-red-50 text-red-800 border-red-200 dark:bg-red-950/40 dark:text-red-300'
-                      }`}>
-                        {inv.status.replace('_', ' ')}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-right space-x-1.5">
-                      {/* Tombol Detail */}
-                      <button
-                        onClick={() => {
-                          setDetailInvoice(inv);
-                          setErrorMsg('');
-                        }}
-                        className="rounded-full border border-[#DCE5D8] bg-white px-3 py-1 text-[11px] font-semibold text-stone-700 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:bg-[#171D16] dark:text-stone-300 transition-colors"
-                      >
-                        Detail
-                      </button>
-
-                      {/* Tombol Catat Bayar (Pengelola saat status belum lunas) */}
-                      {isManager && inv.status !== 'lunas' && inv.status !== 'dibatalkan' && (
-                        <button
-                          onClick={() => handleOpenPayment(inv)}
-                          className="rounded-full bg-[#3B5336] px-3.5 py-1 text-[11px] font-bold text-white hover:bg-[#2D4129] transition-all active:scale-95 shadow-xs"
-                        >
-                          Catat bayar
-                        </button>
-                      )}
-
-                      {/* Tombol Batalkan Tagihan (Khusus Pemilik jika belum ada bayar - BR-09) */}
-                      {isOwner && inv.status === 'belum_bayar' && inv.terbayar === 0 && (
-                        <button
-                          onClick={() => {
-                            setCancelInvTarget(inv);
-                            setErrorMsg('');
-                          }}
-                          className="rounded-full border border-red-200 px-3 py-1 text-[11px] font-semibold text-red-600 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 transition-colors"
-                          title="Batalkan Tagihan Kosong (BR-09)"
-                        >
-                          Batal
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </td>
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        {inv.status === 'lunas' ? (
+                          <button
+                            onClick={() => {
+                              setDetailInvoice(inv);
+                              setErrorMsg('');
+                            }}
+                            className="rounded border border-[#DCE5D8] bg-white px-2.5 py-1 text-xs text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]"
+                          >
+                            Detail
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => handleOpenPayment(inv)}
+                            className="rounded border border-[#DCE5D8] bg-white px-2.5 py-1 text-xs text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]"
+                          >
+                            Catat bayar
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      {/* MODAL CATAT PEMBAYARAN (Sesuai Wireframe Page 2 Sisi Kanan) */}
-      {activePayInvoice && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
+        {/* SIDE PANEL: CATAT PEMBAYARAN (Sesuai Wireframe Page 2 Sisi Kanan) */}
+        {activePayInvoice && (
+          <div className="lg:col-span-4 rounded-lg border border-[#DCE5D8] bg-white p-5 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D]">
             <div className="flex items-center justify-between pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
-              <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
-                Catat Pembayaran
+              <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
+                Catat pembayaran
               </h3>
               <button 
                 onClick={() => setActivePayInvoice(null)}
-                className="h-8 w-8 rounded-full flex items-center justify-center text-stone-400 hover:bg-[#F4F7F2] hover:text-stone-700 dark:hover:bg-[#2C382A] transition-colors"
+                className="text-stone-400 hover:text-stone-600 dark:hover:text-stone-200"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -415,57 +411,54 @@ export default function TagihanPage() {
               const sisa = (activePayInvoice.nominal_sewa + denda) - activePayInvoice.terbayar;
 
               return (
-                <div className="mt-4 space-y-3.5 text-xs">
-                  <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16] space-y-2">
+                <div className="mt-4 space-y-3 text-xs">
+                  <div className="space-y-1.5 text-stone-700 dark:text-stone-300">
                     <div className="flex justify-between">
-                      <span className="text-[#5D6B58] dark:text-stone-400">Tagihan:</span>
-                      <span className="font-mono font-bold text-[#2D4129] dark:text-[#95B08A]">{activePayInvoice.nomor}</span>
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Tagihan</span>
+                      <span className="font-mono font-medium text-[#222520] dark:text-[#ECEAE4]">{activePayInvoice.nomor}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#5D6B58] dark:text-stone-400">Unit / Penyewa:</span>
-                      <span className="font-bold text-stone-900 dark:text-stone-100">{unit?.kode} · {tenant?.nama_lengkap}</span>
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Unit / penyewa</span>
+                      <span className="font-medium text-[#222520] dark:text-[#ECEAE4]">{unit?.kode} · {tenant?.nama_lengkap}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#5D6B58] dark:text-stone-400">Sewa:</span>
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Sewa</span>
                       <span>{formatRupiah(activePayInvoice.nominal_sewa)}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-[#5D6B58] dark:text-stone-400">Sudah dibayar:</span>
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Sudah dibayar</span>
                       <span>{formatRupiah(activePayInvoice.terbayar)}</span>
                     </div>
-                    <div className="flex justify-between text-red-600 dark:text-red-400 font-semibold">
-                      <span>Denda per 15 Okt ({hariTelat} hari):</span>
-                      <span>{formatRupiah(denda)}</span>
+                    <div className="flex justify-between">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Denda per 15 Okt</span>
+                      <span>{denda > 0 ? `${formatRupiah(denda)} (${hariTelat} hari)` : '-'}</span>
                     </div>
-                    <div className="flex justify-between border-t border-[#DCE5D8] pt-2 text-sm font-bold text-[#2D4129] dark:border-[#2C382A] dark:text-[#95B08A]">
-                      <span>Sisa Kewajiban:</span>
+                    <div className="flex justify-between font-bold text-[#222520] dark:text-[#ECEAE4] pt-1 border-t border-[#E8EFE5] dark:border-[#2C382A]">
+                      <span>Sisa</span>
                       <span>{formatRupiah(sisa)}</span>
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Jumlah Dibayar (Rupiah)</label>
+                  <div className="pt-2">
+                    <label className="block text-xs font-medium text-[#5D6B58] dark:text-[#A7B8A3] mb-1">Jumlah dibayar</label>
                     <input
                       type="number"
                       value={payAmount}
                       onChange={(e) => setPayAmount(Number(e.target.value))}
-                      className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-sm font-bold text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
+                      className="w-full rounded border border-[#DCE5D8] bg-white p-2 text-xs font-semibold text-[#222520] focus:border-[#2E6B47] focus:outline-none dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]"
                     />
-                    <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-400">
-                      Minimal Rp100.000 kecuali melunasi sisa. Jumlah tidak boleh melebihi sisa (BR-08).
-                    </p>
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Metode Pembayaran</label>
-                    <div className="grid grid-cols-2 gap-2">
+                    <label className="block text-xs font-medium text-[#5D6B58] dark:text-[#A7B8A3] mb-1">Metode</label>
+                    <div className="flex gap-2">
                       <button
                         type="button"
                         onClick={() => setPayMethod('tunai')}
-                        className={`rounded-2xl border p-2.5 text-center font-bold transition-all active:scale-95 ${
+                        className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
                           payMethod === 'tunai'
-                            ? 'border-[#3B5336] bg-[#E8EFE5] text-[#2D4129] dark:bg-[#2C382A] dark:text-[#95B08A]'
-                            : 'border-[#DCE5D8] text-stone-600 hover:border-[#738F67] dark:border-[#2C382A] dark:text-stone-300'
+                            ? 'bg-[#1E251F] text-white'
+                            : 'border border-[#DCE5D8] bg-white text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]'
                         }`}
                       >
                         Tunai
@@ -473,10 +466,10 @@ export default function TagihanPage() {
                       <button
                         type="button"
                         onClick={() => setPayMethod('transfer')}
-                        className={`rounded-2xl border p-2.5 text-center font-bold transition-all active:scale-95 ${
+                        className={`rounded-full px-4 py-1 text-xs font-medium transition-colors ${
                           payMethod === 'transfer'
-                            ? 'border-[#3B5336] bg-[#E8EFE5] text-[#2D4129] dark:bg-[#2C382A] dark:text-[#95B08A]'
-                            : 'border-[#DCE5D8] text-stone-600 hover:border-[#738F67] dark:border-[#2C382A] dark:text-stone-300'
+                            ? 'bg-[#1E251F] text-white'
+                            : 'border border-[#DCE5D8] bg-white text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]'
                         }`}
                       >
                         Transfer
@@ -484,41 +477,42 @@ export default function TagihanPage() {
                     </div>
                   </div>
 
-                  {payMethod === 'transfer' && (
-                    <div>
-                      <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Bukti Transfer (Wajib untuk transfer - BR-08)</label>
-                      <input
-                        type="text"
-                        value={payProof}
-                        onChange={(e) => setPayProof(e.target.value)}
-                        placeholder="Path file bukti di bucket privat"
-                        className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs font-mono dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20"
-                      />
+                  <div>
+                    <label className="block text-xs font-medium text-[#5D6B58] dark:text-[#A7B8A3] mb-1">Bukti transfer (wajib)</label>
+                    <div className="border border-dashed border-[#DCE5D8] rounded-lg p-4 text-center text-xs text-[#5D6B58] dark:border-[#2C382A] dark:text-[#A7B8A3] bg-stone-50/50 dark:bg-[#171D16]">
+                      <span>unggah foto bukti</span>
                     </div>
-                  )}
+                  </div>
 
-                  <div className="mt-5 flex justify-end gap-2.5 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setActivePayInvoice(null)}
-                      className="rounded-full border border-[#DCE5D8] px-4 py-2 text-xs font-semibold text-stone-600 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:text-stone-300 transition-colors"
-                    >
-                      Batal
-                    </button>
+                  <p className="text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                    Minimal Rp100.000 kecuali melunasi sisa. Jumlah tidak boleh melebihi sisa.
+                  </p>
+
+                  <div className="flex gap-2 pt-2">
                     <button
                       type="button"
                       onClick={handleSavePayment}
-                      className="rounded-full bg-[#3B5336] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
+                      className="rounded bg-[#2E6B47] px-4 py-2 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
                     >
-                      Simpan Pembayaran
+                      Simpan pembayaran
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActivePayInvoice(null)}
+                      className="rounded border border-[#DCE5D8] bg-white px-4 py-2 text-xs font-medium text-[#222520] hover:bg-stone-50 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]"
+                    >
+                      Batal
                     </button>
                   </div>
                 </div>
               );
             })()}
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
+
+
 
       {/* MODAL DETAIL & RIWAYAT PEMBAYARAN */}
       {detailInvoice && (

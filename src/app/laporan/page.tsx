@@ -19,6 +19,10 @@ export default function LaporanPage() {
   const [roleError, setRoleError] = useState('');
   const [roleSuccess, setRoleSuccess] = useState('');
 
+  // Wireframe UI States
+  const [showAllUnits, setShowAllUnits] = useState(false);
+  const [selectedPeriode, setSelectedPeriode] = useState('Agu 2026 s.d. Okt 2026');
+
   // PROTEKSI ROUTE: Belum login
   if (!currentUser) {
     return <AuthGuard moduleName="laporan finansial dan audit" />;
@@ -142,64 +146,78 @@ export default function LaporanPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       
-      {/* Header Halaman */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-[#E8EFE5] text-[#3B5336] flex items-center justify-center dark:bg-[#2C382A] dark:text-[#95B08A] shrink-0">
-              <BarChart3 className="h-5 w-5" />
-            </div>
-            Laporan Pendapatan & Pengaturan Usaha
-          </h1>
-          <p className="mt-1 text-sm text-[#5D6B58] dark:text-stone-400">
-            Agustus sampai Oktober 2026 · Halaman khusus hak akses Pemilik (Ratna Kusumawardani - BR-10)
-          </p>
-        </div>
-
-        {/* Tab Selector & Ekspor Button */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          <div className="flex rounded-full border border-[#DCE5D8] bg-[#F4F7F2] p-1 text-xs font-bold dark:border-[#2C382A] dark:bg-[#1E261D]">
-            <button
-              onClick={() => setActiveTab('pendapatan')}
-              className={`rounded-full px-4 py-1.5 font-bold transition-all ${
-                activeTab === 'pendapatan'
-                  ? 'bg-[#3B5336] text-white shadow-sm'
-                  : 'text-[#5D6B58] hover:text-[#2D4129] dark:text-stone-400'
-              }`}
-            >
-              Pendapatan & Hunian
-            </button>
-            <button
-              onClick={() => setActiveTab('audit')}
-              className={`rounded-full px-4 py-1.5 font-bold transition-all ${
-                activeTab === 'audit'
-                  ? 'bg-[#3B5336] text-white shadow-sm'
-                  : 'text-[#5D6B58] hover:text-[#2D4129] dark:text-stone-400'
-              }`}
-            >
-              Audit Log
-            </button>
-            <button
-              onClick={() => setActiveTab('peran')}
-              className={`rounded-full px-4 py-1.5 font-bold transition-all ${
-                activeTab === 'peran'
-                  ? 'bg-[#3B5336] text-white shadow-sm'
-                  : 'text-[#5D6B58] hover:text-[#2D4129] dark:text-stone-400'
-              }`}
-            >
-              Kelola Peran
-            </button>
+      {/* Header Halaman Sesuai Wireframe Page 4 */}
+      <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 dark:border-stone-800">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-bold text-stone-900 dark:text-stone-100 sm:text-2xl">
+              Laporan Pendapatan dan Hunian
+            </h1>
+            <p className="mt-1 text-xs text-stone-500 dark:text-stone-400">
+              Agustus sampai Oktober 2026 · hanya dapat dibuka Pemilik
+            </p>
           </div>
 
-          {activeTab === 'pendapatan' && (
-            <button
-              onClick={handleExportCSV}
-              className="flex items-center gap-1.5 rounded-full border border-[#DCE5D8] bg-white px-4 py-2 text-xs font-bold text-[#2D4129] shadow-xs hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#95B08A] transition-all active:scale-95"
-            >
-              <Download className="h-4 w-4 text-[#3B5336] dark:text-[#95B08A]" />
-              Unduh CSV
-            </button>
-          )}
+          <div className="flex flex-col sm:items-end gap-2">
+            <span className="self-start sm:self-auto rounded-xs border border-amber-300 bg-[#FDF6B2] px-2.5 py-0.5 text-[10px] font-bold text-amber-900 uppercase tracking-wide">
+              REFERENSI TAMPILAN, bukan desain wajib
+            </span>
+
+            {/* Tab & Filter Bar Sesuai Wireframe Page 4 */}
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Tab Pill Buttons */}
+              <div className="flex rounded-full bg-stone-100 p-0.5 border border-stone-200 text-xs font-semibold dark:bg-stone-800 dark:border-stone-700">
+                <button
+                  onClick={() => setActiveTab('pendapatan')}
+                  className={`rounded-full px-4 py-1 transition-all ${
+                    activeTab === 'pendapatan'
+                      ? 'bg-[#1E251F] text-white shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900 dark:text-stone-300'
+                  }`}
+                >
+                  Pendapatan
+                </button>
+                <button
+                  onClick={() => setActiveTab('audit')}
+                  className={`rounded-full px-4 py-1 transition-all ${
+                    activeTab === 'audit'
+                      ? 'bg-[#1E251F] text-white shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900 dark:text-stone-300'
+                  }`}
+                >
+                  Audit log
+                </button>
+                <button
+                  onClick={() => setActiveTab('peran')}
+                  className={`rounded-full px-4 py-1 transition-all ${
+                    activeTab === 'peran'
+                      ? 'bg-[#1E251F] text-white shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900 dark:text-stone-300'
+                  }`}
+                >
+                  Kelola peran
+                </button>
+              </div>
+
+              {/* Periode Dropdown */}
+              <select
+                value={selectedPeriode}
+                onChange={(e) => setSelectedPeriode(e.target.value)}
+                className="rounded-sm border border-stone-300 bg-white px-3 py-1 text-xs text-stone-800 focus:outline-none focus:ring-1 focus:ring-stone-400 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"
+              >
+                <option value="Agu 2026 s.d. Okt 2026">Agu 2026 s.d. Okt 2026</option>
+                <option value="Okt 2026">Okt 2026</option>
+              </select>
+
+              {/* Unduh CSV Button */}
+              <button
+                onClick={handleExportCSV}
+                className="rounded-sm border border-stone-300 bg-white px-3 py-1 text-xs font-medium text-stone-800 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200 transition-colors"
+              >
+                Unduh CSV
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -207,155 +225,212 @@ export default function LaporanPage() {
       {/* TAB 1: LAPORAN PENDAPATAN & HUNIAN (Sesuai Wireframe Page 4)          */}
       {/* ==================================================================== */}
       {activeTab === 'pendapatan' && (
-        <div className="space-y-6 animate-in fade-in duration-200">
+        <div className="space-y-5 animate-in fade-in duration-200">
           
-          {/* 4 Kartu Metrik (Sesuai Wireframe) */}
+          {/* 4 Kartu Metrik (Sesuai Wireframe Page 4) */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             
             {/* Total Ditagihkan */}
-            <div className="rounded-[24px] border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400">Total Ditagihkan</span>
-              <div className="mt-2 text-2xl font-extrabold text-stone-900 dark:text-stone-100">
+            <div className="rounded-sm border border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-[#1E261D]">
+              <div className="text-xs text-stone-500 dark:text-stone-400">Total ditagihkan</div>
+              <div className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-100">
                 {formatRupiah(totalDitagihkan)}
               </div>
-              <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-400">
-                {relevantInvoices.length} tagihan, termasuk denda keterlambatan
-              </p>
+              <div className="mt-1 text-xs text-stone-400 dark:text-stone-400">
+                {relevantInvoices.length} tagihan, termasuk denda
+              </div>
             </div>
 
             {/* Total Diterima */}
-            <div className="rounded-[24px] border border-[#95B08A]/40 bg-[#E8EFE5]/50 p-5 shadow-xs dark:border-[#3B5336] dark:bg-[#2C382A]/30">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#2D4129] dark:text-[#95B08A]">Total Diterima</span>
-              <div className="mt-2 text-2xl font-extrabold text-[#2D4129] dark:text-[#95B08A]">
+            <div className="rounded-sm border border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-[#1E261D]">
+              <div className="text-xs text-stone-500 dark:text-stone-400">Total diterima</div>
+              <div className="mt-1 text-2xl font-bold text-[#1F5144] dark:text-[#95B08A]">
                 {formatRupiah(totalDiterima)}
               </div>
-              <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-300">
-                {persenDiterima}% dari total seluruh tagihan
-              </p>
+              <div className="mt-1 text-xs text-stone-400 dark:text-stone-400">
+                {persenDiterima}% dari tagihan
+              </div>
             </div>
 
             {/* Tunggakan */}
-            <div className="rounded-[24px] border border-red-200 bg-red-50/40 p-5 shadow-xs dark:border-red-950/40 dark:bg-red-950/20">
-              <span className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">Tunggakan</span>
-              <div className="mt-2 text-2xl font-extrabold text-red-600 dark:text-red-400">
+            <div className="rounded-sm border border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-[#1E261D]">
+              <div className="text-xs text-stone-500 dark:text-stone-400">Tunggakan</div>
+              <div className="mt-1 text-2xl font-bold text-[#D0382B] dark:text-red-400">
                 {formatRupiah(totalTunggakan)}
               </div>
-              <p className="mt-1 text-[11px] text-red-700/80 dark:text-red-400/80">
-                {relevantInvoices.filter(i => i.status !== 'lunas' && i.status !== 'dibatalkan').length} tagihan belum lunas per 15 Oktober 2026
-              </p>
+              <div className="mt-1 text-xs text-stone-400 dark:text-stone-400">
+                {relevantInvoices.filter(i => i.status !== 'lunas' && i.status !== 'dibatalkan').length} tagihan belum lunas
+              </div>
             </div>
 
             {/* Hunian Oktober */}
-            <div className="rounded-[24px] border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-              <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400">Hunian Oktober</span>
-              <div className="mt-2 text-2xl font-extrabold text-stone-900 dark:text-stone-100">
+            <div className="rounded-sm border border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-[#1E261D]">
+              <div className="text-xs text-stone-500 dark:text-stone-400">Hunian Oktober</div>
+              <div className="mt-1 text-2xl font-bold text-stone-900 dark:text-stone-100">
                 82.6%
               </div>
-              <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-400">
-                19 dari 23 unit layak sewa (A-108 nonaktif)
-              </p>
+              <div className="mt-1 text-xs text-stone-400 dark:text-stone-400">
+                19 dari 23 unit layak sewa
+              </div>
             </div>
 
           </div>
 
           {/* Grid 2 Kolom: Grafik Ditagihkan vs Diterima & Tabel Pendapatan per Unit */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
             
-            {/* Kolom Kiri: Visual Grafik Batang (5 Kolom) */}
-            <div className="lg:col-span-5 rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
-                <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
-                  Ditagihkan dan Diterima per Bulan
-                </h3>
-              </div>
-
-              {/* Batang Perbandingan per Bulan */}
-              <div className="space-y-5 pt-2">
-                {monthlyStats.map((item) => (
-                  <div key={item.bulan} className="space-y-1.5 text-xs">
-                    <div className="flex justify-between font-bold">
-                      <span className="text-stone-800 dark:text-stone-200">{item.bulan}</span>
-                      <span className="text-[#5D6B58] dark:text-stone-400 font-mono text-[11px]">
-                        Tagih: {item.ditagihkanJuta}jt | Terima: {item.diterimaJuta}jt
-                      </span>
+            {/* Kolom Kiri: Visual Grafik Batang Vertikal Sesuai Wireframe Page 4 */}
+            <div className="lg:col-span-5 rounded-sm border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1E261D] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-3">
+                  <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                    Ditagihkan dan diterima per bulan
+                  </h3>
+                  <div className="flex items-center gap-3 text-xs text-stone-600 dark:text-stone-300">
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-3 w-3 bg-[#BCC3BA]"></span>
+                      <span>Ditagihkan</span>
                     </div>
-
-                    {/* Progress Bar Ganda */}
-                    <div className="h-6 w-full rounded-full bg-[#E8EFE5] p-0.5 dark:bg-[#171D16] flex gap-1">
-                      <div
-                        style={{ width: `${(item.diterimaJuta / 40) * 100}%` }}
-                        className="h-full rounded-full bg-[#3B5336] text-[10px] text-white flex items-center justify-end pr-2 font-bold"
-                        title={`Diterima: Rp${item.diterimaJuta} Juta`}
-                      >
-                        {item.diterimaJuta}
-                      </div>
-                      <div
-                        style={{ width: `${((item.ditagihkanJuta - item.diterimaJuta) / 40) * 100}%` }}
-                        className="h-full rounded-full bg-[#95B08A]/50 text-[10px] text-[#2D4129] flex items-center justify-center font-bold"
-                        title={`Sisa Tagihan: Rp${(item.ditagihkanJuta - item.diterimaJuta).toFixed(1)} Juta`}
-                      >
-                        {item.ditagihkanJuta > item.diterimaJuta ? (item.ditagihkanJuta - item.diterimaJuta).toFixed(1) : ''}
-                      </div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="h-3 w-3 bg-[#1F5144]"></span>
+                      <span>Diterima</span>
                     </div>
                   </div>
-                ))}
+                </div>
+
+                {/* Vertical Chart Container */}
+                <div className="mt-4 relative h-56 pt-6 pb-6">
+                  {/* Y Axis Grid lines and labels */}
+                  <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-stone-400">
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 text-right font-medium text-stone-500">juta Rp</span>
+                      <div className="flex-1 border-b border-transparent"></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 text-right">40</span>
+                      <div className="flex-1 border-b border-stone-100 dark:border-stone-800"></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 text-right">30</span>
+                      <div className="flex-1 border-b border-stone-100 dark:border-stone-800"></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 text-right">20</span>
+                      <div className="flex-1 border-b border-stone-100 dark:border-stone-800"></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 text-right">10</span>
+                      <div className="flex-1 border-b border-stone-100 dark:border-stone-800"></div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 text-right">0</span>
+                      <div className="flex-1 border-b border-stone-300 dark:border-stone-700"></div>
+                    </div>
+                  </div>
+
+                  {/* Bars Container */}
+                  <div className="ml-10 h-full flex items-end justify-around relative z-10 pb-0">
+                    {monthlyStats.map((item) => (
+                      <div key={item.bulan} className="flex flex-col items-center">
+                        {/* Bars Group */}
+                        <div className="flex items-end gap-1.5 h-44">
+                          {/* Bar Ditagihkan (Gray) */}
+                          <div className="flex flex-col items-center">
+                            <span className="text-[10px] text-stone-700 font-medium mb-1 dark:text-stone-300">
+                              {item.ditagihkanJuta}
+                            </span>
+                            <div
+                              style={{ height: `${(item.ditagihkanJuta / 40) * 140}px` }}
+                              className="w-7 sm:w-8 bg-[#BCC3BA] transition-all hover:opacity-90"
+                              title={`Ditagihkan: Rp${item.ditagihkanJuta} Juta`}
+                            />
+                          </div>
+
+                          {/* Bar Diterima (Teal/Dark Green) */}
+                          <div className="flex flex-col items-center">
+                            <span className="text-[10px] text-stone-700 font-medium mb-1 dark:text-stone-300">
+                              {item.diterimaJuta}
+                            </span>
+                            <div
+                              style={{ height: `${(item.diterimaJuta / 40) * 140}px` }}
+                              className="w-7 sm:w-8 bg-[#1F5144] transition-all hover:opacity-90"
+                              title={`Diterima: Rp${item.diterimaJuta} Juta`}
+                            />
+                          </div>
+                        </div>
+
+                        {/* X Axis Label */}
+                        <span className="mt-2 text-xs text-stone-700 dark:text-stone-300 font-medium">
+                          {item.bulan}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <div className="pt-4 border-t border-[#DCE5D8] dark:border-[#2C382A] flex items-center justify-between text-xs text-[#5D6B58] dark:text-stone-400">
-                <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-[#3B5336]"></span>
-                  <span>Diterima</span>
-                  <span className="h-3 w-3 rounded-full bg-[#95B08A]/50 ml-2"></span>
-                  <span>Belum Lunas</span>
-                </div>
-                <span className="font-semibold text-[#2D4129] dark:text-[#95B08A]">Hunian Stabil 82.6%</span>
+              {/* Footer Hunian */}
+              <div className="mt-4 pt-3 border-t border-stone-200 text-xs text-stone-500 dark:border-stone-800 dark:text-stone-400">
+                Hunian: Agu 82.6% · Sep 82.6% · Okt 82.6%
               </div>
             </div>
 
-            {/* Kolom Kanan: Tabel Pendapatan per Unit (7 Kolom) */}
-            <div className="lg:col-span-7 rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
-                <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
-                  Pendapatan per Unit (Urut Tunggakan)
-                </h3>
-                <span className="text-[11px] font-semibold text-[#5D6B58] dark:text-stone-400">Total 24 Unit</span>
+            {/* Kolom Kanan: Tabel Pendapatan per Unit (Urut Tunggakan) Sesuai Wireframe Page 4 */}
+            <div className="lg:col-span-7 rounded-sm border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1E261D] flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between pb-2">
+                  <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                    Pendapatan per unit (urut tunggakan)
+                  </h3>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="border-b border-stone-200 text-stone-600 dark:border-stone-800 dark:text-stone-400 font-normal">
+                      <tr>
+                        <th className="py-2 pr-3 font-normal">Unit</th>
+                        <th className="py-2 px-3 font-normal">Ditagihkan</th>
+                        <th className="py-2 px-3 font-normal">Diterima</th>
+                        <th className="py-2 pl-3 text-right font-normal">Tunggakan</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-stone-100 dark:divide-stone-800 text-stone-800 dark:text-stone-200">
+                      {unitStats.slice(0, showAllUnits ? unitStats.length : 9).map((u) => (
+                        <tr key={u.unitKode} className="hover:bg-stone-50/80 dark:hover:bg-stone-800/40 transition-colors">
+                          <td className="py-2.5 pr-3 font-normal text-stone-900 dark:text-stone-100">
+                            {u.unitKode}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            {formatRupiah(u.ditagihkan)}
+                          </td>
+                          <td className="py-2.5 px-3">
+                            {formatRupiah(u.diterima)}
+                          </td>
+                          <td className="py-2.5 pl-3 text-right">
+                            {u.tunggakan > 0 ? (
+                              <span className="text-[#D0382B] dark:text-red-400">
+                                {formatRupiah(u.tunggakan)}
+                              </span>
+                            ) : (
+                              <span className="text-stone-400">-</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
 
-              <div className="overflow-x-auto max-h-[350px]">
-                <table className="w-full text-left text-xs">
-                  <thead className="border-b border-[#DCE5D8] bg-[#E8EFE5]/60 font-bold text-[#4F604A] dark:border-[#2C382A] dark:bg-[#171D16]/70 dark:text-[#95B08A] sticky top-0">
-                    <tr>
-                      <th className="py-2.5 px-3">Unit</th>
-                      <th className="py-2.5 px-3">Ditagihkan</th>
-                      <th className="py-2.5 px-3">Diterima</th>
-                      <th className="py-2.5 px-3 text-right">Tunggakan</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#DCE5D8]/70 dark:divide-[#2C382A] text-stone-800 dark:text-stone-200">
-                    {unitStats.map((u) => (
-                      <tr key={u.unitKode} className="hover:bg-[#F4F7F2]/60 dark:hover:bg-[#2C382A]/30 transition-colors">
-                        <td className="py-2 px-3 font-bold text-stone-900 dark:text-stone-100">
-                          {u.unitKode}
-                        </td>
-                        <td className="py-2 px-3">
-                          {formatRupiah(u.ditagihkan)}
-                        </td>
-                        <td className="py-2 px-3 font-semibold text-[#3B5336] dark:text-[#95B08A]">
-                          {formatRupiah(u.diterima)}
-                        </td>
-                        <td className="py-2 px-3 text-right">
-                          {u.tunggakan > 0 ? (
-                            <span className="font-bold text-red-600 dark:text-red-400">
-                              {formatRupiah(u.tunggakan)}
-                            </span>
-                          ) : (
-                            <span className="text-stone-400">-</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              {/* Footer Tabel */}
+              <div className="mt-4 pt-3 border-t border-stone-200 text-xs text-stone-500 dark:border-stone-800 dark:text-stone-400">
+                Menampilkan {showAllUnits ? unitStats.length : Math.min(9, unitStats.length)} dari {unitStats.length} unit ·{' '}
+                <button
+                  onClick={() => setShowAllUnits(!showAllUnits)}
+                  className="text-stone-700 underline hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 font-medium"
+                >
+                  {showAllUnits ? 'Tampilkan ringkas' : 'Lihat semua'}
+                </button>
               </div>
             </div>
 

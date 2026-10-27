@@ -4,8 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useGriyaStore } from '@/lib/use-store';
 import { formatRupiah, formatDateIndo, maskNIK } from '@/lib/formatters';
-import { 
-  Building2, Users, AlertCircle, Clock, CheckCircle2, 
+import {
+  Building2, Users, AlertCircle, Clock, CheckCircle2,
   ArrowUpRight, Receipt, Wrench, ShieldAlert, KeyRound, AlertTriangle, FileText
 } from 'lucide-react';
 import { REFERENCE_DATE } from '@/lib/store';
@@ -51,7 +51,7 @@ export default function HomePage() {
   }); // 7 tagihan
 
   // Laporan kerusakan terbuka (dilaporkan, diproses, menunggu_persetujuan)
-  const openDamageReports = state.damageReports.filter(r => 
+  const openDamageReports = state.damageReports.filter(r =>
     ['dilaporkan', 'diproses', 'menunggu_persetujuan'].includes(r.status)
   ); // 5 laporan
 
@@ -121,127 +121,110 @@ export default function HomePage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      
+    <div className="p-6 sm:p-8 max-w-[1400px] mx-auto space-y-6">
+
       {/* ============================================================== */}
       {/* TAMPILAN OPERASIONAL STAF (PENGELOLA & PEMILIK)                 */}
       {/* ============================================================== */}
       {isStaff ? (
-        <div className="space-y-8 animate-in fade-in duration-300">
-          
-          {/* Header Info */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
+        <div className="space-y-6 animate-in fade-in duration-200">
+
+          {/* Header Info Sesuai Wireframe Page 1 */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#DCE5D8] dark:border-[#2C382A]">
             <div>
-              <h1 className="text-2xl font-extrabold tracking-tight text-[#222520] dark:text-[#ECEAE4] sm:text-3xl">
-                Beranda Operasional
+              <h1 className="text-2xl font-bold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
+                Beranda
               </h1>
-              <p className="mt-1 text-sm text-[#5D6B58] dark:text-[#A7B8A3]">
-                Kamis, 15 Oktober 2026 · Ringkasan aktivitas dan tugas harian Griya Kenanga Residence
+              <p className="mt-0.5 text-xs text-[#5D6B58] dark:text-[#A7B8A3]">
+                Kamis, 15 Oktober 2026 · ringkasan operasional hari ini
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#DCE5D8] bg-white px-3.5 py-1.5 text-xs font-bold text-[#2D4129] shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#D5E6D2]">
-                <span className="h-2 w-2 rounded-full bg-[#3B5336] animate-pulse"></span>
-                Login: {currentUser.nama_lengkap} ({currentUser.peran})
+              <span className="rounded bg-[#FEF9C3] px-3 py-1 text-xs font-semibold text-[#854D0E] border border-[#FDE047]">
+                REFERENSI TAMPILAN, bukan desain wajib
               </span>
             </div>
           </div>
 
-          {/* 4 Kartu Metrik Ringkasan Operasional (Sesuai Wireframe) */}
+          {/* 4 Kartu Metrik Ringkasan Operasional (Sesuai Wireframe Page 1) */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            
+
             {/* Unit Terisi */}
-            <div className="rounded-2xl border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-              <div className="flex items-center justify-between text-[#5D6B58] dark:text-[#A7B8A3]">
-                <span className="text-xs font-bold uppercase tracking-wider">Unit Terisi</span>
-                <Building2 className="h-4 w-4 text-[#3B5336] dark:text-[#95B08A]" />
+            <div className="rounded-lg border border-[#DCE5D8] bg-white p-4 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+              <div className="text-xs font-normal text-[#5D6B58] dark:text-[#A7B8A3]">
+                Unit terisi
               </div>
-              <div className="mt-2 text-3xl font-extrabold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
-                {occupiedUnitsCount} <span className="text-base font-normal text-[#7F9979]">/ {totalEligibleCount}</span>
+              <div className="mt-2 text-2xl font-bold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
+                {occupiedUnitsCount} / {totalEligibleCount}
               </div>
-              <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3]">
-                1 unit perbaikan (B-205), 1 nonaktif (A-108) tidak dihitung
+              <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                1 unit perbaikan (B-205), 1 nonaktif tidak dihitung
               </p>
             </div>
 
             {/* Tagihan Oktober Lunas */}
-            <div className="rounded-2xl border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-              <div className="flex items-center justify-between text-[#5D6B58] dark:text-[#A7B8A3]">
-                <span className="text-xs font-bold uppercase tracking-wider">Tagihan Oktober Lunas</span>
-                <CheckCircle2 className="h-4 w-4 text-[#3B5336] dark:text-[#95B08A]" />
+            <div className="rounded-lg border border-[#DCE5D8] bg-white p-4 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+              <div className="text-xs font-normal text-[#5D6B58] dark:text-[#A7B8A3]">
+                Tagihan Oktober lunas
               </div>
-              <div className="mt-2 text-3xl font-extrabold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
-                {oktLunasCount} <span className="text-base font-normal text-[#7F9979]">/ {totalOktInvoices}</span>
+              <div className="mt-2 text-2xl font-bold tracking-tight text-[#2E7D32] dark:text-[#4ADE80]">
+                {oktLunasCount} / {totalOktInvoices}
               </div>
-              <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3]">
-                Jatuh tempo 10 Oktober 2026
+              <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                jatuh tempo 10 Oktober 2026
               </p>
             </div>
 
             {/* Tagihan Lewat Jatuh Tempo */}
-            <div className="rounded-2xl border border-[#F3C5BF] bg-[#FDF0EE]/80 p-5 shadow-xs dark:border-red-950/50 dark:bg-red-950/20">
-              <div className="flex items-center justify-between text-[#A63A2E] dark:text-red-400">
-                <span className="text-xs font-bold uppercase tracking-wider">Lewat Jatuh Tempo</span>
-                <AlertCircle className="h-4 w-4" />
+            <div className="rounded-lg border border-[#DCE5D8] bg-white p-4 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+              <div className="text-xs font-normal text-[#5D6B58] dark:text-[#A7B8A3]">
+                Tagihan lewat jatuh tempo
               </div>
-              <div className="mt-2 text-3xl font-extrabold tracking-tight text-[#A63A2E] dark:text-red-400">
+              <div className="mt-2 text-2xl font-bold tracking-tight text-[#C62828] dark:text-red-400">
                 {overdueInvoices.length}
               </div>
-              <p className="mt-2 text-[11px] text-[#A63A2E]/90 dark:text-red-400/90 font-medium">
-                Denda Rp20.000/hari, maks Rp200.000
+              <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                denda Rp20.000 per hari, maks Rp200.000
               </p>
             </div>
 
             {/* Laporan Kerusakan Terbuka */}
-            <div className="rounded-2xl border border-[#F6DEB8] bg-[#FEF7EC]/80 p-5 shadow-xs dark:border-amber-950/50 dark:bg-amber-950/20">
-              <div className="flex items-center justify-between text-[#9A6715] dark:text-amber-400">
-                <span className="text-xs font-bold uppercase tracking-wider">Kerusakan Terbuka</span>
-                <Wrench className="h-4 w-4" />
+            <div className="rounded-lg border border-[#DCE5D8] bg-white p-4 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+              <div className="text-xs font-normal text-[#5D6B58] dark:text-[#A7B8A3]">
+                Laporan kerusakan terbuka
               </div>
-              <div className="mt-2 text-3xl font-extrabold tracking-tight text-[#9A6715] dark:text-amber-400">
+              <div className="mt-2 text-2xl font-bold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
                 {openDamageReports.length}
               </div>
-              <p className="mt-2 text-[11px] text-[#9A6715]/90 dark:text-amber-400/90 font-medium">
-                1 menunggu persetujuan Pemilik (LK-0010)
+              <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                1 menunggu persetujuan Pemilik
               </p>
             </div>
 
           </div>
 
-          {/* Grid Konten 2 Kolom: Kiri (Tagihan Overdue), Kanan (Kerusakan & Kontrak Perlu Tindakan) */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-            
-            {/* Kolom Kiri: Tabel Tagihan Lewat Jatuh Tempo */}
-            <div className="lg:col-span-2 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-base font-bold text-[#222520] dark:text-[#ECEAE4] flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-red-500" />
-                    Tagihan Lewat Jatuh Tempo ({overdueInvoices.length})
-                  </h2>
-                  <p className="text-xs text-[#5D6B58] dark:text-[#A7B8A3]">
-                    Per 15 Oktober 2026, denda otomatis terakumulasi
-                  </p>
-                </div>
-                <Link
-                  href="/tagihan"
-                  className="text-xs font-bold text-[#3B5336] hover:text-[#2D4129] dark:text-[#95B08A] flex items-center gap-1 hover:underline"
-                >
-                  Lihat Semua Tagihan &rarr;
-                </Link>
-              </div>
+          {/* Grid Konten 2 Kolom Sesuai Wireframe Page 1: Kiri (Tagihan Overdue), Kanan (Kerusakan & Kontrak) */}
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
 
-              <div className="overflow-hidden rounded-2xl border border-[#DCE5D8] bg-white shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+            {/* Kolom Kiri: Tabel Tagihan Lewat Jatuh Tempo (7 Kolom Grid) */}
+            <div className="lg:col-span-7">
+              <div className="rounded-lg border border-[#DCE5D8] bg-white shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] overflow-hidden">
+                <div className="px-5 py-4 border-b border-[#DCE5D8] dark:border-[#2C382A]">
+                  <h2 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
+                    Tagihan lewat jatuh tempo
+                  </h2>
+                </div>
+
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-xs">
-                    <thead className="border-b border-[#DCE5D8] bg-[#E8EFE5]/60 font-bold text-[#4F604A] dark:border-[#2C382A] dark:bg-[#182317] dark:text-[#D5E6D2]">
+                    <thead className="border-b border-[#DCE5D8] bg-white text-[#5D6B58] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#A7B8A3]">
                       <tr>
-                        <th className="py-3 px-3.5">Nomor</th>
-                        <th className="py-3 px-3">Unit</th>
-                        <th className="py-3 px-3">Penyewa</th>
-                        <th className="py-3 px-3">Sisa + Denda Hari Ini</th>
-                        <th className="py-3 px-3">Status</th>
-                        <th className="py-3 px-3 text-right">Aksi</th>
+                        <th className="py-3 px-4 font-semibold">Nomor</th>
+                        <th className="py-3 px-2 font-semibold">Unit</th>
+                        <th className="py-3 px-3 font-semibold">Penyewa</th>
+                        <th className="py-3 px-3 font-semibold">Sisa + denda hari ini</th>
+                        <th className="py-3 px-2 font-semibold">Status</th>
+                        <th className="py-3 px-3 font-semibold text-center"></th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#E8EFE5] dark:divide-[#2C382A]/70 text-[#222520] dark:text-[#ECEAE4]">
@@ -249,7 +232,7 @@ export default function HomePage() {
                         const contract = state.contracts.find(c => c.id === inv.kontrak_id);
                         const unit = contract ? state.units.find(u => u.id === contract.unit_id) : null;
                         const tenant = contract ? state.profiles.find(p => p.id === contract.penyewa_id) : null;
-                        
+
                         // Hitung denda real-time per 15 Okt
                         let denda = inv.denda;
                         if (REFERENCE_DATE > inv.jatuh_tempo) {
@@ -261,37 +244,38 @@ export default function HomePage() {
                         const sisa = (inv.nominal_sewa + denda) - inv.terbayar;
 
                         return (
-                          <tr key={inv.id} className="hover:bg-[#F4F7F2] dark:hover:bg-[#253023]/40 transition-colors">
-                            <td className="py-3 px-3.5 font-mono font-medium text-[#222520] dark:text-[#ECEAE4]">
+                          <tr key={inv.id} className="hover:bg-stone-50/80 dark:hover:bg-[#253023]/40 transition-colors">
+                            <td className="py-3 px-4 font-mono text-xs text-[#222520] dark:text-[#ECEAE4]">
                               {inv.nomor}
                             </td>
-                            <td className="py-3 px-3 font-bold text-[#222520] dark:text-[#ECEAE4]">
+                            <td className="py-3 px-2 text-xs font-medium text-[#222520] dark:text-[#ECEAE4]">
                               {unit?.kode || '-'}
                             </td>
-                            <td className="py-3 px-3 font-medium">
+                            <td className="py-3 px-3 text-xs text-[#222520] dark:text-[#ECEAE4]">
                               {tenant?.nama_lengkap || '-'}
                             </td>
-                            <td className="py-3 px-3">
-                              <div className="font-bold text-[#222520] dark:text-[#ECEAE4]">
+                            <td className="py-3 px-3 text-xs">
+                              <div className="font-medium text-[#222520] dark:text-[#ECEAE4]">
                                 {formatRupiah(sisa)}
                               </div>
-                              <div className="text-[10px] text-red-600 dark:text-red-400 font-medium">
-                                denda {formatRupiah(denda)}
-                              </div>
+                              {denda > 0 && (
+                                <div className="text-[11px] text-[#5D6B58] dark:text-[#A7B8A3]">
+                                  denda {formatRupiah(denda)}
+                                </div>
+                              )}
                             </td>
-                            <td className="py-3 px-3">
-                              <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                                inv.status === 'sebagian'
-                                  ? 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
-                                  : 'bg-[#FDF0EE] text-[#A63A2E] border border-[#F3C5BF]'
-                              }`}>
-                                {inv.status === 'sebagian' ? 'Sebagian' : 'Belum Bayar'}
+                            <td className="py-3 px-2 text-xs">
+                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium ${inv.status === 'sebagian'
+                                  ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
+                                  : 'bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA]'
+                                }`}>
+                                {inv.status === 'sebagian' ? 'sebagian' : 'belum bayar'}
                               </span>
                             </td>
-                            <td className="py-3 px-3 text-right">
+                            <td className="py-3 px-3 text-center">
                               <button
                                 onClick={() => handleOpenPayModal(inv.id)}
-                                className="rounded-full bg-[#3B5336] px-3.5 py-1 text-xs font-bold text-white hover:bg-[#2D4129] active:scale-95 transition-all shadow-2xs"
+                                className="rounded border border-[#DCE5D8] bg-white px-2.5 py-1 text-xs text-[#222520] hover:bg-[#F5F2EB] active:scale-95 transition-all shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]"
                               >
                                 Catat bayar
                               </button>
@@ -305,43 +289,46 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Kolom Kanan: Laporan Terbuka & Kontrak Perlu Tindakan */}
-            <div className="space-y-6">
-              
+            {/* Kolom Kanan Sesuai Wireframe Page 1: Laporan Terbuka & Kontrak Perlu Tindakan */}
+            <div className="lg:col-span-5 space-y-6">
+
               {/* Laporan Kerusakan Terbuka */}
-              <div className="rounded-2xl border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E8EFE5] dark:border-[#2C382A]">
-                  <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4] flex items-center gap-2">
-                    <Wrench className="h-4 w-4 text-[#3B5336] dark:text-[#95B08A]" />
-                    Laporan Kerusakan Terbuka
+              <div className="rounded-lg border border-[#DCE5D8] bg-white shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] overflow-hidden">
+                <div className="px-5 py-4 border-b border-[#DCE5D8] dark:border-[#2C382A]">
+                  <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
+                    Laporan kerusakan terbuka
                   </h3>
-                  <Link href="/kerusakan" className="text-[11px] font-bold text-[#3B5336] dark:text-[#95B08A] hover:underline">
-                    Lihat Semua
-                  </Link>
                 </div>
-                <div className="mt-3 space-y-3">
+                <div className="divide-y divide-[#E8EFE5] dark:divide-[#2C382A]/70">
                   {openDamageReports.slice(0, 5).map((rep) => {
                     const unit = state.units.find(u => u.id === rep.unit_id);
                     return (
                       <Link
                         key={rep.id}
                         href="/kerusakan"
-                        className="block rounded-xl border border-[#E8EFE5] p-2.5 hover:border-[#95B08A] hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:hover:bg-[#253023]/40 transition-all"
+                        className="flex items-center justify-between p-3.5 hover:bg-stone-50 dark:hover:bg-[#253023]/40 transition-colors"
                       >
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-mono text-[11px] text-[#5D6B58] dark:text-[#A7B8A3]">{rep.nomor}</span>
-                          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold capitalize ${
-                            rep.status === 'menunggu_persetujuan'
-                              ? 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
-                              : rep.status === 'diproses'
-                              ? 'bg-[#EBF3F5] text-[#265F6B] border border-[#C5DFE4]'
-                              : 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40'
-                          }`}>
-                            {rep.status.replace('_', ' ')}
-                          </span>
+                        <div className="min-w-0 pr-3">
+                          <div className="text-xs font-mono text-[#5D6B58] dark:text-[#A7B8A3]">
+                            {rep.nomor}
+                          </div>
+                          <div className="text-xs font-medium text-[#222520] dark:text-[#ECEAE4] mt-0.5 truncate">
+                            {unit?.kode} · {rep.judul}
+                          </div>
                         </div>
-                        <div className="mt-1 font-bold text-xs text-[#222520] dark:text-[#ECEAE4]">
-                          {unit?.kode} · {rep.judul}
+                        <div className="shrink-0">
+                          <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium ${rep.status === 'menunggu_persetujuan'
+                              ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
+                              : rep.status === 'diproses'
+                                ? 'bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]'
+                                : 'bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]'
+                            }`}>
+                            {rep.status === 'menunggu_persetujuan'
+                              ? 'menunggu persetujuan'
+                              : rep.status === 'diproses'
+                                ? 'diproses'
+                                : 'dilaporkan'}
+                          </span>
                         </div>
                       </Link>
                     );
@@ -350,36 +337,44 @@ export default function HomePage() {
               </div>
 
               {/* Kontrak Perlu Tindakan */}
-              <div className="rounded-2xl border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
-                <div className="flex items-center justify-between pb-3 border-b border-[#E8EFE5] dark:border-[#2C382A]">
-                  <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4] flex items-center gap-2">
-                    <KeyRound className="h-4 w-4 text-[#3B5336] dark:text-[#95B08A]" />
-                    Kontrak Perlu Tindakan
+              <div className="rounded-lg border border-[#DCE5D8] bg-white shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] overflow-hidden">
+                <div className="px-5 py-4 border-b border-[#DCE5D8] dark:border-[#2C382A]">
+                  <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
+                    Kontrak perlu tindakan
                   </h3>
-                  <Link href="/kontrak" className="text-[11px] font-bold text-[#3B5336] dark:text-[#95B08A] hover:underline">
-                    Kelola
-                  </Link>
                 </div>
-                <div className="mt-3 space-y-3">
+                <div className="divide-y divide-[#E8EFE5] dark:divide-[#2C382A]/70">
                   {actionRequiredContracts.slice(0, 5).map((ktr) => {
                     const unit = state.units.find(u => u.id === ktr.unit_id);
                     const tenant = state.profiles.find(p => p.id === ktr.penyewa_id);
                     const isDraft = ktr.status === 'draf';
+
+                    let actionLabel = 'Berakhir 31 Okt 2026';
+                    if (isDraft) {
+                      actionLabel = ktr.id === 'ktr-0022'
+                        ? 'identitas belum diverifikasi'
+                        : 'menunggu kontrak lama selesai';
+                    } else if (ktr.tanggal_selesai) {
+                      actionLabel = `Berakhir ${formatDateIndo(ktr.tanggal_selesai)}`;
+                    }
+
                     return (
                       <div
                         key={ktr.id}
-                        className="rounded-xl border border-[#E8EFE5] p-2.5 text-xs dark:border-[#2C382A] hover:bg-[#F4F7F2] dark:hover:bg-[#253023]/40 transition-colors"
+                        className="flex items-center justify-between p-3.5 hover:bg-stone-50 dark:hover:bg-[#253023]/40 transition-colors"
                       >
-                        <div className="flex items-center justify-between font-bold text-[#222520] dark:text-[#ECEAE4]">
-                          <span>{ktr.nomor} · {unit?.kode} {isDraft ? '(draf)' : ''}</span>
+                        <div className="min-w-0 pr-3">
+                          <div className="text-xs font-medium text-[#222520] dark:text-[#ECEAE4]">
+                            {ktr.nomor} · {unit?.kode} {isDraft ? '(draf)' : ''}
+                          </div>
+                          <div className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] mt-0.5">
+                            {tenant?.nama_lengkap}
+                          </div>
                         </div>
-                        <div className="text-[11px] text-[#5D6B58] dark:text-[#A7B8A3]">{tenant?.nama_lengkap}</div>
-                        <div className="mt-1 text-[11px] font-bold text-amber-700 dark:text-amber-400">
-                          {isDraft ? (
-                            ktr.id === 'ktr-0022' ? 'identitas belum diverifikasi' : 'menunggu kontrak lama selesai'
-                          ) : (
-                            `Berakhir ${formatDateIndo(ktr.tanggal_selesai)}`
-                          )}
+                        <div className="shrink-0 text-right">
+                          <span className="text-xs text-[#222520] dark:text-[#ECEAE4]">
+                            {actionLabel}
+                          </span>
                         </div>
                       </div>
                     );
@@ -391,8 +386,8 @@ export default function HomePage() {
 
           </div>
 
-          <div className="text-center pt-2">
-            <p className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] italic">
+          <div className="pt-4">
+            <p className="text-xs text-[#5D6B58] dark:text-[#A7B8A3]">
               Pengelola tidak melihat angka pendapatan. Kartu dan tabel di Beranda hanya berisi jumlah dan daftar kerja.
             </p>
           </div>
@@ -402,7 +397,7 @@ export default function HomePage() {
         /* TAMPILAN DASHBOARD KHUSUS PENYEWA (Dimas, Hana, Fajar, dll)    */
         /* ============================================================== */
         <div className="space-y-8 animate-in fade-in duration-300">
-          
+
           {/* Header Sambutan */}
           <div className="border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
             <h1 className="text-2xl font-extrabold tracking-tight text-[#222520] dark:text-[#ECEAE4] sm:text-3xl">
@@ -415,20 +410,19 @@ export default function HomePage() {
 
           {/* Kartu Status Kontrak & Unit */}
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            
+
             {/* Info Unit & Kontrak */}
             <div className="rounded-2xl border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] md:col-span-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-[#A7B8A3]">Unit Sewa Anda</span>
-                <span className={`rounded-full px-3 py-1 text-xs font-bold ${
-                  myContract?.status === 'aktif' 
-                    ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40 dark:bg-[#172216] dark:text-[#95B08A]' 
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${myContract?.status === 'aktif'
+                    ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40 dark:bg-[#172216] dark:text-[#95B08A]'
                     : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
-                }`}>
+                  }`}>
                   {myContract?.status === 'aktif' ? 'Kontrak Aktif' : 'Belum Ada Kontrak Aktif'}
                 </span>
               </div>
-              
+
               {myContract && myUnit ? (
                 <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
@@ -466,13 +460,12 @@ export default function HomePage() {
                 {myIdentity ? (
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
-                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${
-                        myIdentity.status_verifikasi === 'terverifikasi'
+                      <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${myIdentity.status_verifikasi === 'terverifikasi'
                           ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40'
                           : myIdentity.status_verifikasi === 'ditolak'
-                          ? 'bg-[#FDF0EE] text-[#A63A2E] border border-[#F3C5BF]'
-                          : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
-                      }`}>
+                            ? 'bg-[#FDF0EE] text-[#A63A2E] border border-[#F3C5BF]'
+                            : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
+                        }`}>
                         {myIdentity.status_verifikasi}
                       </span>
                     </div>
@@ -590,7 +583,7 @@ export default function HomePage() {
             <h3 className="text-base font-extrabold text-[#222520] dark:text-[#ECEAE4]">
               {currentUser.peran === 'penyewa' ? 'Pembayaran Online Tagihan' : 'Catat Pembayaran Tagihan'}
             </h3>
-            
+
             {payError && (
               <div className="mt-3 rounded-2xl bg-[#FDF0EE] border border-[#F3C5BF] p-3 text-xs text-[#A63A2E] dark:bg-red-950/40 dark:text-red-300">
                 {payError}

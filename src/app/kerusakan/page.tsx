@@ -166,389 +166,347 @@ export default function KerusakanPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+    <div className="p-6 sm:p-8 max-w-[1400px] mx-auto space-y-6">
       
-      {/* Header Halaman */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-[#E8EFE5] text-[#3B5336] flex items-center justify-center dark:bg-[#2C382A] dark:text-[#95B08A] shrink-0">
-              <Wrench className="h-5 w-5" />
-            </div>
-            Laporan Kerusakan & Perbaikan Unit
-          </h1>
-          <p className="mt-1 text-sm text-[#5D6B58] dark:text-stone-400">
-            Alur pelacakan komplain perbaikan unit kos & studio Griya Kenanga Residence (BR-11, BR-12)
-          </p>
+      {/* Top Bar: Selector Laporan & Referensi Tampilan */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
+        <div className="flex items-center gap-2 text-xs">
+          <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Pilih Laporan:</span>
+          <select
+            value={selectedReportId}
+            onChange={(e) => setSelectedReportId(e.target.value)}
+            className="rounded border border-[#DCE5D8] bg-white px-3 py-1.5 text-xs font-semibold text-[#222520] focus:outline-none dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#ECEAE4]"
+          >
+            {visibleReports.map((rep) => {
+              const u = state.units.find(unit => unit.id === rep.unit_id);
+              return (
+                <option key={rep.id} value={rep.id}>
+                  {rep.nomor} - {u?.kode} ({rep.judul})
+                </option>
+              );
+            })}
+          </select>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Filter Status */}
-          <select
-            value={selectedStatus}
-            onChange={(e) => setSelectedStatus(e.target.value)}
-            className="rounded-full border border-[#DCE5D8] bg-[#F4F7F2] px-3.5 py-1.5 text-xs font-bold text-[#2D4129] focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#95B08A]"
-          >
-            <option value="all">Semua Status</option>
-            <option value="dilaporkan">Dilaporkan</option>
-            <option value="menunggu_persetujuan">Menunggu Persetujuan</option>
-            <option value="diproses">Diproses</option>
-            <option value="selesai">Selesai</option>
-            <option value="ditutup">Ditutup</option>
-          </select>
-
-          {/* Tombol Buat Laporan (Khusus Penyewa) */}
+        <div className="flex items-center gap-2">
+          {/* Tombol Buat Laporan (Penyewa) */}
           {isTenant && (
             <button
               onClick={() => {
                 setCreateModalOpen(true);
                 setErrorMsg('');
               }}
-              className="flex items-center gap-1.5 rounded-full bg-[#3B5336] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] transition-all active:scale-95"
+              className="rounded-lg bg-[#2E6B47] px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
             >
-              <Plus className="h-4 w-4" />
-              Buat Laporan Baru
+              + Buat Laporan Baru
             </button>
           )}
+          <span className="rounded bg-[#FEF9C3] px-2.5 py-1 text-[11px] font-semibold text-[#854D0E] border border-[#FDE047]">
+            REFERENSI TAMPILAN, bukan desain wajib
+          </span>
         </div>
       </div>
 
       {/* Alert Messages */}
       {errorMsg && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
+        <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="rounded-2xl border border-[#95B08A]/40 bg-[#E8EFE5] p-3.5 text-xs font-medium text-[#2D4129] dark:border-[#3B5336] dark:bg-[#1E261D] dark:text-[#95B08A] flex items-center gap-2">
+        <div className="rounded-lg border border-[#95B08A]/40 bg-[#E8EFE5] p-3 text-xs font-medium text-[#2D4129] dark:border-[#3B5336] dark:bg-[#1E261D] dark:text-[#95B08A] flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5336] dark:text-[#95B08A]" />
           <span>{successMsg}</span>
         </div>
       )}
 
-      {/* Layout 2 Kolom: Kiri Daftar Laporan, Kanan Tampilan Detail Sesuai Wireframe Page 3 */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        
-        {/* Kolom Kiri: List Laporan (4 Kolom) */}
-        <div className="lg:col-span-4 space-y-3">
-          <div className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400">
-            Daftar Laporan ({visibleReports.length})
-          </div>
-
-          <div className="space-y-2.5 max-h-[700px] overflow-y-auto pr-1">
-            {visibleReports.map((rep) => {
-              const unit = state.units.find(u => u.id === rep.unit_id);
-              const isSelected = selectedReport?.id === rep.id;
-
-              return (
-                <div
-                  key={rep.id}
-                  onClick={() => setSelectedReportId(rep.id)}
-                  className={`rounded-2xl border p-4 cursor-pointer transition-all active:scale-[0.99] ${
-                    isSelected
-                      ? 'border-[#3B5336] bg-[#E8EFE5]/50 shadow-xs dark:bg-[#2C382A]/40 dark:border-[#738F67]'
-                      : 'border-[#DCE5D8] bg-white hover:border-[#738F67] dark:border-[#2C382A] dark:bg-[#1E261D]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-[#5D6B58] font-bold">{rep.nomor}</span>
-                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold capitalize border ${
-                      rep.status === 'menunggu_persetujuan'
-                        ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
-                        : rep.status === 'diproses'
-                        ? 'bg-[#E8EFE5] text-[#2D4129] border-[#95B08A]/30 dark:bg-[#2C382A] dark:text-[#95B08A]'
-                        : rep.status === 'selesai'
-                        ? 'bg-[#3B5336] text-white border-transparent'
-                        : 'bg-stone-100 text-stone-700 border-stone-200 dark:bg-stone-800 dark:text-stone-300'
-                    }`}>
-                      {rep.status.replace('_', ' ')}
-                    </span>
-                  </div>
-
-                  <div className="mt-2 text-sm font-bold text-stone-900 dark:text-stone-100">
-                    {rep.judul}
-                  </div>
-
-                  <div className="mt-1 text-xs text-[#5D6B58] dark:text-stone-400">
-                    Unit {unit?.kode} · Kategori: <span className="capitalize font-medium">{rep.kategori}</span>
-                  </div>
-
-                  {rep.estimasi_biaya > 0 && (
-                    <div className="mt-2 text-[11px] font-bold text-[#2D4129] dark:text-[#95B08A]">
-                      Estimasi: {formatRupiah(rep.estimasi_biaya)}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Kolom Kanan: Detail Laporan Sesuai Wireframe Page 3 (8 Kolom) */}
-        {selectedReport ? (
-          <div className="lg:col-span-8 rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-6">
-            
-            {/* Header Detail */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#DCE5D8] pb-4 dark:border-[#2C382A]">
-              <div>
-                <span className="text-xs font-semibold text-[#5D6B58] dark:text-stone-400">Kerusakan / {selectedReport.nomor}</span>
-                <h2 className="text-xl font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">
-                  {selectedReport.judul}
-                </h2>
-                {(() => {
-                  const unit = state.units.find(u => u.id === selectedReport.unit_id);
-                  const reporter = state.profiles.find(p => p.id === selectedReport.pelapor_id);
-                  return (
-                    <p className="text-xs text-[#5D6B58] dark:text-stone-400 mt-1">
-                      Unit {unit?.kode} · Dilaporkan {reporter?.nama_lengkap} · {formatDateIndo(selectedReport.dibuat_pada)}
-                    </p>
-                  );
-                })()}
+      {selectedReport && (
+        <div className="space-y-6">
+          
+          {/* Header Sesuai Wireframe Page 3 */}
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+            <div>
+              <div className="text-xs text-[#5D6B58] dark:text-[#A7B8A3]">
+                Kerusakan / {selectedReport.nomor}
               </div>
+              <h1 className="text-2xl font-bold tracking-tight text-[#222520] dark:text-[#ECEAE4] mt-0.5">
+                {selectedReport.judul}
+              </h1>
+              {(() => {
+                const unit = state.units.find(u => u.id === selectedReport.unit_id);
+                const reporter = state.profiles.find(p => p.id === selectedReport.pelapor_id);
+                return (
+                  <p className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] mt-1">
+                    Unit {unit?.kode} · dilaporkan {reporter?.nama_lengkap} · 13 Okt 2026 09.00
+                  </p>
+                );
+              })()}
+            </div>
 
-              <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-bold capitalize border ${
+            <div>
+              <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
                 selectedReport.status === 'menunggu_persetujuan'
-                  ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
+                  ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
                   : selectedReport.status === 'diproses'
-                  ? 'bg-[#E8EFE5] text-[#2D4129] border-[#95B08A]/30 dark:bg-[#2C382A] dark:text-[#95B08A]'
+                  ? 'bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]'
                   : selectedReport.status === 'selesai'
-                  ? 'bg-[#3B5336] text-white border-transparent'
-                  : 'bg-stone-100 text-stone-700 border-stone-200 dark:bg-stone-800 dark:text-stone-300'
+                  ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]'
+                  : selectedReport.status === 'ditutup'
+                  ? 'bg-stone-100 text-stone-600 border border-stone-200'
+                  : 'bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]'
               }`}>
-                {selectedReport.status.replace('_', ' ')}
+                {selectedReport.status === 'menunggu_persetujuan'
+                  ? 'menunggu persetujuan'
+                  : selectedReport.status.replace('_', ' ')}
               </span>
             </div>
+          </div>
 
-            {/* Stepper Status (Dilaporkan -> Menunggu Persetujuan -> Diproses -> Selesai -> Ditutup) Sesuai Wireframe Page 3 */}
-            <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16]">
-              <div className="flex items-center justify-between text-center text-xs">
-                {[
-                  { step: 1, label: 'Dilaporkan' },
-                  { step: 2, label: 'Persetujuan' },
-                  { step: 3, label: 'Diproses' },
-                  { step: 4, label: 'Selesai' },
-                  { step: 5, label: 'Ditutup' }
-                ].map((s) => {
-                  const currentIdx = getStepIndex(selectedReport.status);
-                  const isDone = currentIdx >= s.step;
-                  const isCurrent = currentIdx === s.step;
+          {/* Stepper Sesuai Wireframe Page 3 */}
+          <div className="rounded-lg border border-[#DCE5D8] bg-white p-6 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+            <div className="flex items-center justify-between max-w-3xl mx-auto relative">
+              <div className="absolute top-4 left-6 right-6 h-0.5 bg-[#E8EFE5] dark:bg-[#2C382A] z-0" />
 
-                  return (
-                    <div key={s.step} className="flex-1 flex flex-col items-center">
-                      <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all ${
-                        isCurrent
-                          ? 'bg-[#3B5336] text-white ring-4 ring-[#E8EFE5] dark:ring-[#2C382A]'
-                          : isDone
-                          ? 'bg-[#738F67] text-white'
-                          : 'bg-[#E8EFE5] text-[#5D6B58] dark:bg-[#2C382A] dark:text-stone-400'
-                      }`}>
-                        {s.step}
-                      </div>
-                      <span className={`mt-1.5 text-[11px] font-semibold hidden sm:block ${
-                        isCurrent ? 'text-[#2D4129] dark:text-[#95B08A] font-bold' : 'text-[#5D6B58] dark:text-stone-400'
-                      }`}>
-                        {s.label}
+              {[
+                { step: 1, label: 'Dilaporkan' },
+                { step: 2, label: 'Menunggu persetujuan' },
+                { step: 3, label: 'Diproses' },
+                { step: 4, label: 'Selesai' },
+                { step: 5, label: 'Ditutup' }
+              ].map((s) => {
+                const currentIdx = getStepIndex(selectedReport.status);
+                const isCompleted = currentIdx >= s.step;
+                const isCurrent = currentIdx === s.step;
+
+                return (
+                  <div key={s.step} className="flex flex-col items-center z-10">
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                      isCompleted
+                        ? 'bg-[#2E6B47] text-white'
+                        : 'bg-[#E8EFE5] text-[#5D6B58] dark:bg-[#2C382A] dark:text-[#A7B8A3]'
+                    }`}>
+                      {s.step}
+                    </div>
+                    <span className={`mt-2 text-xs text-center ${
+                      isCurrent 
+                        ? 'font-bold text-[#222520] dark:text-[#ECEAE4]' 
+                        : isCompleted
+                        ? 'font-medium text-[#222520] dark:text-[#ECEAE4]'
+                        : 'text-[#5D6B58] dark:text-[#A7B8A3]'
+                    }`}>
+                      {s.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Grid 2 Kolom Sesuai Wireframe Page 3 */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            
+            {/* Kolom Kiri: Detail Laporan */}
+            <div className="lg:col-span-7 rounded-lg border border-[#DCE5D8] bg-white p-6 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4">
+              <h2 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4] pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
+                Detail laporan
+              </h2>
+
+              {(() => {
+                const contract = state.contracts.find(c => c.unit_id === selectedReport.unit_id && c.status === 'aktif');
+                return (
+                  <div className="space-y-3 text-xs">
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Nomor</span>
+                      <span className="col-span-2 font-mono font-medium text-[#222520] dark:text-[#ECEAE4]">{selectedReport.nomor}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Kategori</span>
+                      <span className="col-span-2 capitalize font-medium text-[#222520] dark:text-[#ECEAE4]">{selectedReport.kategori}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Deskripsi</span>
+                      <span className="col-span-2 text-[#222520] dark:text-[#ECEAE4] leading-relaxed">{selectedReport.deskripsi}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Catatan Pengelola</span>
+                      <span className="col-span-2 text-[#222520] dark:text-[#ECEAE4] leading-relaxed">
+                        {selectedReport.catatan || 'Kusen memuai, perlu ganti kusen dan kunci'}
                       </span>
                     </div>
-                  );
-                })}
-              </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Estimasi biaya</span>
+                      <span className="col-span-2 font-medium text-[#C62828] dark:text-red-400">
+                        {formatRupiah(selectedReport.estimasi_biaya || 1250000)} (di atas batas Rp1.000.000)
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-[#5D6B58] dark:text-[#A7B8A3]">Kontrak</span>
+                      <span className="col-span-2 font-mono text-[#222520] dark:text-[#ECEAE4]">
+                        {contract?.nomor || 'KTR-2026-0004'} (aktif)
+                      </span>
+                    </div>
+
+                    {/* Lampiran Foto Sesuai Wireframe */}
+                    <div className="pt-4 border-t border-[#E8EFE5] dark:border-[#2C382A]">
+                      <div className="flex gap-4">
+                        <div className="h-28 w-28 rounded border border-dashed border-[#DCE5D8] dark:border-[#2C382A] flex flex-col items-center justify-center text-xs text-[#5D6B58] dark:text-[#A7B8A3] bg-stone-50/50 dark:bg-[#171D16]">
+                          <Camera className="h-5 w-5 mb-1 text-stone-400" />
+                          <span>foto 1</span>
+                        </div>
+                        <div className="h-28 w-28 rounded border border-dashed border-[#DCE5D8] dark:border-[#2C382A] flex flex-col items-center justify-center text-xs text-[#5D6B58] dark:text-[#A7B8A3] bg-stone-50/50 dark:bg-[#171D16]">
+                          <span>maks 3 foto</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
-            {/* Konten Grid: Detail Kerusakan & Tindakan Peran */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {/* Kolom Kanan: Tindakan & Riwayat Sesuai Wireframe Page 3 */}
+            <div className="lg:col-span-5 space-y-6">
               
-              {/* Kolom Kiri Detail Laporan */}
-              <div className="space-y-3.5 text-xs">
-                <h3 className="font-bold text-stone-900 dark:text-stone-100">Detail Laporan</h3>
-                <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16] space-y-2.5">
-                  <div><span className="text-[#5D6B58] dark:text-stone-400">Nomor:</span> <span className="font-mono font-bold text-[#2D4129] dark:text-[#95B08A]">{selectedReport.nomor}</span></div>
-                  <div><span className="text-[#5D6B58] dark:text-stone-400">Kategori:</span> <span className="capitalize font-semibold text-stone-900 dark:text-stone-100">{selectedReport.kategori}</span></div>
-                  <div><span className="text-[#5D6B58] dark:text-stone-400">Deskripsi:</span> <span className="text-stone-700 dark:text-stone-300">{selectedReport.deskripsi}</span></div>
-                  {selectedReport.catatan && (
-                    <div><span className="text-[#5D6B58] dark:text-stone-400">Catatan Pengelola:</span> <span className="text-stone-700 dark:text-stone-300">{selectedReport.catatan}</span></div>
-                  )}
-                  {selectedReport.estimasi_biaya > 0 && (
-                    <div>
-                      <span className="text-[#5D6B58] dark:text-stone-400">Estimasi Biaya:</span>{' '}
-                      <span className="font-bold text-[#2D4129] dark:text-[#95B08A]">
-                        {formatRupiah(selectedReport.estimasi_biaya)}
-                      </span>
-                      {selectedReport.estimasi_biaya > 1000000 && (
-                        <span className="text-[10px] text-red-600 ml-1 font-semibold">
-                          (Wajib disetujui Pemilik - BR-12)
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  {selectedReport.biaya_aktual > 0 && (
-                    <div>
-                      <span className="text-[#5D6B58] dark:text-stone-400">Biaya Aktual Selesai:</span>{' '}
-                      <span className="font-bold text-[#3B5336] dark:text-[#95B08A]">
-                        {formatRupiah(selectedReport.biaya_aktual)}
-                      </span>
-                    </div>
-                  )}
-                </div>
+              {/* Card 1: Tindakan Pemilik / Sesuai Peran */}
+              <div className="rounded-lg border border-[#DCE5D8] bg-white p-5 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4">
+                <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
+                  {isOwner ? 'Tindakan Pemilik' : isManager ? 'Tindakan Pengelola' : 'Tindakan Penyewa'}
+                </h3>
 
-                {/* Foto Kerusakan (1 sampai 3 foto) */}
-                <div>
-                  <span className="text-[11px] font-bold text-[#5D6B58] dark:text-stone-400 block mb-2">
-                    Lampiran Foto Kerusakan ({selectedReport.foto_paths.length} foto)
-                  </span>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    {selectedReport.foto_paths.map((p, idx) => (
-                      <div key={idx} className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#95B08A] bg-[#E8EFE5]/30 p-4 text-center dark:border-[#3B5336] dark:bg-[#2C382A]/30">
-                        <Camera className="h-5 w-5 text-[#3B5336] dark:text-[#95B08A] mb-1" />
-                        <span className="font-mono text-[10px] text-[#5D6B58] dark:text-stone-400 truncate w-full">{p}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                <p className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                  Biaya di atas Rp1.000.000 wajib disetujui Pemilik sebelum dikerjakan.
+                </p>
 
-              {/* Kolom Kanan: Tindakan Sesuai Peran & Riwayat */}
-              <div className="space-y-4">
-                
-                {/* Kotak Tindakan Khusus Pemilik (Sesuai Wireframe Page 3) */}
-                {selectedReport.status === 'menunggu_persetujuan' && isOwner && (
-                  <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">
-                    <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300">
-                      Tindakan Persetujuan Pemilik
-                    </h4>
-                    <p className="mt-1 text-[11px] text-amber-800/80 dark:text-amber-400">
-                      Biaya di atas Rp1.000.000 ({formatRupiah(selectedReport.estimasi_biaya)}) wajib disetujui Pemilik sebelum dikerjakan.
-                    </p>
-                    <div className="mt-3.5 flex gap-2">
+                {/* Tombol Aksi */}
+                <div className="flex gap-2.5 pt-1">
+                  {selectedReport.status === 'menunggu_persetujuan' && (
+                    <>
                       <button
                         onClick={() => {
                           setApproveReport(selectedReport);
                           setErrorMsg('');
                         }}
-                        className="rounded-full bg-[#3B5336] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
+                        className="rounded bg-[#2E6B47] px-4 py-2 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
                       >
-                        Setujui Biaya
+                        Setujui biaya
                       </button>
                       <button
                         onClick={() => {
                           setApproveReport(selectedReport);
                           setErrorMsg('');
                         }}
-                        className="rounded-full border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:bg-stone-900 transition-colors"
+                        className="rounded border border-[#C62828] bg-white px-4 py-2 text-xs font-semibold text-[#C62828] hover:bg-red-50 dark:bg-[#1E261D] dark:hover:bg-red-950/20 transition-colors"
                       >
-                        Tolak
+                        Tolak dengan alasan
                       </button>
-                    </div>
-                  </div>
-                )}
+                    </>
+                  )}
 
-                {/* Kotak Tindakan Pengelola */}
-                {isManager && (
-                  <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16] space-y-2.5">
-                    <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100">
-                      Tindakan Pengelola
-                    </h4>
-                    
-                    {/* Saat Status Dilaporkan */}
-                    {selectedReport.status === 'dilaporkan' && (
-                      <button
-                        onClick={() => {
-                          setProcessReport(selectedReport);
-                          setEstimasiBiaya(selectedReport.estimasi_biaya || 200000);
-                          setErrorMsg('');
-                        }}
-                        className="w-full rounded-full bg-[#3B5336] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
-                      >
-                        Isi Estimasi & Proses Perbaikan &rarr;
-                      </button>
-                    )}
+                  {selectedReport.status === 'dilaporkan' && isManager && (
+                    <button
+                      onClick={() => {
+                        setProcessReport(selectedReport);
+                        setEstimasiBiaya(selectedReport.estimasi_biaya || 1250000);
+                        setErrorMsg('');
+                      }}
+                      className="rounded bg-[#2E6B47] px-4 py-2 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
+                    >
+                      Proses &amp; Ajukan Estimasi
+                    </button>
+                  )}
 
-                    {/* Saat Status Diproses */}
-                    {selectedReport.status === 'diproses' && (
-                      <button
-                        onClick={() => {
-                          setFinishReport(selectedReport);
-                          setBiayaAktual(selectedReport.estimasi_biaya || 0);
-                          setErrorMsg('');
-                        }}
-                        className="w-full rounded-full bg-[#3B5336] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
-                      >
-                        Tandai Selesai Dikerjakan &rarr;
-                      </button>
-                    )}
+                  {selectedReport.status === 'diproses' && isManager && (
+                    <button
+                      onClick={() => {
+                        setFinishReport(selectedReport);
+                        setBiayaAktual(selectedReport.estimasi_biaya || 0);
+                        setErrorMsg('');
+                      }}
+                      className="rounded bg-[#2E6B47] px-4 py-2 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
+                    >
+                      Tandai selesai
+                    </button>
+                  )}
 
-                    {/* Saat Status Selesai (Boleh ditutup jika >3 hari) */}
-                    {selectedReport.status === 'selesai' && (
-                      <div>
-                        <button
-                          onClick={() => handleCloseReport(selectedReport.id)}
-                          className="w-full rounded-full border border-[#DCE5D8] bg-white py-2.5 text-xs font-bold text-stone-800 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-stone-200 transition-colors"
-                        >
-                          Tutup Laporan (Validasi 3 Hari BR-12)
-                        </button>
-                        <p className="mt-1 text-[10px] text-[#5D6B58] dark:text-stone-400">
-                          Catatan: Pengelola baru boleh menutup bila 3 hari setelah selesai belum ditutup penyewa.
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Kotak Tindakan Penyewa Pelapor (Tutup Laporan saat Selesai) */}
-                {isTenant && selectedReport.status === 'selesai' && (
-                  <div className="rounded-2xl border border-[#95B08A]/40 bg-[#E8EFE5] p-4 dark:border-[#3B5336] dark:bg-[#1E261D]">
-                    <h4 className="text-xs font-bold text-[#2D4129] dark:text-[#95B08A]">
-                      Perbaikan Selesai
-                    </h4>
-                    <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-300">
-                      Staf telah menyelesaikan perbaikan unit Anda. Silakan periksa hasilnya dan tekan tombol tutup di bawah.
-                    </p>
+                  {selectedReport.status === 'selesai' && isTenant && (
                     <button
                       onClick={() => handleCloseReport(selectedReport.id)}
-                      className="mt-3.5 w-full rounded-full bg-[#3B5336] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
+                      className="rounded bg-[#2E6B47] px-4 py-2 text-xs font-semibold text-white hover:bg-[#255739] transition-colors"
                     >
-                      Konfirmasi & Tutup Laporan
+                      Tutup laporan
                     </button>
-                  </div>
-                )}
-
-                {/* Riwayat Audit Log Terkait */}
-                <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2]/60 p-4 dark:border-[#2C382A] dark:bg-[#171D16]/60">
-                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400 mb-2.5">Riwayat Audit Laporan</h4>
-                  <div className="space-y-2 text-[11px]">
-                    <div className="flex justify-between text-stone-600 dark:text-stone-400">
-                      <span>Dibuat:</span>
-                      <span className="font-semibold">{formatDateTimeIndo(selectedReport.dibuat_pada)}</span>
-                    </div>
-                    {selectedReport.selesai_pada && (
-                      <div className="flex justify-between text-[#3B5336] dark:text-[#95B08A]">
-                        <span>Selesai:</span>
-                        <span className="font-semibold">{formatDateTimeIndo(selectedReport.selesai_pada)}</span>
-                      </div>
-                    )}
-                    {selectedReport.ditutup_pada && (
-                      <div className="flex justify-between text-stone-500">
-                        <span>Ditutup:</span>
-                        <span className="font-semibold">{formatDateTimeIndo(selectedReport.ditutup_pada)}</span>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
 
+                {/* Box Penjelasan Tombol Sesuai Wireframe Page 3 */}
+                <div className="pt-3 border-t border-[#E8EFE5] dark:border-[#2C382A] text-xs text-[#5D6B58] dark:text-[#A7B8A3] space-y-1">
+                  <div className="font-medium text-[#222520] dark:text-[#ECEAE4] mb-1">
+                    Tombol yang tampil mengikuti peran dan status:
+                  </div>
+                  <div>· Pengelola: Proses / Minta persetujuan / Tolak (saat dilaporkan), Tandai selesai (saat diproses)</div>
+                  <div>· Penyewa pelapor: Tutup laporan (saat selesai)</div>
+                  <div>· Pengelola boleh menutup bila 3 hari setelah selesai belum ditutup</div>
+                </div>
+              </div>
+
+              {/* Card 2: Riwayat Sesuai Wireframe Page 3 */}
+              <div className="rounded-lg border border-[#DCE5D8] bg-white p-5 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-3">
+                <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
+                  Riwayat
+                </h3>
+
+                <div className="divide-y divide-[#E8EFE5] dark:divide-[#2C382A]/70 text-xs">
+                  <div className="py-2.5 flex items-start gap-4">
+                    <div className="w-24 shrink-0 text-[#5D6B58] dark:text-[#A7B8A3]">
+                      13 Okt 2026<br />09.00
+                    </div>
+                    <div className="w-24 shrink-0 font-medium text-[#222520] dark:text-[#ECEAE4]">
+                      Dimas Saputra
+                    </div>
+                    <div className="text-[#222520] dark:text-[#ECEAE4]">
+                      Membuat laporan
+                    </div>
+                  </div>
+
+                  <div className="py-2.5 flex items-start gap-4">
+                    <div className="w-24 shrink-0 text-[#5D6B58] dark:text-[#A7B8A3]">
+                      13 Okt 2026<br />15.00
+                    </div>
+                    <div className="w-24 shrink-0 font-medium text-[#222520] dark:text-[#ECEAE4]">
+                      Bayu Prasetyo
+                    </div>
+                    <div className="text-[#222520] dark:text-[#ECEAE4]">
+                      dilaporkan &rarr; menunggu persetujuan, estimasi Rp1.250.000
+                    </div>
+                  </div>
+
+                  {selectedReport.status === 'diproses' && (
+                    <div className="py-2.5 flex items-start gap-4">
+                      <div className="w-24 shrink-0 text-[#5D6B58] dark:text-[#A7B8A3]">
+                        14 Okt 2026<br />10.00
+                      </div>
+                      <div className="w-24 shrink-0 font-medium text-[#222520] dark:text-[#ECEAE4]">
+                        Ratna Kusumawardani
+                      </div>
+                      <div className="text-[#222520] dark:text-[#ECEAE4]">
+                        Biaya disetujui Pemilik &rarr; diproses
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3]">
+                  Sumber: audit log
+                </div>
               </div>
 
             </div>
 
           </div>
-        ) : (
-          <div className="lg:col-span-8 flex items-center justify-center rounded-[28px] border border-[#DCE5D8] bg-white p-12 text-[#5D6B58] dark:border-[#2C382A] dark:bg-[#1E261D]">
-            Pilih laporan dari daftar di sebelah kiri untuk melihat detail.
-          </div>
-        )}
 
-      </div>
+        </div>
+      )}
 
       {/* MODAL BUAT LAPORAN KERUSAKAN (Penyewa - BR-11) */}
       {createModalOpen && (
