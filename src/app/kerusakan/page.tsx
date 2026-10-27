@@ -105,8 +105,8 @@ export default function KerusakanPage() {
       setErrorMsg('');
       store.approveDamageReport(approveReport.id, approved, approved ? undefined : rejectReason);
       setSuccessMsg(
-        approved 
-          ? `Estimasi biaya disetujui! Laporan beralih ke status 'diproses'.` 
+        approved
+          ? `Estimasi biaya disetujui! Laporan beralih ke status 'diproses'.`
           : `Persetujuan biaya ditolak.`
       );
       setApproveReport(null);
@@ -167,7 +167,7 @@ export default function KerusakanPage() {
 
   return (
     <div className="p-6 sm:p-8 max-w-[1400px] mx-auto space-y-6">
-      
+
       {/* Top Bar: Selector Laporan & Referensi Tampilan */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
         <div className="flex items-center gap-2 text-xs">
@@ -201,9 +201,6 @@ export default function KerusakanPage() {
               + Buat Laporan Baru
             </button>
           )}
-          <span className="rounded bg-[#FEF9C3] px-2.5 py-1 text-[11px] font-semibold text-[#854D0E] border border-[#FDE047]">
-            REFERENSI TAMPILAN, bukan desain wajib
-          </span>
         </div>
       </div>
 
@@ -224,7 +221,7 @@ export default function KerusakanPage() {
 
       {selectedReport && (
         <div className="space-y-6">
-          
+
           {/* Header Sesuai Wireframe Page 3 */}
           <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
             <div>
@@ -246,17 +243,16 @@ export default function KerusakanPage() {
             </div>
 
             <div>
-              <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
-                selectedReport.status === 'menunggu_persetujuan'
+              <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${selectedReport.status === 'menunggu_persetujuan'
                   ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
                   : selectedReport.status === 'diproses'
-                  ? 'bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]'
-                  : selectedReport.status === 'selesai'
-                  ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]'
-                  : selectedReport.status === 'ditutup'
-                  ? 'bg-stone-100 text-stone-600 border border-stone-200'
-                  : 'bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]'
-              }`}>
+                    ? 'bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]'
+                    : selectedReport.status === 'selesai'
+                      ? 'bg-[#E8F5E9] text-[#2E7D32] border border-[#C8E6C9]'
+                      : selectedReport.status === 'ditutup'
+                        ? 'bg-stone-100 text-stone-600 border border-stone-200'
+                        : 'bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]'
+                }`}>
                 {selectedReport.status === 'menunggu_persetujuan'
                   ? 'menunggu persetujuan'
                   : selectedReport.status.replace('_', ' ')}
@@ -282,20 +278,18 @@ export default function KerusakanPage() {
 
                 return (
                   <div key={s.step} className="flex flex-col items-center z-10">
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-                      isCompleted
+                    <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all ${isCompleted
                         ? 'bg-[#2E6B47] text-white'
                         : 'bg-[#E8EFE5] text-[#5D6B58] dark:bg-[#2C382A] dark:text-[#A7B8A3]'
-                    }`}>
+                      }`}>
                       {s.step}
                     </div>
-                    <span className={`mt-2 text-xs text-center ${
-                      isCurrent 
-                        ? 'font-bold text-[#222520] dark:text-[#ECEAE4]' 
+                    <span className={`mt-2 text-xs text-center ${isCurrent
+                        ? 'font-bold text-[#222520] dark:text-[#ECEAE4]'
                         : isCompleted
-                        ? 'font-medium text-[#222520] dark:text-[#ECEAE4]'
-                        : 'text-[#5D6B58] dark:text-[#A7B8A3]'
-                    }`}>
+                          ? 'font-medium text-[#222520] dark:text-[#ECEAE4]'
+                          : 'text-[#5D6B58] dark:text-[#A7B8A3]'
+                      }`}>
                       {s.label}
                     </span>
                   </div>
@@ -306,7 +300,7 @@ export default function KerusakanPage() {
 
           {/* Grid 2 Kolom Sesuai Wireframe Page 3 */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-            
+
             {/* Kolom Kiri: Detail Laporan */}
             <div className="lg:col-span-7 rounded-lg border border-[#DCE5D8] bg-white p-6 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4">
               <h2 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4] pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
@@ -367,7 +361,7 @@ export default function KerusakanPage() {
 
             {/* Kolom Kanan: Tindakan & Riwayat Sesuai Wireframe Page 3 */}
             <div className="lg:col-span-5 space-y-6">
-              
+
               {/* Card 1: Tindakan Pemilik / Sesuai Peran */}
               <div className="rounded-lg border border-[#DCE5D8] bg-white p-5 shadow-2xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4">
                 <h3 className="text-sm font-bold text-[#222520] dark:text-[#ECEAE4]">
@@ -516,7 +510,7 @@ export default function KerusakanPage() {
               <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
                 Ajukan Laporan Kerusakan Unit
               </h3>
-              <button 
+              <button
                 onClick={() => setCreateModalOpen(false)}
                 className="h-8 w-8 rounded-full flex items-center justify-center text-stone-400 hover:bg-[#F4F7F2] hover:text-stone-700 dark:hover:bg-[#2C382A] transition-colors"
               >

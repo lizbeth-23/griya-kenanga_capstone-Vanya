@@ -140,9 +140,6 @@ export default function HomePage() {
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <span className="rounded bg-[#FEF9C3] px-3 py-1 text-xs font-semibold text-[#854D0E] border border-[#FDE047]">
-                REFERENSI TAMPILAN, bukan desain wajib
-              </span>
             </div>
           </div>
 
@@ -266,8 +263,8 @@ export default function HomePage() {
                             </td>
                             <td className="py-3 px-2 text-xs">
                               <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium ${inv.status === 'sebagian'
-                                  ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
-                                  : 'bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA]'
+                                ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
+                                : 'bg-[#FEE2E2] text-[#991B1B] border border-[#FECACA]'
                                 }`}>
                                 {inv.status === 'sebagian' ? 'sebagian' : 'belum bayar'}
                               </span>
@@ -318,10 +315,10 @@ export default function HomePage() {
                         </div>
                         <div className="shrink-0">
                           <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium ${rep.status === 'menunggu_persetujuan'
-                              ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
-                              : rep.status === 'diproses'
-                                ? 'bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]'
-                                : 'bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]'
+                            ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
+                            : rep.status === 'diproses'
+                              ? 'bg-[#F1F5F9] text-[#475569] border border-[#CBD5E1]'
+                              : 'bg-[#E0F2FE] text-[#0369A1] border border-[#BAE6FD]'
                             }`}>
                             {rep.status === 'menunggu_persetujuan'
                               ? 'menunggu persetujuan'
@@ -416,8 +413,8 @@ export default function HomePage() {
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-[#A7B8A3]">Unit Sewa Anda</span>
                 <span className={`rounded-full px-3 py-1 text-xs font-bold ${myContract?.status === 'aktif'
-                    ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40 dark:bg-[#172216] dark:text-[#95B08A]'
-                    : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
+                  ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40 dark:bg-[#172216] dark:text-[#95B08A]'
+                  : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
                   }`}>
                   {myContract?.status === 'aktif' ? 'Kontrak Aktif' : 'Belum Ada Kontrak Aktif'}
                 </span>
@@ -461,10 +458,10 @@ export default function HomePage() {
                   <div className="space-y-3">
                     <div className="flex items-center gap-2">
                       <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold capitalize ${myIdentity.status_verifikasi === 'terverifikasi'
-                          ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40'
-                          : myIdentity.status_verifikasi === 'ditolak'
-                            ? 'bg-[#FDF0EE] text-[#A63A2E] border border-[#F3C5BF]'
-                            : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
+                        ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40'
+                        : myIdentity.status_verifikasi === 'ditolak'
+                          ? 'bg-[#FDF0EE] text-[#A63A2E] border border-[#F3C5BF]'
+                          : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
                         }`}>
                         {myIdentity.status_verifikasi}
                       </span>
