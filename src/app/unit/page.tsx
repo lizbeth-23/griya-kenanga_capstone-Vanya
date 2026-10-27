@@ -87,13 +87,13 @@ export default function UnitPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       
       {/* Header Halaman */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-stone-200/80 pb-6 dark:border-stone-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-2.5">
-            <Building2 className="h-7 w-7 text-stone-800 dark:text-stone-200" />
+          <h1 className="text-2xl font-extrabold tracking-tight text-[#222520] dark:text-[#ECEAE4] sm:text-3xl flex items-center gap-2.5">
+            <Building2 className="h-7 w-7 text-[#3B5336] dark:text-[#95B08A]" />
             Daftar 24 Unit Hunian
           </h1>
-          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-sm text-[#5D6B58] dark:text-[#A7B8A3]">
             Griya Kenanga Residence · Blok A (Lt 1 Standar), Blok B (Lt 2 AC), Blok C (Lt 3 Studio)
           </p>
         </div>
@@ -101,15 +101,15 @@ export default function UnitPage() {
         {/* Filter Controls */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Filter Lantai */}
-          <div className="flex rounded-xl border border-stone-200 bg-white p-1 text-xs dark:border-stone-800 dark:bg-stone-900">
+          <div className="flex rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-1 text-xs dark:border-[#2C382A] dark:bg-[#182117]">
             {(['all', 1, 2, 3] as const).map((floor) => (
               <button
                 key={floor}
                 onClick={() => setSelectedFloor(floor)}
-                className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
+                className={`rounded-xl px-3 py-1 font-bold transition-all ${
                   selectedFloor === floor
-                    ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
-                    : 'text-stone-600 hover:text-stone-900 dark:text-stone-400'
+                    ? 'bg-[#3B5336] text-white shadow-2xs'
+                    : 'text-[#5D6B58] hover:text-[#222520] dark:text-[#A7B8A3] dark:hover:text-[#ECEAE4]'
                 }`}
               >
                 {floor === 'all' ? 'Semua Lantai' : `Lt ${floor}`}
@@ -121,7 +121,7 @@ export default function UnitPage() {
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300"
+            className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] px-3.5 py-1.5 text-xs font-bold text-[#2D4129] dark:border-[#2C382A] dark:bg-[#182117] dark:text-[#D5E6D2]"
           >
             <option value="all">Semua Status</option>
             <option value="tersedia">Tersedia</option>
@@ -133,14 +133,14 @@ export default function UnitPage() {
 
       {/* Alert Messages */}
       {errorMsg && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
+        <div className="rounded-2xl border border-[#F3C5BF] bg-[#FDF0EE] p-3.5 text-xs text-[#A63A2E] dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300 flex items-center gap-2">
+        <div className="rounded-2xl border border-[#95B08A]/50 bg-[#E8EFE5] p-3.5 text-xs font-bold text-[#2D4129] dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300 flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 shrink-0" />
           <span>{successMsg}</span>
         </div>
@@ -159,25 +159,25 @@ export default function UnitPage() {
               key={unit.id}
               className={`flex flex-col justify-between rounded-2xl border p-5 shadow-xs transition-all ${
                 unit.status === 'perbaikan'
-                  ? 'border-amber-200 bg-amber-50/20 dark:border-amber-900/40 dark:bg-amber-950/10'
+                  ? 'border-[#F6DEB8] bg-[#FEF7EC]/70 dark:border-amber-900/40 dark:bg-amber-950/20'
                   : unit.status === 'nonaktif'
                   ? 'border-stone-300 bg-stone-100/60 dark:border-stone-800 dark:bg-stone-900/40 opacity-75'
                   : activeContract
-                  ? 'border-stone-200/90 bg-white dark:border-stone-800 dark:bg-stone-900'
-                  : 'border-emerald-200/80 bg-emerald-50/20 dark:border-emerald-900/30 dark:bg-emerald-950/10'
+                  ? 'border-[#DCE5D8] bg-white dark:border-[#2C382A] dark:bg-[#1E261D]'
+                  : 'border-[#95B08A]/60 bg-[#E8EFE5]/40 dark:border-[#3B5336] dark:bg-[#182317]'
               }`}
             >
               <div>
                 {/* Header Kartu: Kode & Badge Status */}
                 <div className="flex items-center justify-between">
-                  <div className="text-xl font-extrabold tracking-tight text-stone-900 dark:text-stone-100">
+                  <div className="text-xl font-extrabold tracking-tight text-[#222520] dark:text-[#ECEAE4]">
                     {unit.kode}
                   </div>
-                  <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${
+                  <span className={`inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-bold capitalize ${
                     unit.status === 'tersedia'
-                      ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
+                      ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/50 dark:bg-[#172216] dark:text-[#95B08A]'
                       : unit.status === 'perbaikan'
-                      ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
+                      ? 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
                       : 'bg-stone-200 text-stone-700 dark:bg-stone-800 dark:text-stone-400'
                   }`}>
                     {unit.status}
@@ -185,23 +185,23 @@ export default function UnitPage() {
                 </div>
 
                 {/* Spesifikasi Unit */}
-                <div className="mt-2 text-xs text-stone-500 capitalize">
+                <div className="mt-2 text-xs text-[#5D6B58] dark:text-[#A7B8A3] capitalize font-medium">
                   Lantai {unit.lantai} · Tipe {unit.tipe} · {unit.luas_m2} m²
                 </div>
 
                 {/* Status Penghuni Saat Ini */}
-                <div className="mt-4 rounded-xl border border-stone-100 bg-stone-50/80 p-2.5 text-xs dark:border-stone-800 dark:bg-stone-800/40">
-                  <span className="text-[10px] uppercase font-semibold text-stone-400">Penyewa Aktif</span>
-                  <div className="font-semibold text-stone-900 dark:text-stone-100 mt-0.5">
-                    {tenant ? tenant.nama_lengkap : <span className="text-stone-400 font-normal italic">Kosong / Siap Sewa</span>}
+                <div className="mt-4 rounded-xl border border-[#E8EFE5] bg-[#F4F7F2] p-2.5 text-xs dark:border-[#2C382A] dark:bg-[#172016]">
+                  <span className="text-[10px] uppercase font-bold text-[#5D6B58] dark:text-[#A7B8A3]">Penyewa Aktif</span>
+                  <div className="font-bold text-[#222520] dark:text-[#ECEAE4] mt-0.5">
+                    {tenant ? tenant.nama_lengkap : <span className="text-[#7F9979] font-normal italic">Kosong / Siap Sewa</span>}
                   </div>
                   {activeContract && (
-                    <div className="text-[11px] text-stone-500 mt-1">
+                    <div className="text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] mt-1 font-medium">
                       Hingga: {formatDateIndo(activeContract.tanggal_selesai)}
                     </div>
                   )}
                   {hasDraft && (
-                    <div className="text-[10px] text-amber-600 dark:text-amber-400 font-medium mt-1">
+                    <div className="text-[10px] text-amber-700 dark:text-amber-400 font-bold mt-1">
                       • Memiliki draf kontrak baru
                     </div>
                   )}
@@ -209,19 +209,19 @@ export default function UnitPage() {
 
                 {/* Keterangan Unit */}
                 {unit.keterangan && (
-                  <p className="mt-2 text-[11px] text-stone-500 italic">
+                  <p className="mt-2 text-[11px] text-[#5D6B58] dark:text-[#A7B8A3] italic">
                     {unit.keterangan}
                   </p>
                 )}
               </div>
 
               {/* Bagian Bawah: Harga Sewa & Tombol Aksi Sesuai Peran */}
-              <div className="mt-5 pt-3 border-t border-stone-100 dark:border-stone-800/80 flex items-end justify-between">
+              <div className="mt-5 pt-3.5 border-t border-[#E8EFE5] dark:border-[#2C382A] flex items-end justify-between">
                 <div>
-                  <span className="text-[10px] uppercase text-stone-400 block">Harga Sewa Standar</span>
-                  <div className="text-sm font-bold text-stone-900 dark:text-stone-100">
+                  <span className="text-[10px] uppercase font-bold text-[#5D6B58] dark:text-[#A7B8A3] block">Harga Sewa Standar</span>
+                  <div className="text-sm font-extrabold text-[#222520] dark:text-[#ECEAE4]">
                     {formatRupiah(unit.harga_sewa_bulanan)}
-                    <span className="text-[10px] font-normal text-stone-400">/bln</span>
+                    <span className="text-[10px] font-normal text-[#5D6B58]">/bln</span>
                   </div>
                 </div>
 
@@ -233,7 +233,7 @@ export default function UnitPage() {
                       setNewStatus(unit.status);
                       setErrorMsg('');
                     }}
-                    className="rounded-lg border border-stone-200 bg-white px-2 py-1 text-[11px] font-medium text-stone-700 hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"
+                    className="rounded-full border border-[#DCE5D8] bg-[#E8EFE5] px-3 py-1 text-[11px] font-bold text-[#2D4129] hover:bg-[#DCE7D9] transition-all"
                     title="Ubah Status Unit"
                   >
                     Status
@@ -247,7 +247,7 @@ export default function UnitPage() {
                         setNewPrice(unit.harga_sewa_bulanan);
                         setErrorMsg('');
                       }}
-                      className="rounded-lg bg-stone-900 px-2 py-1 text-[11px] font-medium text-white hover:bg-stone-800 dark:bg-stone-100 dark:text-stone-900"
+                      className="rounded-full bg-[#3B5336] px-3 py-1 text-[11px] font-bold text-white hover:bg-[#2D4129] active:scale-95 transition-all shadow-2xs"
                       title="Ubah Harga Sewa Bulanan"
                     >
                       Ubah Harga
@@ -263,12 +263,12 @@ export default function UnitPage() {
 
       {/* MODAL UBAH STATUS UNIT (Pengelola & Pemilik) */}
       {editStatusUnit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl dark:border-stone-800 dark:bg-stone-900">
-            <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171D16]/75 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
+            <h3 className="text-base font-extrabold text-[#222520] dark:text-[#ECEAE4]">
               Ubah Status Unit {editStatusUnit.kode}
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
               BR-04: Unit yang masih memiliki kontrak aktif atau draf tidak dapat diubah ke status nonaktif.
             </p>
 
@@ -276,10 +276,10 @@ export default function UnitPage() {
               {(['tersedia', 'perbaikan', 'nonaktif'] as const).map((s) => (
                 <label
                   key={s}
-                  className={`flex items-center justify-between rounded-xl border p-2.5 text-xs font-medium cursor-pointer transition-all ${
+                  className={`flex items-center justify-between rounded-2xl border p-3 text-xs font-bold cursor-pointer transition-all ${
                     newStatus === s
-                      ? 'border-emerald-500/80 bg-emerald-50/50 dark:bg-emerald-950/20'
-                      : 'border-stone-200 dark:border-stone-700'
+                      ? 'border-[#3B5336] bg-[#E8EFE5] text-[#2D4129] dark:bg-[#172216] dark:text-[#D5E6D2]'
+                      : 'border-[#E8EFE5] text-[#5D6B58] dark:border-[#2A3728] dark:text-[#A7B8A3]'
                   }`}
                 >
                   <span className="capitalize">{s}</span>
@@ -289,22 +289,22 @@ export default function UnitPage() {
                     value={s}
                     checked={newStatus === s}
                     onChange={() => setNewStatus(s)}
-                    className="text-emerald-600"
+                    className="accent-[#3B5336]"
                   />
                 </label>
               ))}
             </div>
 
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setEditStatusUnit(null)}
-                className="rounded-xl border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 dark:border-stone-700 dark:text-stone-300"
+                className="rounded-full border border-[#DCE5D8] px-4 py-2 text-xs font-semibold text-[#5D6B58] hover:bg-[#E8EFE5] dark:border-[#2A3728] dark:text-[#A7B8A3] dark:hover:bg-[#1E281C]"
               >
                 Batal
               </button>
               <button
                 onClick={handleUpdateStatus}
-                className="rounded-xl bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white dark:bg-stone-100 dark:text-stone-900"
+                className="rounded-full bg-[#3B5336] px-5 py-2 text-xs font-bold text-white hover:bg-[#2D4129] active:scale-95 shadow-md"
               >
                 Simpan Status
               </button>
@@ -315,36 +315,36 @@ export default function UnitPage() {
 
       {/* MODAL UBAH HARGA UNIT (HANYA Pemilik - BR-04) */}
       {editPriceUnit && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl dark:border-stone-800 dark:bg-stone-900">
-            <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171D16]/75 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-sm rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
+            <h3 className="text-base font-extrabold text-[#222520] dark:text-[#ECEAE4]">
               Ubah Harga Unit {editPriceUnit.kode}
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
               Harga ini berlaku untuk kontrak baru berikutnya. Harga pada kontrak yang sudah berjalan tidak ikut berubah (BR-04).
             </p>
 
             <div className="mt-4">
-              <label className="block text-xs text-stone-500 mb-1">Harga Sewa Bulanan (Rp)</label>
+              <label className="block text-xs font-semibold text-[#4F604A] dark:text-[#A7B8A3] mb-1">Harga Sewa Bulanan (Rp)</label>
               <input
                 type="number"
                 step="50000"
                 value={newPrice}
                 onChange={(e) => setNewPrice(Number(e.target.value))}
-                className="w-full rounded-xl border border-stone-200 p-2 text-sm font-semibold text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                className="w-full rounded-2xl bg-[#E8EFE5]/70 p-3 text-sm font-bold text-[#222520] border border-transparent focus:border-[#3B5336] focus:bg-white focus:outline-none dark:bg-[#161F15] dark:text-white"
               />
             </div>
 
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-6 flex justify-end gap-2">
               <button
                 onClick={() => setEditPriceUnit(null)}
-                className="rounded-xl border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 dark:border-stone-700 dark:text-stone-300"
+                className="rounded-full border border-[#DCE5D8] px-4 py-2 text-xs font-semibold text-[#5D6B58] hover:bg-[#E8EFE5] dark:border-[#2A3728] dark:text-[#A7B8A3] dark:hover:bg-[#1E281C]"
               >
                 Batal
               </button>
               <button
                 onClick={handleUpdatePrice}
-                className="rounded-xl bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700"
+                className="rounded-full bg-[#3B5336] px-5 py-2 text-xs font-bold text-white hover:bg-[#2D4129] active:scale-95 shadow-md"
               >
                 Simpan Perubahan
               </button>

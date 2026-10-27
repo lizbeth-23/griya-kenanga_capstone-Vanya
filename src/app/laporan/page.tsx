@@ -48,11 +48,24 @@ export default function LaporanPage() {
   const totalTunggakan = totalDitagihkan - totalDiterima;
   const persenDiterima = totalDitagihkan > 0 ? ((totalDiterima / totalDitagihkan) * 100).toFixed(1) : '0';
 
-  // Rekap Per Bulan
+  // Rekap Per Bulan Dinamis
+  const getMonthData = (periode: string, bulanLabel: string) => {
+    const invs = state.invoices.filter(i => i.periode === periode);
+    const ditagihkan = invs.reduce((acc, i) => acc + (i.nominal_sewa + i.denda), 0);
+    const diterima = invs.reduce((acc, i) => acc + i.terbayar, 0);
+    return {
+      bulan: bulanLabel,
+      periode,
+      ditagihkanJuta: Number((ditagihkan / 1000000).toFixed(1)),
+      diterimaJuta: Number((diterima / 1000000).toFixed(1)),
+      hunian: 82.6
+    };
+  };
+
   const monthlyStats = [
-    { bulan: 'Agu 2026', periode: '2026-08-01', ditagihkanJuta: 36.8, diterimaJuta: 36.8, hunian: 82.6 },
-    { bulan: 'Sep 2026', periode: '2026-09-01', ditagihkanJuta: 36.7, diterimaJuta: 36.3, hunian: 82.6 },
-    { bulan: 'Okt 2026', periode: '2026-10-01', ditagihkanJuta: 37.9, diterimaJuta: 29.8, hunian: 82.6 }
+    getMonthData('2026-08-01', 'Agu 2026'),
+    getMonthData('2026-09-01', 'Sep 2026'),
+    getMonthData('2026-10-01', 'Okt 2026')
   ];
 
   // Rekap Pendapatan per Unit (Diurutkan berdasarkan tunggakan tertinggi)
@@ -130,46 +143,48 @@ export default function LaporanPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       
       {/* Header Halaman */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-stone-200/80 pb-6 dark:border-stone-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-2.5">
-            <BarChart3 className="h-7 w-7 text-stone-800 dark:text-stone-200" />
+          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-[#E8EFE5] text-[#3B5336] flex items-center justify-center dark:bg-[#2C382A] dark:text-[#95B08A] shrink-0">
+              <BarChart3 className="h-5 w-5" />
+            </div>
             Laporan Pendapatan & Pengaturan Usaha
           </h1>
-          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-sm text-[#5D6B58] dark:text-stone-400">
             Agustus sampai Oktober 2026 · Halaman khusus hak akses Pemilik (Ratna Kusumawardani - BR-10)
           </p>
         </div>
 
         {/* Tab Selector & Ekspor Button */}
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="flex rounded-xl border border-stone-200 bg-white p-1 text-xs dark:border-stone-800 dark:bg-stone-900">
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="flex rounded-full border border-[#DCE5D8] bg-[#F4F7F2] p-1 text-xs font-bold dark:border-[#2C382A] dark:bg-[#1E261D]">
             <button
               onClick={() => setActiveTab('pendapatan')}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-all ${
+              className={`rounded-full px-4 py-1.5 font-bold transition-all ${
                 activeTab === 'pendapatan'
-                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
-                  : 'text-stone-600 dark:text-stone-400'
+                  ? 'bg-[#3B5336] text-white shadow-sm'
+                  : 'text-[#5D6B58] hover:text-[#2D4129] dark:text-stone-400'
               }`}
             >
               Pendapatan & Hunian
             </button>
             <button
               onClick={() => setActiveTab('audit')}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-all ${
+              className={`rounded-full px-4 py-1.5 font-bold transition-all ${
                 activeTab === 'audit'
-                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
-                  : 'text-stone-600 dark:text-stone-400'
+                  ? 'bg-[#3B5336] text-white shadow-sm'
+                  : 'text-[#5D6B58] hover:text-[#2D4129] dark:text-stone-400'
               }`}
             >
               Audit Log
             </button>
             <button
               onClick={() => setActiveTab('peran')}
-              className={`rounded-lg px-3 py-1.5 font-medium transition-all ${
+              className={`rounded-full px-4 py-1.5 font-bold transition-all ${
                 activeTab === 'peran'
-                  ? 'bg-stone-900 text-white dark:bg-stone-100 dark:text-stone-900'
-                  : 'text-stone-600 dark:text-stone-400'
+                  ? 'bg-[#3B5336] text-white shadow-sm'
+                  : 'text-[#5D6B58] hover:text-[#2D4129] dark:text-stone-400'
               }`}
             >
               Kelola Peran
@@ -179,9 +194,9 @@ export default function LaporanPage() {
           {activeTab === 'pendapatan' && (
             <button
               onClick={handleExportCSV}
-              className="flex items-center gap-1.5 rounded-xl border border-stone-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-stone-800 shadow-xs hover:bg-stone-50 dark:border-stone-700 dark:bg-stone-900 dark:text-stone-200 transition-colors"
+              className="flex items-center gap-1.5 rounded-full border border-[#DCE5D8] bg-white px-4 py-2 text-xs font-bold text-[#2D4129] shadow-xs hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#95B08A] transition-all active:scale-95"
             >
-              <Download className="h-4 w-4 text-emerald-600" />
+              <Download className="h-4 w-4 text-[#3B5336] dark:text-[#95B08A]" />
               Unduh CSV
             </button>
           )}
@@ -198,45 +213,45 @@ export default function LaporanPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             
             {/* Total Ditagihkan */}
-            <div className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900">
-              <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">Total Ditagihkan</span>
+            <div className="rounded-[24px] border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400">Total Ditagihkan</span>
               <div className="mt-2 text-2xl font-extrabold text-stone-900 dark:text-stone-100">
                 {formatRupiah(totalDitagihkan)}
               </div>
-              <p className="mt-1 text-[11px] text-stone-500">
+              <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-400">
                 {relevantInvoices.length} tagihan, termasuk denda keterlambatan
               </p>
             </div>
 
             {/* Total Diterima */}
-            <div className="rounded-2xl border border-emerald-200 bg-emerald-50/20 p-5 shadow-xs dark:border-emerald-950/40 dark:bg-emerald-950/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">Total Diterima</span>
-              <div className="mt-2 text-2xl font-extrabold text-emerald-800 dark:text-emerald-300">
+            <div className="rounded-[24px] border border-[#95B08A]/40 bg-[#E8EFE5]/50 p-5 shadow-xs dark:border-[#3B5336] dark:bg-[#2C382A]/30">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#2D4129] dark:text-[#95B08A]">Total Diterima</span>
+              <div className="mt-2 text-2xl font-extrabold text-[#2D4129] dark:text-[#95B08A]">
                 {formatRupiah(totalDiterima)}
               </div>
-              <p className="mt-1 text-[11px] text-emerald-700/80 dark:text-emerald-400/80">
+              <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-300">
                 {persenDiterima}% dari total seluruh tagihan
               </p>
             </div>
 
             {/* Tunggakan */}
-            <div className="rounded-2xl border border-red-200 bg-red-50/20 p-5 shadow-xs dark:border-red-950/40 dark:bg-red-950/10">
-              <span className="text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400">Tunggakan</span>
+            <div className="rounded-[24px] border border-red-200 bg-red-50/40 p-5 shadow-xs dark:border-red-950/40 dark:bg-red-950/20">
+              <span className="text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">Tunggakan</span>
               <div className="mt-2 text-2xl font-extrabold text-red-600 dark:text-red-400">
                 {formatRupiah(totalTunggakan)}
               </div>
               <p className="mt-1 text-[11px] text-red-700/80 dark:text-red-400/80">
-                7 tagihan belum lunas per 15 Oktober 2026
+                {relevantInvoices.filter(i => i.status !== 'lunas' && i.status !== 'dibatalkan').length} tagihan belum lunas per 15 Oktober 2026
               </p>
             </div>
 
             {/* Hunian Oktober */}
-            <div className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900">
-              <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">Hunian Oktober</span>
+            <div className="rounded-[24px] border border-[#DCE5D8] bg-white p-5 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400">Hunian Oktober</span>
               <div className="mt-2 text-2xl font-extrabold text-stone-900 dark:text-stone-100">
                 82.6%
               </div>
-              <p className="mt-1 text-[11px] text-stone-500">
+              <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-400">
                 19 dari 23 unit layak sewa (A-108 nonaktif)
               </p>
             </div>
@@ -247,8 +262,8 @@ export default function LaporanPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
             
             {/* Kolom Kiri: Visual Grafik Batang (5 Kolom) */}
-            <div className="lg:col-span-5 rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-stone-800">
+            <div className="lg:col-span-5 rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
                 <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
                   Ditagihkan dan Diterima per Bulan
                 </h3>
@@ -258,25 +273,25 @@ export default function LaporanPage() {
               <div className="space-y-5 pt-2">
                 {monthlyStats.map((item) => (
                   <div key={item.bulan} className="space-y-1.5 text-xs">
-                    <div className="flex justify-between font-semibold">
+                    <div className="flex justify-between font-bold">
                       <span className="text-stone-800 dark:text-stone-200">{item.bulan}</span>
-                      <span className="text-stone-500 font-mono text-[11px]">
+                      <span className="text-[#5D6B58] dark:text-stone-400 font-mono text-[11px]">
                         Tagih: {item.ditagihkanJuta}jt | Terima: {item.diterimaJuta}jt
                       </span>
                     </div>
 
                     {/* Progress Bar Ganda */}
-                    <div className="h-5 w-full rounded-lg bg-stone-100 p-0.5 dark:bg-stone-800 flex gap-1">
+                    <div className="h-6 w-full rounded-full bg-[#E8EFE5] p-0.5 dark:bg-[#171D16] flex gap-1">
                       <div
                         style={{ width: `${(item.diterimaJuta / 40) * 100}%` }}
-                        className="h-full rounded-md bg-emerald-600 text-[10px] text-white flex items-center justify-end pr-1.5 font-bold"
+                        className="h-full rounded-full bg-[#3B5336] text-[10px] text-white flex items-center justify-end pr-2 font-bold"
                         title={`Diterima: Rp${item.diterimaJuta} Juta`}
                       >
                         {item.diterimaJuta}
                       </div>
                       <div
                         style={{ width: `${((item.ditagihkanJuta - item.diterimaJuta) / 40) * 100}%` }}
-                        className="h-full rounded-md bg-stone-400/80 text-[10px] text-white flex items-center justify-center font-bold"
+                        className="h-full rounded-full bg-[#95B08A]/50 text-[10px] text-[#2D4129] flex items-center justify-center font-bold"
                         title={`Sisa Tagihan: Rp${(item.ditagihkanJuta - item.diterimaJuta).toFixed(1)} Juta`}
                       >
                         {item.ditagihkanJuta > item.diterimaJuta ? (item.ditagihkanJuta - item.diterimaJuta).toFixed(1) : ''}
@@ -286,29 +301,29 @@ export default function LaporanPage() {
                 ))}
               </div>
 
-              <div className="pt-4 border-t border-stone-100 dark:border-stone-800 flex items-center justify-between text-xs text-stone-500">
+              <div className="pt-4 border-t border-[#DCE5D8] dark:border-[#2C382A] flex items-center justify-between text-xs text-[#5D6B58] dark:text-stone-400">
                 <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-sm bg-emerald-600"></span>
+                  <span className="h-3 w-3 rounded-full bg-[#3B5336]"></span>
                   <span>Diterima</span>
-                  <span className="h-3 w-3 rounded-sm bg-stone-400 ml-2"></span>
+                  <span className="h-3 w-3 rounded-full bg-[#95B08A]/50 ml-2"></span>
                   <span>Belum Lunas</span>
                 </div>
-                <span>Hunian Stabil 82.6%</span>
+                <span className="font-semibold text-[#2D4129] dark:text-[#95B08A]">Hunian Stabil 82.6%</span>
               </div>
             </div>
 
             {/* Kolom Kanan: Tabel Pendapatan per Unit (7 Kolom) */}
-            <div className="lg:col-span-7 rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900 space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-stone-100 dark:border-stone-800">
+            <div className="lg:col-span-7 rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-3">
+              <div className="flex items-center justify-between pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
                 <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
                   Pendapatan per Unit (Urut Tunggakan)
                 </h3>
-                <span className="text-[11px] text-stone-400">Total 24 Unit</span>
+                <span className="text-[11px] font-semibold text-[#5D6B58] dark:text-stone-400">Total 24 Unit</span>
               </div>
 
               <div className="overflow-x-auto max-h-[350px]">
                 <table className="w-full text-left text-xs">
-                  <thead className="border-b border-stone-200/80 bg-stone-50/70 font-semibold text-stone-600 dark:border-stone-800 dark:bg-stone-800/40 dark:text-stone-300 sticky top-0">
+                  <thead className="border-b border-[#DCE5D8] bg-[#E8EFE5]/60 font-bold text-[#4F604A] dark:border-[#2C382A] dark:bg-[#171D16]/70 dark:text-[#95B08A] sticky top-0">
                     <tr>
                       <th className="py-2.5 px-3">Unit</th>
                       <th className="py-2.5 px-3">Ditagihkan</th>
@@ -316,16 +331,16 @@ export default function LaporanPage() {
                       <th className="py-2.5 px-3 text-right">Tunggakan</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60 text-stone-800 dark:text-stone-200">
+                  <tbody className="divide-y divide-[#DCE5D8]/70 dark:divide-[#2C382A] text-stone-800 dark:text-stone-200">
                     {unitStats.map((u) => (
-                      <tr key={u.unitKode} className="hover:bg-stone-50/70 dark:hover:bg-stone-800/30">
+                      <tr key={u.unitKode} className="hover:bg-[#F4F7F2]/60 dark:hover:bg-[#2C382A]/30 transition-colors">
                         <td className="py-2 px-3 font-bold text-stone-900 dark:text-stone-100">
                           {u.unitKode}
                         </td>
                         <td className="py-2 px-3">
                           {formatRupiah(u.ditagihkan)}
                         </td>
-                        <td className="py-2 px-3 font-medium text-emerald-700 dark:text-emerald-400">
+                        <td className="py-2 px-3 font-semibold text-[#3B5336] dark:text-[#95B08A]">
                           {formatRupiah(u.diterima)}
                         </td>
                         <td className="py-2 px-3 text-right">
@@ -356,13 +371,13 @@ export default function LaporanPage() {
         <div className="space-y-4 animate-in fade-in duration-200">
           
           {/* Filter Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-stone-200/90 bg-white p-3.5 shadow-xs dark:border-stone-800 dark:bg-stone-900">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[24px] border border-[#DCE5D8] bg-white p-4 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
             <div className="flex items-center gap-2">
-              <span className="text-xs text-stone-400">Filter Aksi:</span>
+              <span className="text-xs font-semibold text-[#5D6B58] dark:text-stone-400">Filter Aksi:</span>
               <select
                 value={auditFilterAksi}
                 onChange={(e) => setAuditFilterAksi(e.target.value)}
-                className="rounded-xl border border-stone-200 bg-stone-50 px-3 py-1.5 text-xs font-semibold text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"
+                className="rounded-full border border-[#DCE5D8] bg-[#F4F7F2] px-3.5 py-1.5 text-xs font-bold text-[#2D4129] focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20 dark:border-[#2C382A] dark:bg-[#171D16] dark:text-[#95B08A]"
               >
                 <option value="all">Semua Aksi</option>
                 <option value="identitas">Verifikasi Identitas</option>
@@ -375,22 +390,22 @@ export default function LaporanPage() {
             </div>
 
             <div className="relative">
-              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-stone-400" />
+              <Search className="absolute left-3.5 top-2.5 h-3.5 w-3.5 text-[#5D6B58]" />
               <input
                 type="text"
                 placeholder="Cari aksi / pelaku..."
                 value={auditSearch}
                 onChange={(e) => setAuditSearch(e.target.value)}
-                className="rounded-xl border border-stone-200 bg-stone-50 pl-8 pr-3 py-1.5 text-xs text-stone-800 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200"
+                className="rounded-full border border-[#DCE5D8] bg-[#F4F7F2] pl-9 pr-4 py-1.5 text-xs text-stone-800 placeholder-[#5D6B58]/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20 dark:border-[#2C382A] dark:bg-[#171D16] dark:text-stone-200"
               />
             </div>
           </div>
 
           {/* List Audit Log */}
-          <div className="overflow-hidden rounded-2xl border border-stone-200/90 bg-white shadow-xs dark:border-stone-800 dark:bg-stone-900">
+          <div className="overflow-hidden rounded-[24px] border border-[#DCE5D8] bg-white shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-stone-200/80 bg-stone-50/70 font-semibold text-stone-600 dark:border-stone-800 dark:bg-stone-800/40 dark:text-stone-300">
+                <thead className="border-b border-[#DCE5D8] bg-[#E8EFE5]/60 font-bold text-[#4F604A] dark:border-[#2C382A] dark:bg-[#171D16]/70 dark:text-[#95B08A]">
                   <tr>
                     <th className="py-3 px-4">Waktu</th>
                     <th className="py-3 px-3">Pelaku</th>
@@ -399,32 +414,32 @@ export default function LaporanPage() {
                     <th className="py-3 px-4">Detail Perubahan</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-stone-100 dark:divide-stone-800/60 text-stone-800 dark:text-stone-200">
+                <tbody className="divide-y divide-[#DCE5D8]/70 dark:divide-[#2C382A] text-stone-800 dark:text-stone-200">
                   {filteredAuditLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-stone-50/70 dark:hover:bg-stone-800/30">
-                      <td className="py-3 px-4 font-mono text-stone-500 whitespace-nowrap">
+                    <tr key={log.id} className="hover:bg-[#F4F7F2]/60 dark:hover:bg-[#2C382A]/30 transition-colors">
+                      <td className="py-3 px-4 font-mono text-[#5D6B58] whitespace-nowrap">
                         {formatDateTimeIndo(log.dibuat_pada)}
                       </td>
                       <td className="py-3 px-3">
-                        <div className="font-semibold text-stone-900 dark:text-stone-100">{log.pelaku_nama || 'Sistem / Webhook'}</div>
-                        <div className="text-[10px] text-stone-400 capitalize">{log.peran || 'System'}</div>
+                        <div className="font-bold text-stone-900 dark:text-stone-100">{log.pelaku_nama || 'Sistem / Webhook'}</div>
+                        <div className="text-[10px] text-[#5D6B58] capitalize font-medium">{log.peran || 'System'}</div>
                       </td>
                       <td className="py-3 px-3">
-                        <span className="font-mono font-medium rounded-md bg-stone-100 px-2 py-0.5 text-stone-800 dark:bg-stone-800 dark:text-stone-200">
+                        <span className="font-mono font-bold rounded-full bg-[#E8EFE5] border border-[#95B08A]/30 px-2.5 py-0.5 text-[#2D4129] dark:bg-[#2C382A] dark:text-[#95B08A]">
                           {log.aksi}
                         </span>
                       </td>
-                      <td className="py-3 px-3 font-mono text-[11px] text-stone-500">
+                      <td className="py-3 px-3 font-mono text-[11px] text-[#5D6B58] dark:text-stone-400">
                         {log.tabel}:{log.data_id}
                       </td>
                       <td className="py-3 px-4 font-mono text-[11px]">
                         {log.sesudah && (
-                          <span className="text-emerald-700 dark:text-emerald-400">
+                          <span className="text-[#3B5336] dark:text-[#95B08A] font-semibold">
                             {JSON.stringify(log.sesudah)}
                           </span>
                         )}
                         {log.sebelum && (
-                          <div className="text-stone-400 text-[10px]">
+                          <div className="text-stone-400 text-[10px] mt-0.5">
                             sebelum: {JSON.stringify(log.sebelum)}
                           </div>
                         )}
@@ -442,37 +457,39 @@ export default function LaporanPage() {
       {/* TAB 3: KELOLA PERAN AKUN (BR-10)                                      */}
       {/* ==================================================================== */}
       {activeTab === 'peran' && (
-        <div className="max-w-2xl rounded-2xl border border-stone-200/90 bg-white p-6 shadow-xs dark:border-stone-800 dark:bg-stone-900 space-y-4 animate-in fade-in duration-200">
+        <div className="max-w-2xl rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-4 animate-in fade-in duration-200">
           <div>
-            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2">
-              <UserCog className="h-5 w-5 text-emerald-600" />
+            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-full bg-[#E8EFE5] text-[#3B5336] flex items-center justify-center dark:bg-[#2C382A] dark:text-[#95B08A]">
+                <UserCog className="h-4 w-4" />
+              </div>
               Pengaturan Hak Akses & Peran Akun (BR-10)
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-[#5D6B58] dark:text-stone-400">
               Peran akun hanya bisa diubah Pemilik. Pemilik tidak bisa mengubah peran akunnya sendiri.
             </p>
           </div>
 
           {roleError && (
-            <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:bg-red-950/30 dark:text-red-300">
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 dark:bg-red-950/30 dark:text-red-300">
               {roleError}
             </div>
           )}
 
           {roleSuccess && (
-            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">
+            <div className="rounded-2xl border border-[#95B08A]/40 bg-[#E8EFE5] p-3.5 text-xs font-medium text-[#2D4129] dark:bg-[#2C382A]/40 dark:text-[#95B08A]">
               {roleSuccess}
             </div>
           )}
 
           <form onSubmit={handleUpdateRole} className="space-y-4 text-xs pt-2">
             <div>
-              <label className="block text-stone-500 mb-1">Pilih Pengguna Sasaran</label>
+              <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Pilih Pengguna Sasaran</label>
               <select
                 required
                 value={targetUserId}
                 onChange={(e) => setTargetUserId(e.target.value)}
-                className="w-full rounded-xl border border-stone-200 p-2.5 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs font-bold text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
               >
                 <option value="">-- Pilih Akun --</option>
                 {state.profiles.map((p) => (
@@ -484,11 +501,11 @@ export default function LaporanPage() {
             </div>
 
             <div>
-              <label className="block text-stone-500 mb-1">Pilih Peran Baru</label>
+              <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Pilih Peran Baru</label>
               <select
                 value={newRole}
                 onChange={(e) => setNewRole(e.target.value as UserRole)}
-                className="w-full rounded-xl border border-stone-200 p-2.5 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs font-bold text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
               >
                 <option value="pengelola">Pengelola (Staf Operasional)</option>
                 <option value="penyewa">Penyewa (Penghuni)</option>
@@ -498,7 +515,7 @@ export default function LaporanPage() {
 
             <button
               type="submit"
-              className="rounded-xl bg-stone-900 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-700 dark:bg-stone-100 dark:text-stone-900 transition-colors"
+              className="rounded-full bg-[#3B5336] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
             >
               Simpan Perubahan Peran
             </button>

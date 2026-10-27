@@ -30,7 +30,7 @@ interface StorageState {
 
 const STORAGE_KEY = 'griya_kenanga_state_v1';
 
-function getDefaultState(): StorageState {
+export function getDefaultState(): StorageState {
   return {
     currentUser: null, // Default: Belum login saat pertama buka link
     profiles: INITIAL_PROFILES,
@@ -108,6 +108,30 @@ export class GriyaStore {
 
   public getCurrentUser(): Profile | null {
     return this.state.currentUser;
+  }
+
+  public isEmailRegistered(email: string): boolean {
+    const trimmed = email.trim().toLowerCase();
+    return this.state.profiles.some(p => p.email.toLowerCase() === trimmed);
+  }
+
+  public getProfileByEmail(email: string): Profile | undefined {
+    const trimmed = email.trim().toLowerCase();
+    return this.state.profiles.find(p => p.email.toLowerCase() === trimmed);
+  }
+
+  public loginWithGoogle(email: string): Profile {
+    const trimmed = email.trim().toLowerCase();
+    const found = this.state.profiles.find(p => p.email.toLowerCase() === trimmed);
+    if (!found) {
+      throw new Error('Akun Google ini belum terdaftar dalam sistem. Silakan buat akun pendaftaran terlebih dahulu.');
+    }
+    if (!found.aktif) {
+      throw new Error('Akun Google ini telah dinonaktifkan oleh administrator');
+    }
+    this.state.currentUser = found;
+    this.persistState();
+    return found;
   }
 
   public login(email: string, kataSandi?: string): Profile {

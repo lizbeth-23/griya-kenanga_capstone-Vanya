@@ -1,13 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { GriyaStore } from './store';
+import { GriyaStore, getDefaultState } from './store';
 
 export function useGriyaStore() {
   const store = GriyaStore.getInstance();
-  const [state, setState] = useState(() => store.getState());
+  const [isMounted, setIsMounted] = useState(false);
+  const [state, setState] = useState(() => getDefaultState());
 
   useEffect(() => {
+    setIsMounted(true);
+    setState({ ...store.getState() });
+
     const unsubscribe = store.subscribe(() => {
       setState({ ...store.getState() });
     });
@@ -15,8 +19,9 @@ export function useGriyaStore() {
   }, [store]);
 
   return {
-    state,
-    currentUser: state.currentUser,
+    state: isMounted ? state : getDefaultState(),
+    currentUser: isMounted ? state.currentUser : null,
+    isMounted,
     store
   };
 }

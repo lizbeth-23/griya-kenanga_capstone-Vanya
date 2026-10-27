@@ -169,23 +169,25 @@ export default function KerusakanPage() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
       
       {/* Header Halaman */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-stone-200/80 pb-6 dark:border-stone-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DCE5D8] pb-6 dark:border-[#2C382A]">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-2.5">
-            <Wrench className="h-7 w-7 text-stone-800 dark:text-stone-200" />
+          <h1 className="text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 sm:text-3xl flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-[#E8EFE5] text-[#3B5336] flex items-center justify-center dark:bg-[#2C382A] dark:text-[#95B08A] shrink-0">
+              <Wrench className="h-5 w-5" />
+            </div>
             Laporan Kerusakan & Perbaikan Unit
           </h1>
-          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+          <p className="mt-1 text-sm text-[#5D6B58] dark:text-stone-400">
             Alur pelacakan komplain perbaikan unit kos & studio Griya Kenanga Residence (BR-11, BR-12)
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Filter Status */}
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-xs font-medium text-stone-700 dark:border-stone-800 dark:bg-stone-900 dark:text-stone-300"
+            className="rounded-full border border-[#DCE5D8] bg-[#F4F7F2] px-3.5 py-1.5 text-xs font-bold text-[#2D4129] focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20 dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-[#95B08A]"
           >
             <option value="all">Semua Status</option>
             <option value="dilaporkan">Dilaporkan</option>
@@ -202,7 +204,7 @@ export default function KerusakanPage() {
                 setCreateModalOpen(true);
                 setErrorMsg('');
               }}
-              className="flex items-center gap-1.5 rounded-xl bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 dark:bg-stone-100 dark:text-stone-900 transition-colors"
+              className="flex items-center gap-1.5 rounded-full bg-[#3B5336] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] transition-all active:scale-95"
             >
               <Plus className="h-4 w-4" />
               Buat Laporan Baru
@@ -213,15 +215,15 @@ export default function KerusakanPage() {
 
       {/* Alert Messages */}
       {errorMsg && (
-        <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-300 flex items-center gap-2">
           <ShieldAlert className="h-4 w-4 shrink-0" />
           <span>{errorMsg}</span>
         </div>
       )}
 
       {successMsg && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300 flex items-center gap-2">
-          <CheckCircle2 className="h-4 w-4 shrink-0" />
+        <div className="rounded-2xl border border-[#95B08A]/40 bg-[#E8EFE5] p-3.5 text-xs font-medium text-[#2D4129] dark:border-[#3B5336] dark:bg-[#1E261D] dark:text-[#95B08A] flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-[#3B5336] dark:text-[#95B08A]" />
           <span>{successMsg}</span>
         </div>
       )}
@@ -231,7 +233,7 @@ export default function KerusakanPage() {
         
         {/* Kolom Kiri: List Laporan (4 Kolom) */}
         <div className="lg:col-span-4 space-y-3">
-          <div className="text-xs font-semibold uppercase text-stone-400">
+          <div className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400">
             Daftar Laporan ({visibleReports.length})
           </div>
 
@@ -244,22 +246,22 @@ export default function KerusakanPage() {
                 <div
                   key={rep.id}
                   onClick={() => setSelectedReportId(rep.id)}
-                  className={`rounded-2xl border p-4 cursor-pointer transition-all ${
+                  className={`rounded-2xl border p-4 cursor-pointer transition-all active:scale-[0.99] ${
                     isSelected
-                      ? 'border-emerald-600 bg-emerald-50/40 shadow-xs dark:bg-emerald-950/20'
-                      : 'border-stone-200/90 bg-white hover:border-stone-300 dark:border-stone-800 dark:bg-stone-900'
+                      ? 'border-[#3B5336] bg-[#E8EFE5]/50 shadow-xs dark:bg-[#2C382A]/40 dark:border-[#738F67]'
+                      : 'border-[#DCE5D8] bg-white hover:border-[#738F67] dark:border-[#2C382A] dark:bg-[#1E261D]'
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-stone-500 font-semibold">{rep.nomor}</span>
-                    <span className={`rounded-md px-2 py-0.5 text-[10px] font-semibold capitalize ${
+                    <span className="font-mono text-[#5D6B58] font-bold">{rep.nomor}</span>
+                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold capitalize border ${
                       rep.status === 'menunggu_persetujuan'
-                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
+                        ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
                         : rep.status === 'diproses'
-                        ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300'
+                        ? 'bg-[#E8EFE5] text-[#2D4129] border-[#95B08A]/30 dark:bg-[#2C382A] dark:text-[#95B08A]'
                         : rep.status === 'selesai'
-                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
-                        : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'
+                        ? 'bg-[#3B5336] text-white border-transparent'
+                        : 'bg-stone-100 text-stone-700 border-stone-200 dark:bg-stone-800 dark:text-stone-300'
                     }`}>
                       {rep.status.replace('_', ' ')}
                     </span>
@@ -269,12 +271,12 @@ export default function KerusakanPage() {
                     {rep.judul}
                   </div>
 
-                  <div className="mt-1 text-xs text-stone-500">
-                    Unit {unit?.kode} · Kategori: <span className="capitalize">{rep.kategori}</span>
+                  <div className="mt-1 text-xs text-[#5D6B58] dark:text-stone-400">
+                    Unit {unit?.kode} · Kategori: <span className="capitalize font-medium">{rep.kategori}</span>
                   </div>
 
                   {rep.estimasi_biaya > 0 && (
-                    <div className="mt-2 text-[11px] font-medium text-stone-600 dark:text-stone-400">
+                    <div className="mt-2 text-[11px] font-bold text-[#2D4129] dark:text-[#95B08A]">
                       Estimasi: {formatRupiah(rep.estimasi_biaya)}
                     </div>
                   )}
@@ -286,12 +288,12 @@ export default function KerusakanPage() {
 
         {/* Kolom Kanan: Detail Laporan Sesuai Wireframe Page 3 (8 Kolom) */}
         {selectedReport ? (
-          <div className="lg:col-span-8 rounded-2xl border border-stone-200/90 bg-white p-6 shadow-xs dark:border-stone-800 dark:bg-stone-900 space-y-6">
+          <div className="lg:col-span-8 rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] space-y-6">
             
             {/* Header Detail */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-100 pb-4 dark:border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#DCE5D8] pb-4 dark:border-[#2C382A]">
               <div>
-                <span className="text-xs text-stone-400">Kerusakan / {selectedReport.nomor}</span>
+                <span className="text-xs font-semibold text-[#5D6B58] dark:text-stone-400">Kerusakan / {selectedReport.nomor}</span>
                 <h2 className="text-xl font-extrabold text-stone-900 dark:text-stone-100 mt-0.5">
                   {selectedReport.judul}
                 </h2>
@@ -299,28 +301,28 @@ export default function KerusakanPage() {
                   const unit = state.units.find(u => u.id === selectedReport.unit_id);
                   const reporter = state.profiles.find(p => p.id === selectedReport.pelapor_id);
                   return (
-                    <p className="text-xs text-stone-500 mt-1">
+                    <p className="text-xs text-[#5D6B58] dark:text-stone-400 mt-1">
                       Unit {unit?.kode} · Dilaporkan {reporter?.nama_lengkap} · {formatDateIndo(selectedReport.dibuat_pada)}
                     </p>
                   );
                 })()}
               </div>
 
-              <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold capitalize ${
+              <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-bold capitalize border ${
                 selectedReport.status === 'menunggu_persetujuan'
-                  ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300'
+                  ? 'bg-amber-50 text-amber-800 border-amber-200 dark:bg-amber-950/40 dark:text-amber-300'
                   : selectedReport.status === 'diproses'
-                  ? 'bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300'
+                  ? 'bg-[#E8EFE5] text-[#2D4129] border-[#95B08A]/30 dark:bg-[#2C382A] dark:text-[#95B08A]'
                   : selectedReport.status === 'selesai'
-                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300'
-                  : 'bg-stone-100 text-stone-700 dark:bg-stone-800 dark:text-stone-300'
+                  ? 'bg-[#3B5336] text-white border-transparent'
+                  : 'bg-stone-100 text-stone-700 border-stone-200 dark:bg-stone-800 dark:text-stone-300'
               }`}>
                 {selectedReport.status.replace('_', ' ')}
               </span>
             </div>
 
             {/* Stepper Status (Dilaporkan -> Menunggu Persetujuan -> Diproses -> Selesai -> Ditutup) Sesuai Wireframe Page 3 */}
-            <div className="rounded-2xl border border-stone-100 bg-stone-50/70 p-4 dark:border-stone-800 dark:bg-stone-800/30">
+            <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16]">
               <div className="flex items-center justify-between text-center text-xs">
                 {[
                   { step: 1, label: 'Dilaporkan' },
@@ -337,15 +339,15 @@ export default function KerusakanPage() {
                     <div key={s.step} className="flex-1 flex flex-col items-center">
                       <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all ${
                         isCurrent
-                          ? 'bg-emerald-600 text-white ring-4 ring-emerald-100 dark:ring-emerald-950'
+                          ? 'bg-[#3B5336] text-white ring-4 ring-[#E8EFE5] dark:ring-[#2C382A]'
                           : isDone
-                          ? 'bg-stone-800 text-white dark:bg-stone-200 dark:text-stone-900'
-                          : 'bg-stone-200 text-stone-500 dark:bg-stone-700'
+                          ? 'bg-[#738F67] text-white'
+                          : 'bg-[#E8EFE5] text-[#5D6B58] dark:bg-[#2C382A] dark:text-stone-400'
                       }`}>
                         {s.step}
                       </div>
-                      <span className={`mt-1.5 text-[11px] font-medium hidden sm:block ${
-                        isCurrent ? 'text-emerald-700 dark:text-emerald-400 font-bold' : 'text-stone-500'
+                      <span className={`mt-1.5 text-[11px] font-semibold hidden sm:block ${
+                        isCurrent ? 'text-[#2D4129] dark:text-[#95B08A] font-bold' : 'text-[#5D6B58] dark:text-stone-400'
                       }`}>
                         {s.label}
                       </span>
@@ -359,23 +361,23 @@ export default function KerusakanPage() {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               
               {/* Kolom Kiri Detail Laporan */}
-              <div className="space-y-3 text-xs">
+              <div className="space-y-3.5 text-xs">
                 <h3 className="font-bold text-stone-900 dark:text-stone-100">Detail Laporan</h3>
-                <div className="rounded-xl border border-stone-100 bg-stone-50/60 p-3 dark:border-stone-800 dark:bg-stone-800/40 space-y-2">
-                  <div><span className="text-stone-400">Nomor:</span> <span className="font-mono font-medium">{selectedReport.nomor}</span></div>
-                  <div><span className="text-stone-400">Kategori:</span> <span className="capitalize">{selectedReport.kategori}</span></div>
-                  <div><span className="text-stone-400">Deskripsi:</span> {selectedReport.deskripsi}</div>
+                <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16] space-y-2.5">
+                  <div><span className="text-[#5D6B58] dark:text-stone-400">Nomor:</span> <span className="font-mono font-bold text-[#2D4129] dark:text-[#95B08A]">{selectedReport.nomor}</span></div>
+                  <div><span className="text-[#5D6B58] dark:text-stone-400">Kategori:</span> <span className="capitalize font-semibold text-stone-900 dark:text-stone-100">{selectedReport.kategori}</span></div>
+                  <div><span className="text-[#5D6B58] dark:text-stone-400">Deskripsi:</span> <span className="text-stone-700 dark:text-stone-300">{selectedReport.deskripsi}</span></div>
                   {selectedReport.catatan && (
-                    <div><span className="text-stone-400">Catatan Pengelola:</span> {selectedReport.catatan}</div>
+                    <div><span className="text-[#5D6B58] dark:text-stone-400">Catatan Pengelola:</span> <span className="text-stone-700 dark:text-stone-300">{selectedReport.catatan}</span></div>
                   )}
                   {selectedReport.estimasi_biaya > 0 && (
                     <div>
-                      <span className="text-stone-400">Estimasi Biaya:</span>{' '}
-                      <span className="font-bold text-stone-900 dark:text-stone-100">
+                      <span className="text-[#5D6B58] dark:text-stone-400">Estimasi Biaya:</span>{' '}
+                      <span className="font-bold text-[#2D4129] dark:text-[#95B08A]">
                         {formatRupiah(selectedReport.estimasi_biaya)}
                       </span>
                       {selectedReport.estimasi_biaya > 1000000 && (
-                        <span className="text-[10px] text-red-600 ml-1 font-medium">
+                        <span className="text-[10px] text-red-600 ml-1 font-semibold">
                           (Wajib disetujui Pemilik - BR-12)
                         </span>
                       )}
@@ -383,8 +385,8 @@ export default function KerusakanPage() {
                   )}
                   {selectedReport.biaya_aktual > 0 && (
                     <div>
-                      <span className="text-stone-400">Biaya Aktual Selesai:</span>{' '}
-                      <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                      <span className="text-[#5D6B58] dark:text-stone-400">Biaya Aktual Selesai:</span>{' '}
+                      <span className="font-bold text-[#3B5336] dark:text-[#95B08A]">
                         {formatRupiah(selectedReport.biaya_aktual)}
                       </span>
                     </div>
@@ -393,14 +395,14 @@ export default function KerusakanPage() {
 
                 {/* Foto Kerusakan (1 sampai 3 foto) */}
                 <div>
-                  <span className="text-[11px] font-semibold text-stone-500 block mb-1.5">
+                  <span className="text-[11px] font-bold text-[#5D6B58] dark:text-stone-400 block mb-2">
                     Lampiran Foto Kerusakan ({selectedReport.foto_paths.length} foto)
                   </span>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {selectedReport.foto_paths.map((p, idx) => (
-                      <div key={idx} className="flex flex-col items-center justify-center rounded-xl border border-dashed border-stone-300 bg-stone-50 p-4 text-center dark:border-stone-700 dark:bg-stone-800/30">
-                        <Camera className="h-5 w-5 text-stone-400 mb-1" />
-                        <span className="font-mono text-[10px] text-stone-500 truncate w-full">{p}</span>
+                      <div key={idx} className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#95B08A] bg-[#E8EFE5]/30 p-4 text-center dark:border-[#3B5336] dark:bg-[#2C382A]/30">
+                        <Camera className="h-5 w-5 text-[#3B5336] dark:text-[#95B08A] mb-1" />
+                        <span className="font-mono text-[10px] text-[#5D6B58] dark:text-stone-400 truncate w-full">{p}</span>
                       </div>
                     ))}
                   </div>
@@ -412,20 +414,20 @@ export default function KerusakanPage() {
                 
                 {/* Kotak Tindakan Khusus Pemilik (Sesuai Wireframe Page 3) */}
                 {selectedReport.status === 'menunggu_persetujuan' && isOwner && (
-                  <div className="rounded-2xl border border-amber-300 bg-amber-50/50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">
+                  <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900/60 dark:bg-amber-950/20">
                     <h4 className="text-xs font-bold text-amber-900 dark:text-amber-300">
                       Tindakan Persetujuan Pemilik
                     </h4>
                     <p className="mt-1 text-[11px] text-amber-800/80 dark:text-amber-400">
                       Biaya di atas Rp1.000.000 ({formatRupiah(selectedReport.estimasi_biaya)}) wajib disetujui Pemilik sebelum dikerjakan.
                     </p>
-                    <div className="mt-3 flex gap-2">
+                    <div className="mt-3.5 flex gap-2">
                       <button
                         onClick={() => {
                           setApproveReport(selectedReport);
                           setErrorMsg('');
                         }}
-                        className="rounded-xl bg-emerald-700 px-3 py-1.5 text-xs font-semibold text-white hover:bg-emerald-800"
+                        className="rounded-full bg-[#3B5336] px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
                       >
                         Setujui Biaya
                       </button>
@@ -434,9 +436,9 @@ export default function KerusakanPage() {
                           setApproveReport(selectedReport);
                           setErrorMsg('');
                         }}
-                        className="rounded-xl border border-red-300 bg-white px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 dark:bg-stone-900"
+                        className="rounded-full border border-red-200 bg-white px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:bg-stone-900 transition-colors"
                       >
-                        Tolak dengan Alasan
+                        Tolak
                       </button>
                     </div>
                   </div>
@@ -444,7 +446,7 @@ export default function KerusakanPage() {
 
                 {/* Kotak Tindakan Pengelola */}
                 {isManager && (
-                  <div className="rounded-2xl border border-stone-200 bg-stone-50/50 p-4 dark:border-stone-800 dark:bg-stone-800/20 space-y-2">
+                  <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2] p-4 dark:border-[#2C382A] dark:bg-[#171D16] space-y-2.5">
                     <h4 className="text-xs font-bold text-stone-900 dark:text-stone-100">
                       Tindakan Pengelola
                     </h4>
@@ -457,7 +459,7 @@ export default function KerusakanPage() {
                           setEstimasiBiaya(selectedReport.estimasi_biaya || 200000);
                           setErrorMsg('');
                         }}
-                        className="w-full rounded-xl bg-stone-900 py-2 text-xs font-semibold text-white hover:bg-emerald-700 dark:bg-stone-100 dark:text-stone-900"
+                        className="w-full rounded-full bg-[#3B5336] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
                       >
                         Isi Estimasi & Proses Perbaikan &rarr;
                       </button>
@@ -471,7 +473,7 @@ export default function KerusakanPage() {
                           setBiayaAktual(selectedReport.estimasi_biaya || 0);
                           setErrorMsg('');
                         }}
-                        className="w-full rounded-xl bg-emerald-700 py-2 text-xs font-semibold text-white hover:bg-emerald-800"
+                        className="w-full rounded-full bg-[#3B5336] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
                       >
                         Tandai Selesai Dikerjakan &rarr;
                       </button>
@@ -482,11 +484,11 @@ export default function KerusakanPage() {
                       <div>
                         <button
                           onClick={() => handleCloseReport(selectedReport.id)}
-                          className="w-full rounded-xl border border-stone-300 py-2 text-xs font-medium text-stone-800 hover:bg-stone-100 dark:border-stone-700 dark:text-stone-200"
+                          className="w-full rounded-full border border-[#DCE5D8] bg-white py-2.5 text-xs font-bold text-stone-800 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:bg-[#1E261D] dark:text-stone-200 transition-colors"
                         >
                           Tutup Laporan (Validasi 3 Hari BR-12)
                         </button>
-                        <p className="mt-1 text-[10px] text-stone-400">
+                        <p className="mt-1 text-[10px] text-[#5D6B58] dark:text-stone-400">
                           Catatan: Pengelola baru boleh menutup bila 3 hari setelah selesai belum ditutup penyewa.
                         </p>
                       </div>
@@ -496,16 +498,16 @@ export default function KerusakanPage() {
 
                 {/* Kotak Tindakan Penyewa Pelapor (Tutup Laporan saat Selesai) */}
                 {isTenant && selectedReport.status === 'selesai' && (
-                  <div className="rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 dark:border-emerald-900/40 dark:bg-emerald-950/20">
-                    <h4 className="text-xs font-bold text-emerald-900 dark:text-emerald-300">
+                  <div className="rounded-2xl border border-[#95B08A]/40 bg-[#E8EFE5] p-4 dark:border-[#3B5336] dark:bg-[#1E261D]">
+                    <h4 className="text-xs font-bold text-[#2D4129] dark:text-[#95B08A]">
                       Perbaikan Selesai
                     </h4>
-                    <p className="mt-1 text-[11px] text-emerald-800/80 dark:text-emerald-400">
+                    <p className="mt-1 text-[11px] text-[#5D6B58] dark:text-stone-300">
                       Staf telah menyelesaikan perbaikan unit Anda. Silakan periksa hasilnya dan tekan tombol tutup di bawah.
                     </p>
                     <button
                       onClick={() => handleCloseReport(selectedReport.id)}
-                      className="mt-3 w-full rounded-xl bg-emerald-700 py-2 text-xs font-semibold text-white hover:bg-emerald-800"
+                      className="mt-3.5 w-full rounded-full bg-[#3B5336] py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
                     >
                       Konfirmasi & Tutup Laporan
                     </button>
@@ -513,23 +515,23 @@ export default function KerusakanPage() {
                 )}
 
                 {/* Riwayat Audit Log Terkait */}
-                <div className="rounded-2xl border border-stone-100 bg-stone-50/40 p-3.5 dark:border-stone-800 dark:bg-stone-800/20">
-                  <h4 className="text-[11px] font-bold uppercase text-stone-400 mb-2">Riwayat Audit Laporan</h4>
+                <div className="rounded-2xl border border-[#DCE5D8] bg-[#F4F7F2]/60 p-4 dark:border-[#2C382A] dark:bg-[#171D16]/60">
+                  <h4 className="text-[11px] font-bold uppercase tracking-wider text-[#5D6B58] dark:text-stone-400 mb-2.5">Riwayat Audit Laporan</h4>
                   <div className="space-y-2 text-[11px]">
                     <div className="flex justify-between text-stone-600 dark:text-stone-400">
                       <span>Dibuat:</span>
-                      <span>{formatDateTimeIndo(selectedReport.dibuat_pada)}</span>
+                      <span className="font-semibold">{formatDateTimeIndo(selectedReport.dibuat_pada)}</span>
                     </div>
                     {selectedReport.selesai_pada && (
-                      <div className="flex justify-between text-emerald-600">
+                      <div className="flex justify-between text-[#3B5336] dark:text-[#95B08A]">
                         <span>Selesai:</span>
-                        <span>{formatDateTimeIndo(selectedReport.selesai_pada)}</span>
+                        <span className="font-semibold">{formatDateTimeIndo(selectedReport.selesai_pada)}</span>
                       </div>
                     )}
                     {selectedReport.ditutup_pada && (
                       <div className="flex justify-between text-stone-500">
                         <span>Ditutup:</span>
-                        <span>{formatDateTimeIndo(selectedReport.ditutup_pada)}</span>
+                        <span className="font-semibold">{formatDateTimeIndo(selectedReport.ditutup_pada)}</span>
                       </div>
                     )}
                   </div>
@@ -541,7 +543,7 @@ export default function KerusakanPage() {
 
           </div>
         ) : (
-          <div className="lg:col-span-8 flex items-center justify-center rounded-2xl border border-stone-200 bg-white p-12 text-stone-400">
+          <div className="lg:col-span-8 flex items-center justify-center rounded-[28px] border border-[#DCE5D8] bg-white p-12 text-[#5D6B58] dark:border-[#2C382A] dark:bg-[#1E261D]">
             Pilih laporan dari daftar di sebelah kiri untuk melihat detail.
           </div>
         )}
@@ -551,21 +553,29 @@ export default function KerusakanPage() {
       {/* MODAL BUAT LAPORAN KERUSAKAN (Penyewa - BR-11) */}
       {createModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl border border-stone-200 bg-white p-6 shadow-2xl dark:border-stone-800 dark:bg-stone-900">
-            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
-              Ajukan Laporan Kerusakan Unit
-            </h3>
-            <p className="mt-1 text-xs text-stone-500">
+          <div className="w-full max-w-md rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#DCE5D8] dark:border-[#2C382A]">
+              <h3 className="text-base font-bold text-stone-900 dark:text-stone-100">
+                Ajukan Laporan Kerusakan Unit
+              </h3>
+              <button 
+                onClick={() => setCreateModalOpen(false)}
+                className="h-8 w-8 rounded-full flex items-center justify-center text-stone-400 hover:bg-[#F4F7F2] hover:text-stone-700 dark:hover:bg-[#2C382A] transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-[#5D6B58] dark:text-stone-400">
               BR-11: Laporan hanya untuk unit kontrak aktif Anda. Wajib lampirkan 1 sampai 3 foto. Maksimal 3 laporan terbuka.
             </p>
 
-            <form onSubmit={handleCreateReport} className="mt-4 space-y-3 text-xs">
+            <form onSubmit={handleCreateReport} className="mt-4 space-y-3.5 text-xs">
               <div>
-                <label className="block text-stone-500 mb-1">Kategori Masalah</label>
+                <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Kategori Masalah</label>
                 <select
                   value={newKategori}
                   onChange={(e) => setNewKategori(e.target.value as any)}
-                  className="w-full rounded-xl border border-stone-200 p-2 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                  className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs font-bold text-[#2D4129] focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20 dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-[#95B08A]"
                 >
                   <option value="bangunan">Bangunan / Pintu / Jendela</option>
                   <option value="listrik">Listrik / Lampu / Stopkontak</option>
@@ -577,7 +587,7 @@ export default function KerusakanPage() {
               </div>
 
               <div>
-                <label className="block text-stone-500 mb-1">Judul Masalah (5 - 80 Karakter)</label>
+                <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Judul Masalah (5 - 80 Karakter)</label>
                 <input
                   type="text"
                   required
@@ -586,44 +596,44 @@ export default function KerusakanPage() {
                   value={newJudul}
                   onChange={(e) => setNewJudul(e.target.value)}
                   placeholder="Contoh: Kran shower bocor tidak bisa ditutup rapat"
-                  className="w-full rounded-xl border border-stone-200 p-2 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                  className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs font-bold text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
                 />
               </div>
 
               <div>
-                <label className="block text-stone-500 mb-1">Deskripsi Lengkap Kerusakan</label>
+                <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Deskripsi Lengkap Kerusakan</label>
                 <textarea
                   rows={3}
                   required
                   value={newDeskripsi}
                   onChange={(e) => setNewDeskripsi(e.target.value)}
                   placeholder="Jelaskan detail kendala yang dialami..."
-                  className="w-full rounded-xl border border-stone-200 p-2 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                  className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
                 />
               </div>
 
               <div>
-                <label className="block text-stone-500 mb-1">Foto Kerusakan (Path di Bucket Privat - BR-11)</label>
+                <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Foto Kerusakan (Path di Bucket Privat - BR-11)</label>
                 <input
                   type="text"
                   required
                   value={newFotoPath}
                   onChange={(e) => setNewFotoPath(e.target.value)}
-                  className="w-full rounded-xl border border-stone-200 p-2 text-xs font-mono dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                  className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs font-mono dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[#3B5336]/20"
                 />
               </div>
 
-              <div className="mt-5 flex justify-end gap-2 pt-2">
+              <div className="mt-5 flex justify-end gap-2.5 pt-2">
                 <button
                   type="button"
                   onClick={() => setCreateModalOpen(false)}
-                  className="rounded-xl border border-stone-200 px-3.5 py-1.5 text-xs font-medium text-stone-600 dark:border-stone-700"
+                  className="rounded-full border border-[#DCE5D8] px-4 py-2 text-xs font-semibold text-stone-600 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:text-stone-300 transition-colors"
                 >
                   Batal
                 </button>
                 <button
                   type="submit"
-                  className="rounded-xl bg-stone-900 px-4 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 dark:bg-stone-100 dark:text-stone-900"
+                  className="rounded-full bg-[#3B5336] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
                 >
                   Kirim Laporan
                 </button>
@@ -636,48 +646,48 @@ export default function KerusakanPage() {
       {/* MODAL PROSES ESTIMASI (Pengelola - BR-12) */}
       {processReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl dark:border-stone-800 dark:bg-stone-900">
+          <div className="w-full max-w-sm rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
             <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
               Estimasi Biaya Perbaikan (BR-12)
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-[#5D6B58] dark:text-stone-400">
               Jika estimasi &gt; Rp1.000.000, sistem otomatis mengalihkan status ke persetujuan Pemilik.
             </p>
 
-            <div className="mt-4 space-y-3 text-xs">
+            <div className="mt-4 space-y-3.5 text-xs">
               <div>
-                <label className="block text-stone-500 mb-1">Perkiraan Biaya (Rupiah)</label>
+                <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Perkiraan Biaya (Rupiah)</label>
                 <input
                   type="number"
                   step="50000"
                   value={estimasiBiaya}
                   onChange={(e) => setEstimasiBiaya(Number(e.target.value))}
-                  className="w-full rounded-xl border border-stone-200 p-2 text-sm font-bold text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                  className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-sm font-bold text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
                 />
               </div>
 
               <div>
-                <label className="block text-stone-500 mb-1">Catatan Analisis Pengelola</label>
+                <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Catatan Analisis Pengelola</label>
                 <textarea
                   rows={2}
                   value={catatanPengelola}
                   onChange={(e) => setCatatanPengelola(e.target.value)}
                   placeholder="Contoh: Perlu penggantian sparepart baru"
-                  className="w-full rounded-xl border border-stone-200 p-2 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                  className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
                 />
               </div>
             </div>
 
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-5 flex justify-end gap-2.5">
               <button
                 onClick={() => setProcessReport(null)}
-                className="rounded-xl border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 dark:border-stone-700"
+                className="rounded-full border border-[#DCE5D8] px-4 py-2 text-xs font-semibold text-stone-600 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:text-stone-300 transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={handleProcess}
-                className="rounded-xl bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-700 dark:bg-stone-100 dark:text-stone-900"
+                className="rounded-full bg-[#3B5336] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
               >
                 Lanjutkan
               </button>
@@ -689,41 +699,41 @@ export default function KerusakanPage() {
       {/* MODAL PERSETUJUAN PEMILIK (BR-12) */}
       {approveReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl dark:border-stone-800 dark:bg-stone-900">
+          <div className="w-full max-w-sm rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
             <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
               Persetujuan Biaya Perbaikan (BR-12)
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-[#5D6B58] dark:text-stone-400">
               Estimasi: {formatRupiah(approveReport.estimasi_biaya)} untuk {approveReport.nomor}.
             </p>
 
-            <div className="mt-3">
-              <label className="block text-xs text-stone-500 mb-1">Alasan Penolakan (Wajib jika ditolak)</label>
+            <div className="mt-3.5">
+              <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Alasan Penolakan (Wajib jika ditolak)</label>
               <textarea
                 rows={2}
                 value={rejectReason}
                 onChange={(e) => setRejectReason(e.target.value)}
                 placeholder="Contoh: Biaya terlalu tinggi, cari alternatif teknisi"
-                className="w-full rounded-xl border border-stone-200 p-2 text-xs text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-xs text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
               />
             </div>
 
             <div className="mt-5 flex justify-end gap-2">
               <button
                 onClick={() => setApproveReport(null)}
-                className="rounded-xl border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 dark:border-stone-700"
+                className="rounded-full border border-[#DCE5D8] px-3.5 py-1.5 text-xs font-semibold text-stone-600 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:text-stone-300 transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={() => handleApprove(false)}
-                className="rounded-xl bg-red-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
+                className="rounded-full bg-[#C25E5E] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#A84A4A] active:scale-95 transition-all shadow-sm"
               >
                 Tolak
               </button>
               <button
                 onClick={() => handleApprove(true)}
-                className="rounded-xl bg-emerald-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-800"
+                className="rounded-full bg-[#3B5336] px-4 py-1.5 text-xs font-bold text-white hover:bg-[#2D4129] active:scale-95 transition-all shadow-sm"
               >
                 Setujui Biaya
               </button>
@@ -735,34 +745,34 @@ export default function KerusakanPage() {
       {/* MODAL TANDAI SELESAI (Pengelola - BR-12) */}
       {finishReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/60 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-sm rounded-2xl border border-stone-200 bg-white p-5 shadow-2xl dark:border-stone-800 dark:bg-stone-900">
+          <div className="w-full max-w-sm rounded-[28px] border border-[#DCE5D8] bg-white p-6 shadow-2xl dark:border-[#2C382A] dark:bg-[#1E261D]">
             <h3 className="text-sm font-bold text-stone-900 dark:text-stone-100">
               Tandai Perbaikan Selesai
             </h3>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-[#5D6B58] dark:text-stone-400">
               BR-12: Biaya aktual sebenarnya wajib diisi saat pekerjaan selesai.
             </p>
 
             <div className="mt-4">
-              <label className="block text-xs text-stone-500 mb-1">Biaya Aktual Akhir (Rupiah)</label>
+              <label className="block text-xs font-semibold text-[#5D6B58] dark:text-stone-300 mb-1.5">Biaya Aktual Akhir (Rupiah)</label>
               <input
                 type="number"
                 value={biayaAktual}
                 onChange={(e) => setBiayaAktual(Number(e.target.value))}
-                className="w-full rounded-xl border border-stone-200 p-2 text-sm font-bold text-stone-900 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100"
+                className="w-full rounded-2xl border border-[#DCE5D8] bg-[#E8EFE5]/40 p-2.5 text-sm font-bold text-stone-900 focus:bg-white focus:border-[#3B5336] focus:ring-2 focus:ring-[#3B5336]/20 focus:outline-none dark:border-[#2C382A] dark:bg-[#2C382A] dark:text-stone-100"
               />
             </div>
 
-            <div className="mt-5 flex justify-end gap-2">
+            <div className="mt-5 flex justify-end gap-2.5">
               <button
                 onClick={() => setFinishReport(null)}
-                className="rounded-xl border border-stone-200 px-3 py-1.5 text-xs font-medium text-stone-600 dark:border-stone-700"
+                className="rounded-full border border-[#DCE5D8] px-4 py-2 text-xs font-semibold text-stone-600 hover:bg-[#F4F7F2] dark:border-[#2C382A] dark:text-stone-300 transition-colors"
               >
                 Batal
               </button>
               <button
                 onClick={handleMarkFinish}
-                className="rounded-xl bg-emerald-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-emerald-800"
+                className="rounded-full bg-[#3B5336] px-5 py-2 text-xs font-bold text-white shadow-sm hover:bg-[#2D4129] active:scale-95 transition-all"
               >
                 Simpan & Tandai Selesai
               </button>

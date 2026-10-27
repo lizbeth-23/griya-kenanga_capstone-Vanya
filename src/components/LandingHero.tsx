@@ -2,181 +2,282 @@
 
 import { useState } from 'react';
 import { useGriyaStore } from '@/lib/use-store';
-import { 
-  Building2, KeyRound, Receipt, Wrench, ShieldCheck, 
-  ArrowRight, LogIn, UserPlus, Sparkles, CheckCircle2, ChevronRight, UserCheck
-} from 'lucide-react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { Info, ArrowRight } from 'lucide-react';
 import AuthModal from './AuthModal';
 
 export default function LandingHero() {
   const { store } = useGriyaStore();
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [openGoogleInModal, setOpenGoogleInModal] = useState(false);
+  
+  // Local login state in the hero card
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('Latihan#2026');
+  const [errorMsg, setErrorMsg] = useState('');
+  const [showForgotTip, setShowForgotTip] = useState(false);
 
-  const handleQuickLogin = (email: string) => {
-    store.login(email, 'Latihan#2026');
+  const handleInlineLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg('');
+    try {
+      if (!email.trim()) {
+        throw new Error('Silakan masukkan email Anda');
+      }
+      store.login(email.trim(), password);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMsg(err.message);
+      } else {
+        setErrorMsg('Gagal masuk');
+      }
+    }
+  };
+
+  const handleQuickLogin = (quickEmail: string) => {
+    store.login(quickEmail, 'Latihan#2026');
+  };
+
+  const handleOpenGoogleAuth = () => {
+    setAuthMode('login');
+    setOpenGoogleInModal(true);
+    setErrorMsg('');
+    setAuthModalOpen(true);
   };
 
   return (
     <div className="space-y-12 animate-in fade-in duration-300">
       
-      {/* Hero Section */}
-      <div className="relative overflow-hidden rounded-3xl border border-stone-200/90 bg-white/70 p-8 sm:p-12 shadow-xs backdrop-blur-md dark:border-stone-800 dark:bg-stone-900/60 text-center max-w-4xl mx-auto">
+      {/* Canvas Mockup Container */}
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-[28px] sm:rounded-[36px] shadow-2xl border border-stone-800/10 bg-[#95B08A] transition-all">
         
-        {/* Glow Accent */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-96 rounded-full bg-emerald-500/10 blur-3xl pointer-events-none" />
+        {/* Content Body: Soft Pastel Sage Green */}
+        <div id="hero" className="p-6 sm:p-10 lg:p-12 relative overflow-hidden">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            
+            {/* Sisi Kiri: Rounded Login Card */}
+            <div className="lg:col-span-6 xl:col-span-5 flex justify-center">
+              <div className="w-full max-w-sm rounded-[28px] bg-[#738F67]/90 p-6 sm:p-8 text-white shadow-xl backdrop-blur-xs border border-white/10">
+                
+                {/* Greeting Title */}
+                <div className="text-center mb-5">
+                  <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                    Hello!
+                  </h1>
+                  <p className="text-xs text-[#E1EDE0] mt-1 font-medium">
+                    Welcome back to GriyaApp
+                  </p>
+                </div>
 
-        <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-800 dark:text-emerald-300 mb-6">
-          <Sparkles className="h-3.5 w-3.5" />
-          <span>Sistem Manajemen Properti Internal Terintegrasi</span>
-        </div>
+                {errorMsg && (
+                  <div className="mb-4 rounded-xl bg-red-500/20 border border-red-300/30 px-3 py-2 text-[11px] text-red-100 text-center">
+                    {errorMsg}
+                  </div>
+                )}
 
-        <h1 className="text-3xl font-extrabold tracking-tight text-stone-900 sm:text-5xl dark:text-stone-100">
-          Griya Kenanga <span className="text-emerald-700 dark:text-emerald-400">Residence</span>
-        </h1>
-        
-        <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base text-stone-600 dark:text-stone-300 leading-relaxed">
-          Hunian kos eksklusif dan studio sewa 24 unit di Sleman, Yogyakarta. Platform internal terpadu untuk pemilik, staf pengelola, dan seluruh penghuni kos.
-        </p>
+                {/* Form Input */}
+                <form onSubmit={handleInlineLogin} className="space-y-4">
+                  <div>
+                    <label className="block text-[11px] font-medium text-[#E2EFE0] mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="dimas@griyakenanga.test"
+                      required
+                      className="w-full rounded-2xl bg-[#E8EFE5] px-4 py-2.5 text-xs sm:text-sm text-[#263823] placeholder-[#7F9979] border border-transparent focus:border-[#3B5336] focus:bg-white focus:outline-none transition-all"
+                    />
+                  </div>
 
-        {/* Tombol Utama: Masuk / Daftar */}
-        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            onClick={() => {
-              setAuthMode('login');
-              setAuthModalOpen(true);
-            }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white shadow-md hover:bg-emerald-700 transition-all dark:bg-stone-100 dark:text-stone-900 dark:hover:bg-emerald-400 active:scale-95"
-          >
-            <LogIn className="h-4 w-4" />
-            <span>Masuk ke Akun Anda</span>
-          </button>
+                  <div>
+                    <label className="block text-[11px] font-medium text-[#E2EFE0] mb-1">
+                      Password
+                    </label>
+                    <input
+                      type="password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                      className="w-full rounded-2xl bg-[#E8EFE5] px-4 py-2.5 text-xs sm:text-sm text-[#263823] placeholder-[#7F9979] border border-transparent focus:border-[#3B5336] focus:bg-white focus:outline-none transition-all"
+                    />
+                    <div className="flex justify-end mt-1">
+                      <button
+                        type="button"
+                        onClick={() => setShowForgotTip(!showForgotTip)}
+                        className="text-[11px] italic text-[#D8E8D5] hover:text-white transition-colors hover:underline"
+                      >
+                        Forget password?
+                      </button>
+                    </div>
 
-          <button
-            onClick={() => {
-              setAuthMode('register');
-              setAuthModalOpen(true);
-            }}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-2xl border border-stone-200 bg-white px-6 py-3.5 text-sm font-semibold text-stone-800 shadow-xs hover:bg-stone-50 transition-all dark:border-stone-700 dark:bg-stone-800 dark:text-stone-200 active:scale-95"
-          >
-            <UserPlus className="h-4 w-4 text-emerald-600" />
-            <span>Daftar Akun Penyewa Baru</span>
-          </button>
-        </div>
+                    {showForgotTip && (
+                      <div className="mt-2 rounded-xl bg-[#52734C]/60 p-2 text-[10px] text-[#E8F2E6] text-center border border-white/10">
+                        Password demo default: <span className="font-mono font-bold">Latihan#2026</span>
+                      </div>
+                    )}
+                  </div>
 
-        {/* Quick Demo Login Box (Khusus Penilai/Mentor) */}
-        <div className="mt-10 rounded-2xl border border-stone-200/80 bg-stone-50/80 p-5 dark:border-stone-800 dark:bg-stone-800/40 text-left">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold uppercase tracking-wider text-stone-700 dark:text-stone-300 flex items-center gap-1.5">
-              <UserCheck className="h-4 w-4 text-emerald-600" />
-              Akses Cepat Demo (Pilih Peran untuk Masuk Langsung):
-            </span>
-            <span className="text-[11px] text-stone-400 font-mono hidden sm:inline">Sandi: Latihan#2026</span>
-          </div>
+                  {/* Tombol Log in */}
+                  <div className="pt-2">
+                    <button
+                      type="submit"
+                      className="w-full rounded-full bg-[#3B5336] py-2.5 text-xs sm:text-sm font-bold text-white shadow-md hover:bg-[#2D4129] active:scale-95 transition-all"
+                    >
+                      Log in
+                    </button>
+                  </div>
+                </form>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-            {/* Pemilik */}
-            <button
-              onClick={() => handleQuickLogin('ratna@griyakenanga.test')}
-              className="group flex flex-col justify-between rounded-xl border border-amber-300/80 bg-white p-3 text-left shadow-xs hover:border-amber-400 hover:bg-amber-50/40 dark:border-amber-900/40 dark:bg-stone-900 dark:hover:bg-amber-950/20 transition-all"
-            >
-              <div>
-                <span className="text-[10px] font-bold uppercase text-amber-700 dark:text-amber-400">👑 Pemilik (Owner)</span>
-                <div className="text-xs font-bold text-stone-900 dark:text-stone-100 mt-0.5">Ratna Kusumawardani</div>
-                <div className="text-[10px] text-stone-400 mt-0.5">Laporan omset, audit log, harga unit</div>
+                {/* Continue with / Akun Demo Cepat */}
+                <div className="mt-5 text-center">
+                  <span className="text-[10px] uppercase tracking-wider text-[#D5E6D2]">
+                    Continue with:
+                  </span>
+                  
+                  {/* Google Login Button */}
+                  <div className="mt-2.5 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={handleOpenGoogleAuth}
+                      className="flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-white shadow-sm hover:scale-105 active:scale-95 transition-all text-[#263823] text-xs font-bold hover:bg-stone-50"
+                      title="Masuk dengan Akun Google"
+                    >
+                      <svg className="h-4 w-4" viewBox="0 0 24 24">
+                        <path
+                          fill="#4285F4"
+                          d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                        />
+                        <path
+                          fill="#34A853"
+                          d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                        />
+                        <path
+                          fill="#FBBC05"
+                          d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+                        />
+                        <path
+                          fill="#EA4335"
+                          d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+                        />
+                      </svg>
+                      <span>Masuk dengan Google</span>
+                    </button>
+                  </div>
+
+                  {/* Switch Akun Cepat Role Latihan */}
+                  <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px]">
+                    <span className="text-[#CADBC7]">Akses:</span>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickLogin('ratna@griyakenanga.test')}
+                      className="underline hover:text-white font-medium text-[#FAFDF9]"
+                    >
+                      👑 Pemilik
+                    </button>
+                    <span>·</span>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickLogin('bayu@griyakenanga.test')}
+                      className="underline hover:text-white font-medium text-[#FAFDF9]"
+                    >
+                      🏢 Pengelola
+                    </button>
+                    <span>·</span>
+                    <button
+                      type="button"
+                      onClick={() => handleQuickLogin('dimas@griyakenanga.test')}
+                      className="underline hover:text-white font-medium text-[#FAFDF9]"
+                    >
+                      👤 Penyewa
+                    </button>
+                  </div>
+                </div>
+
+                {/* Footer Link: Sign Up */}
+                <div className="mt-5 text-center text-xs text-[#E1EDE0]">
+                  Don&apos;t have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode('register');
+                      setAuthModalOpen(true);
+                    }}
+                    className="font-bold text-white hover:underline ml-0.5"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+
               </div>
-              <span className="mt-2 text-[10px] font-semibold text-amber-700 group-hover:underline flex items-center gap-1">
-                Masuk sebagai Pemilik &rarr;
-              </span>
-            </button>
+            </div>
 
-            {/* Pengelola */}
-            <button
-              onClick={() => handleQuickLogin('bayu@griyakenanga.test')}
-              className="group flex flex-col justify-between rounded-xl border border-emerald-300/80 bg-white p-3 text-left shadow-xs hover:border-emerald-400 hover:bg-emerald-50/40 dark:border-emerald-900/40 dark:bg-stone-900 dark:hover:bg-emerald-950/20 transition-all"
-            >
-              <div>
-                <span className="text-[10px] font-bold uppercase text-emerald-700 dark:text-emerald-400">🏢 Pengelola (Staf)</span>
-                <div className="text-xs font-bold text-stone-900 dark:text-stone-100 mt-0.5">Bayu Prasetyo</div>
-                <div className="text-[10px] text-stone-400 mt-0.5">Verifikasi KTP, tagihan, perbaikan</div>
+            {/* Sisi Kanan: 3D Isometric Home / Interior Illustration */}
+            <div className="lg:col-span-6 xl:col-span-7 flex flex-col items-center justify-center relative">
+              
+              {/* Soft ambient backlight circle */}
+              <div className="absolute h-64 w-64 sm:h-80 sm:w-80 rounded-full bg-white/20 blur-2xl pointer-events-none" />
+
+              {/* 3D House Interior Visual */}
+              <div className="relative z-10 group transition-transform duration-500 hover:scale-[1.02]">
+                <Image
+                  src="/3d-house-interior.jpg"
+                  alt="3D Cozy Modern House Interior"
+                  width={520}
+                  height={520}
+                  priority
+                  className="w-full max-w-sm sm:max-w-md lg:max-w-lg rounded-[32px] shadow-2xl object-cover border-4 border-white/20 transition-all h-auto"
+                />
+
+                {/* Floating Chips / Property Badges */}
+                <div className="absolute -top-3 -left-3 sm:-left-6 rounded-2xl bg-white/90 px-3.5 py-1.5 text-[11px] font-bold text-[#2D4129] shadow-lg backdrop-blur-md border border-white/40 flex items-center gap-1.5 animate-bounce [animation-duration:4s]">
+                  <span>🏡</span>
+                  <span>Griya Kenanga 24 Unit</span>
+                </div>
+
+                <div className="absolute -bottom-3 -right-3 sm:-right-4 rounded-2xl bg-[#3B5336]/90 px-3.5 py-1.5 text-[11px] font-bold text-white shadow-lg backdrop-blur-md border border-white/20 flex items-center gap-1.5">
+                  <span>🌿</span>
+                  <span>Hunian Kos & Studio Modern</span>
+                </div>
               </div>
-              <span className="mt-2 text-[10px] font-semibold text-emerald-700 group-hover:underline flex items-center gap-1">
-                Masuk sebagai Pengelola &rarr;
-              </span>
-            </button>
 
-            {/* Penyewa */}
-            <button
-              onClick={() => handleQuickLogin('dimas@griyakenanga.test')}
-              className="group flex flex-col justify-between rounded-xl border border-sky-300/80 bg-white p-3 text-left shadow-xs hover:border-sky-400 hover:bg-sky-50/40 dark:border-sky-900/40 dark:bg-stone-900 dark:hover:bg-sky-950/20 transition-all"
-            >
-              <div>
-                <span className="text-[10px] font-bold uppercase text-sky-700 dark:text-sky-400">👤 Penyewa (A-104)</span>
-                <div className="text-xs font-bold text-stone-900 dark:text-stone-100 mt-0.5">Dimas Saputra</div>
-                <div className="text-[10px] text-stone-400 mt-0.5">Tagihan bulanan, lapor kerusakan</div>
+              {/* Short Description & Link ke Info */}
+              <p className="mt-5 text-center text-xs sm:text-sm text-[#263B23] font-medium max-w-md">
+                Kenyamanan hunian kos eksklusif dan studio sewa modern dengan tata ruang estetis di Sleman, Yogyakarta.
+              </p>
+
+              <div className="mt-5 flex items-center justify-center">
+                <Link
+                  href="/info"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#3B5336] px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#2B3E27] hover:scale-105 active:scale-95 transition-all"
+                >
+                  <Info className="h-4 w-4" />
+                  <span>Lihat Info Lengkap Unit &amp; Fasilitas</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
               </div>
-              <span className="mt-2 text-[10px] font-semibold text-sky-700 group-hover:underline flex items-center gap-1">
-                Masuk sebagai Penyewa &rarr;
-              </span>
-            </button>
+            </div>
+
           </div>
+
         </div>
 
-      </div>
-
-      {/* Grid 3 Tipe Unit Griya Kenanga */}
-      <div>
-        <div className="text-center mb-6">
-          <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">
-            Kategori Unit Hunian
-          </h2>
-          <p className="text-xs text-stone-500">24 Unit di 3 Lantai Hunian Griya Kenanga Residence</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
-          {/* Lantai 1 */}
-          <div className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900">
-            <span className="text-[11px] font-semibold uppercase text-stone-400">Blok A · Lantai 1</span>
-            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 mt-1">Kamar Standar</h3>
-            <p className="mt-1 text-xs text-stone-500">
-              8 Unit (A-101 s.d A-108). Kamar mandi dalam, kasur single, lemari pakaian, luas 15–16 m².
-            </p>
-            <div className="mt-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-              Rp1.350.000 – Rp1.450.000 / bulan
-            </div>
-          </div>
-
-          {/* Lantai 2 */}
-          <div className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900">
-            <span className="text-[11px] font-semibold uppercase text-stone-400">Blok B · Lantai 2</span>
-            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 mt-1">Kamar Ber-AC</h3>
-            <p className="mt-1 text-xs text-stone-500">
-              8 Unit (B-201 s.d B-208). Dilengkapi pendingin ruangan (AC), water heater, luas 17.5–19 m².
-            </p>
-            <div className="mt-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-              Rp1.750.000 – Rp2.000.000 / bulan
-            </div>
-          </div>
-
-          {/* Lantai 3 */}
-          <div className="rounded-2xl border border-stone-200/90 bg-white p-5 shadow-xs dark:border-stone-800 dark:bg-stone-900">
-            <span className="text-[11px] font-semibold uppercase text-stone-400">Blok C · Lantai 3</span>
-            <h3 className="text-base font-bold text-stone-900 dark:text-stone-100 mt-1">Studio Luas</h3>
-            <p className="mt-1 text-xs text-stone-500">
-              8 Unit (C-301 s.d C-308). Studio eksklusif dengan kitchen sink, kulkas mini, luas 25–26 m².
-            </p>
-            <div className="mt-4 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
-              Rp2.650.000 – Rp2.800.000 / bulan
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Modal Login & Register */}
       <AuthModal
         isOpen={authModalOpen}
         initialMode={authMode}
-        onClose={() => setAuthModalOpen(false)}
+        initialOpenGoogle={openGoogleInModal}
+        onClose={() => {
+          setAuthModalOpen(false);
+          setOpenGoogleInModal(false);
+        }}
       />
 
     </div>
