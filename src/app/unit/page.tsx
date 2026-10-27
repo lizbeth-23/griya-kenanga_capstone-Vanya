@@ -28,15 +28,25 @@ export default function UnitPage() {
     return <AuthGuard moduleName="unit hunian" />;
   }
 
-  // BR-10: Penyewa tidak boleh akses
+  // BR-10: Penyewa diarahkan ke katalog ketersediaan kamar
   if (currentUser.peran === 'penyewa') {
     return (
-      <div className="mx-auto max-w-lg px-4 py-16 text-center">
-        <ShieldAlert className="mx-auto h-12 w-12 text-red-500 mb-3" />
-        <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">Akses Ditolak</h2>
-        <p className="mt-2 text-sm text-stone-500">
-          Halaman daftar dan pengelolaan seluruh unit hanya dapat diakses oleh staf Pengelola dan Pemilik (BR-10).
+      <div className="mx-auto max-w-lg px-4 py-16 text-center space-y-4">
+        <Building2 className="mx-auto h-12 w-12 text-[#2E6B47] mb-2" />
+        <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
+          Katalog &amp; Ketersediaan Kamar Kos
+        </h2>
+        <p className="text-xs sm:text-sm text-stone-500">
+          Halaman pengaturan unit ini khusus staf pengelola. Untuk melihat kamar yang siap huni, foto kamar, dan pengajuan sewa, silakan buka halaman Katalog Sewa.
         </p>
+        <div className="pt-2">
+          <a
+            href="/sewa"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#2E6B47] px-6 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#255739] transition-all"
+          >
+            Buka Katalog &amp; Sewa Kamar Sekarang &rarr;
+          </a>
+        </div>
       </div>
     );
   }

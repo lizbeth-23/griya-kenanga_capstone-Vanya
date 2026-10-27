@@ -65,6 +65,8 @@ export default function HomePage() {
   // --- DATA UNTUK PENYEWA ---
   const myContract = state.contracts.find(c => c.penyewa_id === currentUser.id && c.status === 'aktif');
   const myUnit = myContract ? state.units.find(u => u.id === myContract.unit_id) : null;
+  const myDraftContract = state.contracts.find(c => c.penyewa_id === currentUser.id && c.status === 'draf');
+  const myDraftUnit = myDraftContract ? state.units.find(u => u.id === myDraftContract.unit_id) : null;
   const myInvoices = state.invoices.filter(i => myContract && i.kontrak_id === myContract.id);
   const myUnpaidInvoice = myInvoices.find(i => i.status !== 'lunas' && i.status !== 'dibatalkan');
   const myIdentity = state.identities.find(i => i.penyewa_id === currentUser.id);
@@ -412,15 +414,23 @@ export default function HomePage() {
             <div className="rounded-2xl border border-[#DCE5D8] bg-white p-6 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D] md:col-span-2">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-[#5D6B58] dark:text-[#A7B8A3]">Unit Sewa Anda</span>
-                <span className={`rounded-full px-3 py-1 text-xs font-bold ${myContract?.status === 'aktif'
-                  ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40 dark:bg-[#172216] dark:text-[#95B08A]'
-                  : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
-                  }`}>
-                  {myContract?.status === 'aktif' ? 'Kontrak Aktif' : 'Belum Ada Kontrak Aktif'}
+                <span className={`rounded-full px-3 py-1 text-xs font-bold ${
+                  myContract?.status === 'aktif'
+                    ? 'bg-[#E8EFE5] text-[#2D4129] border border-[#95B08A]/40 dark:bg-[#172216] dark:text-[#95B08A]'
+                    : myDraftContract
+                    ? 'bg-[#FEF3C7] text-[#92400E] border border-[#FDE68A]'
+                    : 'bg-[#FEF7EC] text-[#9A6715] border border-[#F6DEB8]'
+                }`}>
+                  {myContract?.status === 'aktif'
+                    ? 'Kontrak Aktif'
+                    : myDraftContract
+                    ? 'Pengajuan Sedang Ditinjau'
+                    : 'Belum Ada Kontrak Aktif'}
                 </span>
               </div>
 
               {myContract && myUnit ? (
+                /* 1. Tampilan Kontrak Aktif */
                 <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div>
                     <div className="text-3xl font-extrabold text-[#222520] dark:text-[#ECEAE4]">
@@ -443,9 +453,82 @@ export default function HomePage() {
                     </div>
                   </div>
                 </div>
+              ) : myDraftContract && myDraftUnit ? (
+                /* 2. Tampilan Pengajuan Sedang Berjalan (Draf Kontrak) */
+                <div className="mt-4 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-4 dark:border-stone-800">
+                    <div>
+                      <div className="text-2xl font-extrabold text-[#222520] dark:text-[#ECEAE4]">
+                        Unit {myDraftUnit.kode} <span className="text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-0.5 rounded-full ml-2">Draf Pengajuan</span>
+                      </div>
+                      <div className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] mt-1">
+                        Lantai {myDraftUnit.lantai} · Tipe {myDraftUnit.tipe} · Nomor: <span className="font-mono font-bold">{myDraftContract.nomor}</span>
+                      </div>
+                      <div className="text-xs text-stone-600 dark:text-stone-300 mt-1">
+                        Rencana Mulai: {formatDateIndo(myDraftContract.tanggal_mulai)} ({myDraftContract.durasi_bulan} Bulan)
+                      </div>
+                    </div>
+                    <div className="text-left sm:text-right">
+                      <span className="text-xs font-medium text-[#5D6B58]">Harga Sewa Terkunci</span>
+                      <div className="text-xl font-bold text-[#2E6B47] dark:text-[#95B08A]">
+                        {formatRupiah(myDraftContract.harga_sewa_bulanan)}
+                        <span className="text-xs font-normal text-stone-500">/bln</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Progress Tahapan Pengajuan */}
+                  <div className="rounded-xl bg-[#F5F2EB]/60 p-3.5 text-xs space-y-2 dark:bg-[#171D16]">
+                    <div className="font-bold text-[#222520] dark:text-[#ECEAE4] flex items-center gap-1.5">
+                      <Clock className="h-4 w-4 text-[#2E6B47]" />
+                      Status Peninjauan Pengelola:
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] pt-1">
+                      <div className="flex items-center gap-1.5 text-[#2E6B47] font-semibold">
+                        <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
+                        <span>1. Formulir Terkirim</span>
+                      </div>
+                      <div className={`flex items-center gap-1.5 font-semibold ${
+                        myIdentity?.status_verifikasi === 'terverifikasi'
+                          ? 'text-[#2E6B47]'
+                          : myIdentity?.status_verifikasi === 'ditolak'
+                          ? 'text-red-600'
+                          : 'text-amber-700'
+                      }`}>
+                        <span className={`h-2 w-2 rounded-full ${
+                          myIdentity?.status_verifikasi === 'terverifikasi'
+                            ? 'bg-[#2E6B47]'
+                            : myIdentity?.status_verifikasi === 'ditolak'
+                            ? 'bg-red-600'
+                            : 'bg-amber-500 animate-pulse'
+                        }`} />
+                        <span>2. Verifikasi KTP ({myIdentity?.status_verifikasi || 'Menunggu'})</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 text-stone-400">
+                        <span className="h-2 w-2 rounded-full bg-stone-300" />
+                        <span>3. Aktivasi Kontrak</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ) : (
-                <div className="mt-4 text-sm text-[#5D6B58] dark:text-[#A7B8A3]">
-                  Anda belum memiliki kontrak aktif. Silakan hubungi staf pengelola di lokasi untuk pemesanan unit.
+                /* 3. Belum Ada Kontrak Sama Sekali -> Tampilkan Banner Sewa Kamar */
+                <div className="mt-4 space-y-4">
+                  <p className="text-xs sm:text-sm text-[#5D6B58] dark:text-[#A7B8A3] leading-relaxed">
+                    Anda belum memiliki kamar sewa aktif. Jelajahi katalog kamar siap huni di Griya Kenanga Residence dengan foto lengkap, info fasilitas, dan formulir pengajuan sewa online.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <Link
+                      href="/sewa"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#2E6B47] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#255739] active:scale-95 transition-all"
+                    >
+                      <Building2 className="h-4 w-4" />
+                      Pilih &amp; Sewa Kamar Sekarang &rarr;
+                    </Link>
+                    <span className="text-xs text-[#5D6B58] font-medium">
+                      Tersedia unit di Lantai 1, 2, dan 3
+                    </span>
+                  </div>
                 </div>
               )}
             </div>

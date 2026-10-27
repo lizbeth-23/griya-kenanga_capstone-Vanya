@@ -409,6 +409,121 @@ export class GriyaStore {
     return newContract;
   }
 
+  // --- PENGAJUAN SEWA KAMAR OLEH PENYEWA ---
+  public applyRental(data: {
+    unit_id: string;
+    tanggal_mulai: string;
+    durasi_bulan: 1 | 3 | 6 | 12;
+    nik: string;
+    alamat_asal: string;
+    foto_ktp_path: string;
+    kontak_darurat_nama: string;
+    kontak_darurat_hp: string;
+  }): { contract: Contract; identity: TenantIdentity } {
+    const user = this.requireUser();
+    if (user.peran !== 'penyewa') {
+      throw new Error('Hanya akun Penyewa yang dapat mengajukan sewa kamar');
+    }
+
+    const unit = this.state.units.find(u => u.id === data.unit_id);
+    if (!unit) throw new Error('Unit kamar tidak ditemukan');
+
+    // Cek status kamar: harus tersedia (tidak boleh perbaikan / nonaktif)
+    if (unit.status !== 'tersedia') {
+      throw new Error(`Unit ${unit.kode} tidak dapat disewa karena berstatus ${unit.status}`);
+    }
+
+    // BR-02: Tanggal mulai selalu tanggal 1
+    const startDate = new Date(data.tanggal_mulai);
+    if (startDate.getDate() !== 1) {
+      throw new Error('Tanggal mulai sewa harus selalu tanggal 1 sesuai aturan (BR-02)');
+    }
+
+    const endYear = startDate.getFullYear();
+    const endMonth = startDate.getMonth() + data.durasi_bulan;
+    const lastDayOfMonth = new Date(endYear, endMonth, 0);
+    const tanggal_selesai = `${lastDayOfMonth.getFullYear()}-${String(lastDayOfMonth.getMonth() + 1).padStart(2, '0')}-${String(lastDayOfMonth.getDate()).padStart(2, '0')}`;
+
+    // BR-01: Satu unit tidak boleh memiliki 2 kontrak draf/aktif yang periodenya beririsan
+    const hasOverlap = this.state.contracts.some(c => {
+      if (c.unit_id !== data.unit_id) return false;
+      if (c.status !== 'aktif' && c.status !== 'draf') return false;
+      return data.tanggal_mulai <= c.tanggal_selesai && tanggal_selesai >= c.tanggal_mulai;
+    });
+
+    if (hasOverlap) {
+      throw new Error(`Unit ${unit.kode} sudah memiliki penghuni aktif atau pengajuan sewa lain`);
+    }
+
+    // BR-03: Satu penyewa paling banyak memiliki satu kontrak aktif
+    const hasExistingActive = this.state.contracts.some(
+      c => c.penyewa_id === user.id && c.status === 'aktif'
+    );
+    if (hasExistingActive) {
+      throw new Error('Anda sudah memiliki kontrak sewa aktif di Griya Kenanga');
+    }
+
+    // Validasi NIK 16 digit
+    if (!/^\d{16}$/.test(data.nik)) {
+      throw new Error('NIK harus berupa 16 angka numerik valid');
+    }
+
+    if (!data.alamat_asal?.trim()) {
+      throw new Error('Alamat asal wajib diisi sesuai KTP');
+    }
+
+    if (!data.kontak_darurat_nama?.trim() || !data.kontak_darurat_hp?.trim()) {
+      throw new Error('Nama dan nomor HP kontak darurat wajib diisi');
+    }
+
+    // 1. Simpan identitas KTP (status: 'belum' - menunggu verifikasi Pengelola)
+    const tenantIdentity: TenantIdentity = {
+      penyewa_id: user.id,
+      nik: data.nik.trim(),
+      alamat_asal: data.alamat_asal.trim(),
+      foto_ktp_path: data.foto_ktp_path || '/images/ktp-sample.jpg',
+      kontak_darurat_nama: data.kontak_darurat_nama.trim(),
+      kontak_darurat_hp: data.kontak_darurat_hp.trim(),
+      status_verifikasi: 'belum',
+      diperbarui_pada: new Date().toISOString()
+    };
+
+    const existingIdentIndex = this.state.identities.findIndex(i => i.penyewa_id === user.id);
+    if (existingIdentIndex >= 0) {
+      this.state.identities[existingIdentIndex] = tenantIdentity;
+    } else {
+      this.state.identities.push(tenantIdentity);
+    }
+
+    // 2. Buat draf kontrak sewa (status: 'draf')
+    const tahun = String(startDate.getFullYear());
+    const nomor = this.getNextNumber('KTR', tahun);
+    const newContract: Contract = {
+      id: `ktr-${Date.now()}`,
+      nomor,
+      unit_id: data.unit_id,
+      penyewa_id: user.id,
+      tanggal_mulai: data.tanggal_mulai,
+      durasi_bulan: data.durasi_bulan,
+      tanggal_selesai,
+      harga_sewa_bulanan: unit.harga_sewa_bulanan,
+      status: 'draf',
+      dibuat_oleh: user.id,
+      dibuat_pada: new Date().toISOString()
+    };
+
+    this.state.contracts.push(newContract);
+    this.logAudit('sewa:ajukan_kamar', 'kontrak', newContract.nomor, undefined, {
+      unit: unit.kode,
+      penyewa: user.nama_lengkap,
+      durasi: `${data.durasi_bulan} bulan`,
+      status: 'draf'
+    });
+
+    this.persistState();
+    return { contract: newContract, identity: tenantIdentity };
+  }
+
   public activateContract(contractId: string) {
     const user = this.requireUser();
     if (user.peran !== 'pengelola') {

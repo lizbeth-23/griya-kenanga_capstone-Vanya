@@ -46,16 +46,24 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   const isOwner = currentUser?.peran === 'pemilik';
+  const isTenant = currentUser?.peran === 'penyewa';
 
-  // Navigation Links sesuai Wireframe
-  const mainNavItems = [
-    { href: '/', label: 'Beranda' },
-    { href: '/unit', label: 'Unit' },
-    { href: '/penyewa', label: 'Penyewa' },
-    { href: '/kontrak', label: 'Kontrak' },
-    { href: '/tagihan', label: 'Tagihan' },
-    { href: '/kerusakan', label: 'Kerusakan' },
-  ];
+  // Navigation Links sesuai Peran Akun (Wireframe & Tenant Flow)
+  const mainNavItems = isTenant
+    ? [
+        { href: '/', label: 'Beranda' },
+        { href: '/sewa', label: 'Pilih & Sewa Kamar' },
+        { href: '/tagihan', label: 'Tagihan Saya' },
+        { href: '/kerusakan', label: 'Lapor Kerusakan' },
+      ]
+    : [
+        { href: '/', label: 'Beranda' },
+        { href: '/unit', label: 'Unit' },
+        { href: '/penyewa', label: 'Penyewa' },
+        { href: '/kontrak', label: 'Kontrak' },
+        { href: '/tagihan', label: 'Tagihan' },
+        { href: '/kerusakan', label: 'Kerusakan' },
+      ];
 
   const ownerNavItems = [
     { href: '/laporan', label: 'Laporan' },
