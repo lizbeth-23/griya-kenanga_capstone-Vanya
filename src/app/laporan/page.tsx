@@ -43,7 +43,7 @@ export default function LaporanPage() {
 
   // --- KALKULASI DATA PENDAPATAN SESUAI WIREFRAME PAGE 4 ---
   // Periode: Agustus s/d Oktober 2026
-  const relevantInvoices = state.invoices.filter(i => 
+  const relevantInvoices = state.invoices.filter(i =>
     ['2026-08-01', '2026-09-01', '2026-10-01'].includes(i.periode)
   );
 
@@ -101,7 +101,7 @@ export default function LaporanPage() {
       u.tunggakan
     ]);
 
-    const csvContent = 'data:text/csv;charset=utf-8,' + 
+    const csvContent = 'data:text/csv;charset=utf-8,' +
       [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
 
     const encodedUri = encodeURI(csvContent);
@@ -119,8 +119,8 @@ export default function LaporanPage() {
     if (auditSearch) {
       const term = auditSearch.toLowerCase();
       const match = l.aksi.toLowerCase().includes(term) ||
-                    l.tabel.toLowerCase().includes(term) ||
-                    (l.pelaku_nama && l.pelaku_nama.toLowerCase().includes(term));
+        l.tabel.toLowerCase().includes(term) ||
+        (l.pelaku_nama && l.pelaku_nama.toLowerCase().includes(term));
       if (!match) return false;
     }
     return true;
@@ -145,7 +145,7 @@ export default function LaporanPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
-      
+
       {/* Header Halaman Sesuai Wireframe Page 4 */}
       <div className="flex flex-col gap-4 border-b border-stone-200 pb-5 dark:border-stone-800">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
@@ -159,9 +159,6 @@ export default function LaporanPage() {
           </div>
 
           <div className="flex flex-col sm:items-end gap-2">
-            <span className="self-start sm:self-auto rounded-xs border border-amber-300 bg-[#FDF6B2] px-2.5 py-0.5 text-[10px] font-bold text-amber-900 uppercase tracking-wide">
-              REFERENSI TAMPILAN, bukan desain wajib
-            </span>
 
             {/* Tab & Filter Bar Sesuai Wireframe Page 4 */}
             <div className="flex flex-wrap items-center gap-2">
@@ -169,31 +166,28 @@ export default function LaporanPage() {
               <div className="flex rounded-full bg-stone-100 p-0.5 border border-stone-200 text-xs font-semibold dark:bg-stone-800 dark:border-stone-700">
                 <button
                   onClick={() => setActiveTab('pendapatan')}
-                  className={`rounded-full px-4 py-1 transition-all ${
-                    activeTab === 'pendapatan'
+                  className={`rounded-full px-4 py-1 transition-all ${activeTab === 'pendapatan'
                       ? 'bg-[#1E251F] text-white shadow-xs'
                       : 'text-stone-600 hover:text-stone-900 dark:text-stone-300'
-                  }`}
+                    }`}
                 >
                   Pendapatan
                 </button>
                 <button
                   onClick={() => setActiveTab('audit')}
-                  className={`rounded-full px-4 py-1 transition-all ${
-                    activeTab === 'audit'
+                  className={`rounded-full px-4 py-1 transition-all ${activeTab === 'audit'
                       ? 'bg-[#1E251F] text-white shadow-xs'
                       : 'text-stone-600 hover:text-stone-900 dark:text-stone-300'
-                  }`}
+                    }`}
                 >
                   Audit log
                 </button>
                 <button
                   onClick={() => setActiveTab('peran')}
-                  className={`rounded-full px-4 py-1 transition-all ${
-                    activeTab === 'peran'
+                  className={`rounded-full px-4 py-1 transition-all ${activeTab === 'peran'
                       ? 'bg-[#1E251F] text-white shadow-xs'
                       : 'text-stone-600 hover:text-stone-900 dark:text-stone-300'
-                  }`}
+                    }`}
                 >
                   Kelola peran
                 </button>
@@ -226,10 +220,10 @@ export default function LaporanPage() {
       {/* ==================================================================== */}
       {activeTab === 'pendapatan' && (
         <div className="space-y-5 animate-in fade-in duration-200">
-          
+
           {/* 4 Kartu Metrik (Sesuai Wireframe Page 4) */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            
+
             {/* Total Ditagihkan */}
             <div className="rounded-sm border border-stone-200 bg-white p-4 dark:border-stone-800 dark:bg-[#1E261D]">
               <div className="text-xs text-stone-500 dark:text-stone-400">Total ditagihkan</div>
@@ -278,7 +272,7 @@ export default function LaporanPage() {
 
           {/* Grid 2 Kolom: Grafik Ditagihkan vs Diterima & Tabel Pendapatan per Unit */}
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-12">
-            
+
             {/* Kolom Kiri: Visual Grafik Batang Vertikal Sesuai Wireframe Page 4 */}
             <div className="lg:col-span-5 rounded-sm border border-stone-200 bg-white p-5 dark:border-stone-800 dark:bg-[#1E261D] flex flex-col justify-between">
               <div>
@@ -444,7 +438,7 @@ export default function LaporanPage() {
       {/* ==================================================================== */}
       {activeTab === 'audit' && (
         <div className="space-y-4 animate-in fade-in duration-200">
-          
+
           {/* Filter Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-[24px] border border-[#DCE5D8] bg-white p-4 shadow-xs dark:border-[#2C382A] dark:bg-[#1E261D]">
             <div className="flex items-center gap-2">
