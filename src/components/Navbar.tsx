@@ -24,19 +24,45 @@ export default function Navbar() {
   const getNavLinks = () => {
     if (!currentUser) return [];
     const role = currentUser.peran;
-    const links = [
-      { href: '/', label: 'Beranda', icon: Home, roles: ['penyewa', 'pengelola', 'pemilik'] },
-      { href: '/sewa', label: 'Katalog Kamar', icon: Building2, roles: ['penyewa', 'pengelola', 'pemilik'] },
-      { href: '/info', label: 'Info Kos', icon: Info, roles: ['penyewa', 'pengelola', 'pemilik'] },
-      { href: '/unit', label: 'Unit', icon: Building2, roles: ['pengelola', 'pemilik'] },
-      { href: '/penyewa', label: 'Penyewa', icon: Users, roles: ['pengelola', 'pemilik'] },
-      { href: '/kontrak', label: 'Kontrak', icon: KeyRound, roles: ['pengelola', 'pemilik'] },
-      { href: '/tagihan', label: 'Tagihan', icon: Receipt, roles: ['pengelola', 'pemilik'] },
-      { href: '/kerusakan', label: 'Kerusakan', icon: Wrench, roles: ['penyewa', 'pengelola', 'pemilik'] },
-      { href: '/laporan', label: 'Laporan & Audit', icon: BarChart3, roles: ['pemilik'] }
-    ];
+    const isTenant = role === 'penyewa';
+    const tenantActiveContract = isTenant
+      ? state.contracts.find(c => c.penyewa_id === currentUser.id && c.status === 'aktif')
+      : null;
 
-    return links.filter(l => l.roles.includes(role));
+    if (isTenant) {
+      return [
+        { href: '/', label: 'Beranda', icon: Home },
+        ...(!tenantActiveContract
+          ? [{ href: '/sewa', label: 'Pilih & Sewa Kamar', icon: Building2 }]
+          : []),
+        { href: '/kerusakan', label: 'Lapor Kerusakan', icon: Wrench },
+        { href: '/info', label: 'Info Kos', icon: Info },
+      ];
+    }
+
+    if (role === 'pengelola') {
+      return [
+        { href: '/', label: 'Beranda', icon: Home },
+        { href: '/unit', label: 'Unit', icon: Building2 },
+        { href: '/penyewa', label: 'Penyewa', icon: Users },
+        { href: '/kontrak', label: 'Kontrak', icon: KeyRound },
+        { href: '/tagihan', label: 'Tagihan', icon: Receipt },
+        { href: '/kerusakan', label: 'Kerusakan', icon: Wrench },
+        { href: '/info', label: 'Info Kos', icon: Info },
+      ];
+    }
+
+    // Pemilik
+    return [
+      { href: '/', label: 'Beranda', icon: Home },
+      { href: '/unit', label: 'Unit', icon: Building2 },
+      { href: '/penyewa', label: 'Penyewa', icon: Users },
+      { href: '/kontrak', label: 'Kontrak', icon: KeyRound },
+      { href: '/tagihan', label: 'Tagihan', icon: Receipt },
+      { href: '/kerusakan', label: 'Kerusakan', icon: Wrench },
+      { href: '/info', label: 'Info Kos', icon: Info },
+      { href: '/laporan', label: 'Laporan & Audit', icon: BarChart3 },
+    ];
   };
 
   const navLinks = getNavLinks();

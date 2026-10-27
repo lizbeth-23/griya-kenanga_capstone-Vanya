@@ -46,30 +46,42 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   const isOwner = currentUser?.peran === 'pemilik';
+  const isManager = currentUser?.peran === 'pengelola';
   const isTenant = currentUser?.peran === 'penyewa';
 
-  // Navigation Links sesuai Peran Akun (Wireframe & Tenant Flow)
+  // Cek apakah penyewa saat ini sudah memiliki kontrak sewa aktif
+  const tenantActiveContract = isTenant
+    ? state.contracts.find(c => c.penyewa_id === currentUser.id && c.status === 'aktif')
+    : null;
+
+  // Navigation Links sesuai Peran Akun & Hak Akses Nyata (BR-10 & Wireframe)
   const mainNavItems = isTenant
     ? [
         { href: '/', label: 'Beranda' },
-        { href: '/sewa', label: 'Pilih & Sewa Kamar' },
-        { href: '/tagihan', label: 'Tagihan Saya' },
+        // Menu sewa kamar hanya ditampilkan jika penyewa BELUM memiliki kontrak aktif
+        ...(!tenantActiveContract
+          ? [{ href: '/sewa', label: 'Pilih & Sewa Kamar' }]
+          : []),
         { href: '/kerusakan', label: 'Lapor Kerusakan' },
+        { href: '/info', label: 'Info Kos' },
       ]
     : [
         { href: '/', label: 'Beranda' },
         { href: '/unit', label: 'Unit' },
-        { href: '/sewa', label: 'Katalog Kamar' },
         { href: '/penyewa', label: 'Penyewa' },
         { href: '/kontrak', label: 'Kontrak' },
         { href: '/tagihan', label: 'Tagihan' },
         { href: '/kerusakan', label: 'Kerusakan' },
+        { href: '/info', label: 'Info Kos' },
       ];
 
-  const ownerNavItems = [
-    { href: '/laporan', label: 'Laporan' },
-    { href: '/laporan?tab=peran', label: 'Pengaturan' },
-  ];
+  // Khusus Pemilik: Laporan Keuangan, Audit Log, dan Manajemen Hak Akses / Peran Akun
+  const ownerNavItems = isOwner
+    ? [
+        { href: '/laporan', label: 'Laporan' },
+        { href: '/laporan?tab=peran', label: 'Pengaturan' },
+      ]
+    : [];
 
   // =========================================================================
   // JIKA PENGUNJUNG (BELUM LOGIN): TAMPILKAN HEADER LANDING
@@ -200,8 +212,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
 
-          {/* Section KHUSUS PEMILIK (Sesuai Wireframe) */}
-          {(isOwner || currentUser.peran === 'pengelola') && (
+          {/* Section KHUSUS PEMILIK (Hanya muncul jika login sebagai Pemilik) */}
+          {isOwner && (
             <div className="pt-6">
               <div className="px-3.5 text-[11px] font-bold uppercase tracking-wider text-[#738C71]">
                 KHUSUS PEMILIK
