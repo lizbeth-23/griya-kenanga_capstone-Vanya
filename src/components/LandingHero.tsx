@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useGriyaStore } from '@/lib/use-store';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Info, ArrowRight } from 'lucide-react';
+import { Info, ArrowRight, Sparkles, Building2, CheckCircle2 } from 'lucide-react';
 import AuthModal from './AuthModal';
 
 export default function LandingHero() {
@@ -251,14 +251,21 @@ export default function LandingHero() {
                 Kenyamanan hunian kos eksklusif dan studio sewa modern dengan tata ruang estetis di Sleman, Yogyakarta.
               </p>
 
-              <div className="mt-5 flex items-center justify-center">
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                 <Link
-                  href="/info"
+                  href="/sewa"
                   className="inline-flex items-center gap-2 rounded-full bg-[#3B5336] px-5 py-2.5 text-xs font-bold text-white shadow-md hover:bg-[#2B3E27] hover:scale-105 active:scale-95 transition-all"
                 >
-                  <Info className="h-4 w-4" />
-                  <span>Lihat Info Lengkap Unit &amp; Fasilitas</span>
+                  <Building2 className="h-4 w-4" />
+                  <span>Katalog Kamar &amp; Ketersediaan</span>
                   <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+                <Link
+                  href="/info"
+                  className="inline-flex items-center gap-2 rounded-full bg-white/80 backdrop-blur-xs px-4 py-2.5 text-xs font-bold text-[#263B23] shadow-sm hover:bg-white hover:scale-105 active:scale-95 transition-all"
+                >
+                  <Info className="h-4 w-4" />
+                  <span>Fasilitas &amp; Tarif</span>
                 </Link>
               </div>
             </div>
@@ -267,6 +274,198 @@ export default function LandingHero() {
 
         </div>
 
+      </div>
+
+      {/* Seksi Galeri & Foto Kamar Hunian */}
+      <div className="space-y-6 pt-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#DCE5D8] pb-4 dark:border-[#2C382A]">
+          <div>
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-[#E8EFE5] px-3 py-1 text-xs font-bold text-[#2D4129] dark:bg-[#1E261D] dark:text-[#95B08A] mb-2">
+              <Sparkles className="h-3.5 w-3.5" />
+              <span>Foto Asli Kamar &amp; Suasana Hunian</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-extrabold text-[#222520] dark:text-[#ECEAE4]">
+              Pilihan Tipe Kamar Kos &amp; Studio Griya Kenanga
+            </h2>
+            <p className="text-xs sm:text-sm text-[#5D6B58] dark:text-[#A7B8A3] mt-1">
+              Setiap kamar didesain dengan sirkulasi udara bersih, pencahayaan alami, kamar mandi dalam, dan furnitur berkualitas.
+            </p>
+          </div>
+          <Link
+            href="/sewa"
+            className="inline-flex items-center gap-1.5 rounded-full bg-[#3B5336] px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#2D4129] transition-all shrink-0"
+          >
+            <span>Buka Katalog 24 Kamar</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Card 1: Kamar Standar */}
+          <div className="group rounded-3xl border border-[#DCE5D8] bg-white overflow-hidden shadow-xs hover:shadow-md transition-all hover:border-[#738F67] dark:border-[#2C382A] dark:bg-[#1E261D] flex flex-col justify-between">
+            <div>
+              <div className="relative h-52 w-full bg-stone-100 overflow-hidden">
+                <Image
+                  src="/images/rooms/kamar-standar.jpg"
+                  alt="Kamar Standar Non-AC Lantai 1"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3 rounded-full bg-[#E8EFE5] text-[#2D4129] px-3 py-1 text-[11px] font-bold shadow-md border border-[#95B08A]/40">
+                  Lantai 1 · Blok A
+                </div>
+                <div className="absolute bottom-3 right-3 rounded-md bg-black/60 backdrop-blur-xs text-white px-2 py-0.5 text-[10px] font-bold">
+                  8 Unit (15–16 m²)
+                </div>
+              </div>
+              <div className="p-5 space-y-3">
+                <h3 className="text-lg font-bold text-[#222520] dark:text-[#ECEAE4]">
+                  Kamar Standar (Non-AC)
+                </h3>
+                <div className="rounded-xl bg-[#F4F7F2] p-3 text-xs dark:bg-[#171D16] border border-[#DCE5D8] dark:border-[#2C382A]">
+                  <span className="text-[10px] uppercase font-medium text-[#5D6B58] block">Mulai dari</span>
+                  <div className="text-base font-extrabold text-[#3B5336] dark:text-[#95B08A]">
+                    Rp1.350.000 <span className="text-xs font-normal text-stone-400">/ bulan</span>
+                  </div>
+                </div>
+                <ul className="text-xs text-stone-600 dark:text-stone-300 space-y-1.5 pt-1">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Kamar mandi dalam shower &amp; kloset duduk</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Kasur single, meja belajar &amp; lemari pakaian</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Ventilasi jendela asri &amp; listrik token mandiri</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="p-5 pt-0">
+              <Link
+                href="/sewa"
+                className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#E8EFE5] hover:bg-[#3B5336] hover:text-white py-2.5 text-xs font-bold text-[#2D4129] transition-all"
+              >
+                <span>Lihat Unit Standar</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 2: Kamar AC */}
+          <div className="group rounded-3xl border border-[#DCE5D8] bg-white overflow-hidden shadow-xs hover:shadow-md transition-all hover:border-[#738F67] dark:border-[#2C382A] dark:bg-[#1E261D] flex flex-col justify-between">
+            <div>
+              <div className="relative h-52 w-full bg-stone-100 overflow-hidden">
+                <Image
+                  src="/images/rooms/kamar-ac.jpg"
+                  alt="Kamar AC &amp; Water Heater Lantai 2"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3 rounded-full bg-amber-100 text-amber-900 px-3 py-1 text-[11px] font-bold shadow-md border border-amber-300">
+                  Lantai 2 · Blok B (Favorit)
+                </div>
+                <div className="absolute bottom-3 right-3 rounded-md bg-black/60 backdrop-blur-xs text-white px-2 py-0.5 text-[10px] font-bold">
+                  8 Unit (17–19 m²)
+                </div>
+              </div>
+              <div className="p-5 space-y-3">
+                <h3 className="text-lg font-bold text-[#222520] dark:text-[#ECEAE4]">
+                  Kamar Ber-AC &amp; Water Heater
+                </h3>
+                <div className="rounded-xl bg-[#F4F7F2] p-3 text-xs dark:bg-[#171D16] border border-[#DCE5D8] dark:border-[#2C382A]">
+                  <span className="text-[10px] uppercase font-medium text-[#5D6B58] block">Mulai dari</span>
+                  <div className="text-base font-extrabold text-[#3B5336] dark:text-[#95B08A]">
+                    Rp1.750.000 <span className="text-xs font-normal text-stone-400">/ bulan</span>
+                  </div>
+                </div>
+                <ul className="text-xs text-stone-600 dark:text-stone-300 space-y-1.5 pt-1">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>AC 1/2 PK hemat daya &amp; water heater</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Kasur springbed single besar / queen</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Meja kerja minimalis &amp; balkon view luar</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="p-5 pt-0">
+              <Link
+                href="/sewa"
+                className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#E8EFE5] hover:bg-[#3B5336] hover:text-white py-2.5 text-xs font-bold text-[#2D4129] transition-all"
+              >
+                <span>Lihat Unit AC</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 3: Studio Suite */}
+          <div className="group rounded-3xl border border-[#DCE5D8] bg-white overflow-hidden shadow-xs hover:shadow-md transition-all hover:border-[#738F67] dark:border-[#2C382A] dark:bg-[#1E261D] flex flex-col justify-between">
+            <div>
+              <div className="relative h-52 w-full bg-stone-100 overflow-hidden">
+                <Image
+                  src="/images/rooms/kamar-studio.jpg"
+                  alt="Studio Eksklusif Lantai 3"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3 rounded-full bg-[#3B5336] text-white px-3 py-1 text-[11px] font-bold shadow-md">
+                  Lantai 3 · Blok C (Eksklusif)
+                </div>
+                <div className="absolute bottom-3 right-3 rounded-md bg-black/60 backdrop-blur-xs text-white px-2 py-0.5 text-[10px] font-bold">
+                  8 Unit (24.5–26 m²)
+                </div>
+              </div>
+              <div className="p-5 space-y-3">
+                <h3 className="text-lg font-bold text-[#222520] dark:text-[#ECEAE4]">
+                  Studio Luas + Kitchenette
+                </h3>
+                <div className="rounded-xl bg-[#F4F7F2] p-3 text-xs dark:bg-[#171D16] border border-[#DCE5D8] dark:border-[#2C382A]">
+                  <span className="text-[10px] uppercase font-medium text-[#5D6B58] block">Mulai dari</span>
+                  <div className="text-base font-extrabold text-[#3B5336] dark:text-[#95B08A]">
+                    Rp2.650.000 <span className="text-xs font-normal text-stone-400">/ bulan</span>
+                  </div>
+                </div>
+                <ul className="text-xs text-stone-600 dark:text-stone-300 space-y-1.5 pt-1">
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Kitchenette pribadi (meja dapur &amp; sink) + kulkas</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Ruang ekstra luas + area santai karpet</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#3B5336] dark:text-[#95B08A] shrink-0" />
+                    <span>Smart TV ready, AC 1 PK &amp; water heater</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div className="p-5 pt-0">
+              <Link
+                href="/sewa"
+                className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#E8EFE5] hover:bg-[#3B5336] hover:text-white py-2.5 text-xs font-bold text-[#2D4129] transition-all"
+              >
+                <span>Lihat Unit Studio</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Modal Login & Register */}

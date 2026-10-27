@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Building2, Sparkles, CheckCircle2, Wifi, Zap, 
   ShieldCheck, Wrench, MapPin, ArrowRight, ArrowLeft, 
@@ -36,6 +37,7 @@ export default function InfoPage() {
       id: 'standar',
       blok: 'Blok A · Lantai 1',
       title: 'Kamar Standar (Non-AC)',
+      image: '/images/rooms/kamar-standar.jpg',
       rangeUnit: '8 Unit (A-101 s.d A-108)',
       price: 'Rp1.350.000 – Rp1.450.000',
       period: '/ bulan',
@@ -56,6 +58,7 @@ export default function InfoPage() {
       id: 'ac',
       blok: 'Blok B · Lantai 2',
       title: 'Kamar Ber-AC & Water Heater',
+      image: '/images/rooms/kamar-ac.jpg',
       rangeUnit: '8 Unit (B-201 s.d B-208)',
       price: 'Rp1.750.000 – Rp2.000.000',
       period: '/ bulan',
@@ -77,6 +80,7 @@ export default function InfoPage() {
       id: 'studio',
       blok: 'Blok C · Lantai 3',
       title: 'Studio Luas + Kitchenette',
+      image: '/images/rooms/kamar-studio.jpg',
       rangeUnit: '8 Unit (C-301 s.d C-308)',
       price: 'Rp2.650.000 – Rp2.800.000',
       period: '/ bulan',
@@ -275,8 +279,22 @@ export default function InfoPage() {
                   {unit.rangeUnit} · Luas {unit.size}
                 </p>
 
+                {/* Foto Kamar Kategori */}
+                <div className="relative h-44 w-full rounded-2xl overflow-hidden mt-3 mb-4 border border-[#DCE5D8] dark:border-[#2C382A] bg-stone-100 group">
+                  <Image
+                    src={unit.image}
+                    alt={unit.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute bottom-2 left-2 rounded-lg bg-black/60 backdrop-blur-xs px-2 py-0.5 text-[10px] font-bold text-white">
+                    Foto Asli Kamar
+                  </div>
+                </div>
+
                 {/* Price Display */}
-                <div className="mt-4 rounded-2xl bg-[#F4F7F2] dark:bg-[#171D16] p-3.5 border border-[#DCE5D8] dark:border-[#2C382A]">
+                <div className="rounded-2xl bg-[#F4F7F2] dark:bg-[#171D16] p-3.5 border border-[#DCE5D8] dark:border-[#2C382A]">
                   <span className="block text-[11px] font-medium text-[#5D6B58] dark:text-stone-400">Tarif Sewa Bulanan:</span>
                   <div className="text-base sm:text-lg font-extrabold text-[#3B5336] dark:text-[#95B08A]">
                     {unit.price} <span className="text-xs font-normal text-stone-400">{unit.period}</span>
@@ -304,10 +322,10 @@ export default function InfoPage() {
               {/* Action Button */}
               <div className="mt-6 pt-4 border-t border-[#DCE5D8] dark:border-[#2C382A]">
                 <Link
-                  href="/"
+                  href="/sewa"
                   className="w-full flex items-center justify-center gap-1.5 rounded-full bg-[#3B5336] hover:bg-[#2D4129] py-3 text-xs font-bold text-white shadow-sm transition-all active:scale-95"
                 >
-                  <span>Daftar / Masuk untuk Booking</span>
+                  <span>Lihat Ketersediaan &amp; Sewa Kamar</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>

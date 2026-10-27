@@ -59,6 +59,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     : [
         { href: '/', label: 'Beranda' },
         { href: '/unit', label: 'Unit' },
+        { href: '/sewa', label: 'Katalog Kamar' },
         { href: '/penyewa', label: 'Penyewa' },
         { href: '/kontrak', label: 'Kontrak' },
         { href: '/tagihan', label: 'Tagihan' },
@@ -106,6 +107,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 className={`transition-colors ${pathname === '/' ? 'text-white font-bold' : 'hover:text-white'}`}
               >
                 Home
+              </Link>
+              <Link
+                href="/sewa"
+                className={`transition-colors ${pathname === '/sewa' ? 'text-white font-bold' : 'hover:text-white'}`}
+              >
+                Katalog Kamar
               </Link>
               <Link
                 href="/info#units-pricing"

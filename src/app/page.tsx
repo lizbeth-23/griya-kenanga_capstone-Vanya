@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useGriyaStore } from '@/lib/use-store';
 import { formatRupiah, formatDateIndo, maskNIK } from '@/lib/formatters';
 import {
@@ -12,6 +13,12 @@ import { REFERENCE_DATE } from '@/lib/store';
 import LandingHero from '@/components/LandingHero';
 import MayarQrisModal from '@/components/MayarQrisModal';
 import { Invoice } from '@/lib/types';
+
+const ROOM_IMAGES: Record<string, string> = {
+  standar: '/images/rooms/kamar-standar.jpg',
+  ac: '/images/rooms/kamar-ac.jpg',
+  studio: '/images/rooms/kamar-studio.jpg',
+};
 
 export default function HomePage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -431,21 +438,30 @@ export default function HomePage() {
 
               {myContract && myUnit ? (
                 /* 1. Tampilan Kontrak Aktif */
-                <div className="mt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <div className="text-3xl font-extrabold text-[#222520] dark:text-[#ECEAE4]">
-                      Unit {myUnit.kode}
+                <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+                  <div className="flex items-center gap-4">
+                    <div className="relative h-24 w-28 shrink-0 rounded-2xl overflow-hidden border border-[#DCE5D8] dark:border-[#2C382A] shadow-2xs bg-stone-100">
+                      <Image
+                        src={ROOM_IMAGES[myUnit.tipe] || '/images/rooms/kamar-standar.jpg'}
+                        alt={`Kamar ${myUnit.kode}`}
+                        fill
+                        className="object-cover"
+                        sizes="120px"
+                      />
                     </div>
-                    <div className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] mt-1 capitalize font-medium">
-                      Lantai {myUnit.lantai} · Tipe {myUnit.tipe} · {myUnit.luas_m2} m²
-                    </div>
-                    <div className="mt-3 text-xs text-[#4F604A] dark:text-[#D5E6D2]">
-                      Nomor Kontrak: <span className="font-mono font-bold">{myContract.nomor}</span>
-                      <br />
-                      Masa Sewa: {formatDateIndo(myContract.tanggal_mulai)} s.d {formatDateIndo(myContract.tanggal_selesai)}
+                    <div>
+                      <div className="text-2xl sm:text-3xl font-extrabold text-[#222520] dark:text-[#ECEAE4]">
+                        Unit {myUnit.kode}
+                      </div>
+                      <div className="text-xs text-[#5D6B58] dark:text-[#A7B8A3] mt-0.5 capitalize font-medium">
+                        Lantai {myUnit.lantai} · Tipe {myUnit.tipe} · {myUnit.luas_m2} m²
+                      </div>
+                      <div className="mt-2 text-xs text-[#4F604A] dark:text-[#D5E6D2]">
+                        Kontrak: <span className="font-mono font-bold">{myContract.nomor}</span> · {formatDateIndo(myContract.tanggal_mulai)} s.d {formatDateIndo(myContract.tanggal_selesai)}
+                      </div>
                     </div>
                   </div>
-                  <div className="text-left sm:text-right sm:border-l sm:pl-6 border-[#E8EFE5] dark:border-[#2C382A]">
+                  <div className="text-left sm:text-right sm:border-l sm:pl-6 border-[#E8EFE5] dark:border-[#2C382A] shrink-0">
                     <span className="text-xs font-medium text-[#5D6B58] dark:text-[#A7B8A3]">Biaya Sewa Terkunci</span>
                     <div className="text-2xl font-extrabold text-[#3B5336] dark:text-[#95B08A]">
                       {formatRupiah(myContract.harga_sewa_bulanan)}

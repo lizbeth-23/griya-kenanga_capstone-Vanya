@@ -1,11 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { useGriyaStore } from '@/lib/use-store';
 import { formatRupiah, formatDateIndo } from '@/lib/formatters';
 import { PropertyUnit, UnitStatus } from '@/lib/types';
 import { Building2, Edit2, ShieldAlert, CheckCircle2, Lock, Sparkles, Filter } from 'lucide-react';
 import AuthGuard from '@/components/AuthGuard';
+
+const ROOM_IMAGES: Record<string, string> = {
+  standar: '/images/rooms/kamar-standar.jpg',
+  ac: '/images/rooms/kamar-ac.jpg',
+  studio: '/images/rooms/kamar-studio.jpg',
+};
 
 export default function UnitPage() {
   const { currentUser, state, store } = useGriyaStore();
@@ -197,6 +204,20 @@ export default function UnitPage() {
                 {/* Spesifikasi Unit */}
                 <div className="mt-2 text-xs text-[#5D6B58] dark:text-[#A7B8A3] capitalize font-medium">
                   Lantai {unit.lantai} · Tipe {unit.tipe} · {unit.luas_m2} m²
+                </div>
+
+                {/* Thumbnail Foto Kamar */}
+                <div className="relative h-28 w-full rounded-xl overflow-hidden mt-3 mb-1 bg-stone-100 dark:bg-stone-800">
+                  <Image
+                    src={ROOM_IMAGES[unit.tipe] || '/images/rooms/kamar-standar.jpg'}
+                    alt={`Foto Kamar ${unit.kode}`}
+                    fill
+                    className="object-cover transition-transform duration-300 hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 25vw"
+                  />
+                  <div className="absolute bottom-1.5 right-1.5 rounded-md bg-black/60 backdrop-blur-xs px-2 py-0.5 text-[9px] font-bold text-white uppercase">
+                    {unit.tipe}
+                  </div>
                 </div>
 
                 {/* Status Penghuni Saat Ini */}

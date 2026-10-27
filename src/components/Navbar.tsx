@@ -26,6 +26,7 @@ export default function Navbar() {
     const role = currentUser.peran;
     const links = [
       { href: '/', label: 'Beranda', icon: Home, roles: ['penyewa', 'pengelola', 'pemilik'] },
+      { href: '/sewa', label: 'Katalog Kamar', icon: Building2, roles: ['penyewa', 'pengelola', 'pemilik'] },
       { href: '/info', label: 'Info Kos', icon: Info, roles: ['penyewa', 'pengelola', 'pemilik'] },
       { href: '/unit', label: 'Unit', icon: Building2, roles: ['pengelola', 'pemilik'] },
       { href: '/penyewa', label: 'Penyewa', icon: Users, roles: ['pengelola', 'pemilik'] },
